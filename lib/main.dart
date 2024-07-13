@@ -1,10 +1,10 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'pages/SignInPage.dart';
+import 'pages/Map.dart';
 
-void main() {
+Future<void> main() async {
   runApp(MyApp());
 }
 
@@ -21,13 +21,35 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.greenAccent),
         ),
-        home: MyHomePage(),
+        home: AuthWrapper(),
       ),
     );
   }
 }
 
+class AuthWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<MyAppState>(
+      builder: (context, appState, _) {
+        if (appState.isSignedIn) {
+          return Map();
+        } else {
+          return SignInPage();
+        }
+      },
+    );
+  }
+}
+
 class MyAppState extends ChangeNotifier {
+  bool isSignedIn = false;
+
+  void signIn() {
+    isSignedIn = true;
+    notifyListeners();
+  }
+
   var current = WordPair.random();
   var history = <WordPair>[];
 
@@ -56,82 +78,5 @@ class MyAppState extends ChangeNotifier {
   void removeFavorite(WordPair pair) {
     favorites.remove(pair);
     notifyListeners();
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  var selectedIndex = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    Widget page;
-    switch (selectedIndex) {
-      case 0:
-        page = Placeholder();
-        // page = SignInPage();
-        break;
-      case 1:
-        page = Placeholder();
-        // page = TakePicturePage();
-        break;
-      case 2:
-        page = Placeholder();
-        // page = UserInfoPage();
-        break;
-      case 3:
-        page = Placeholder();
-        // page = MapPage();
-        break;
-      default:
-        throw UnimplementedError('no widget for $selectedIndex');
-    }
-
-    var layoutBuilder = LayoutBuilder(
-      builder: (context, constraints) {
-        return Column(
-          children: [
-            SafeArea(
-              child: BottomNavigationBar(
-                backgroundColor: Colors.black, // <-- This works for fixed
-                selectedItemColor: Colors.greenAccent,
-                unselectedItemColor: Colors.grey,
-                items: [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.home),
-                    label: 'Sign In',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.favorite),
-                    label: 'Take Picture',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.favorite),
-                    label: 'Map',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.favorite),
-                    label: 'User Information',
-                  ),
-                ],
-                currentIndex: selectedIndex,
-                onTap: (value) {
-                  setState(() {
-                    selectedIndex = value;
-                  });
-                },
-              ),
-            )
-          ],
-        );
-      },
-    );
-    return Scaffold(
-      body: layoutBuilder,
-    );
   }
 }
