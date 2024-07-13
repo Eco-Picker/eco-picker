@@ -4,6 +4,7 @@
 
 - IDE
 - Flutter SDK
+  If you are a mac user, you need to download:
 - Xcode
 - CocoaPods
 
