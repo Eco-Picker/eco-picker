@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'MyHomePage.dart';
 import 'TakePicturePage.dart';
 import 'package:camera/camera.dart';
+import 'UserInfoPage.dart';
 
 class Map extends StatefulWidget {
   @override
@@ -19,16 +20,16 @@ class _MyHomePageState extends State<Map> {
         page = MyHomePage();
         break;
       case 1:
-        //page = Placeholder();
+        //page = TakePicturePage();
         page = TakePicturePage();
         break;
       case 2:
         page = Placeholder();
-        // page = UserInfoPage();
+        // page = Map();
         break;
       case 3:
-        page = Placeholder();
-        // page = MapPage();
+        page = UserInfoPage();
+        // page = UserInfoPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
