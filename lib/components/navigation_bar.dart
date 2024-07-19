@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import '../screens/home_screen.dart';
+import '../screens/user_info_screen.dart';
+import '../screens/camera_screen.dart';
+// import '../screens/map_screen.dart';
+// import '../screens/newsletter_screen.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int selectedIndex;
@@ -12,6 +17,26 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget page;
+    switch (selectedIndex) {
+      case 0:
+        page = HomeScreen();
+        break;
+      case 1:
+        page = CameraScreen();
+        break;
+      case 2:
+        // page = MapScreen();
+        break;
+      case 3:
+        page = UserInfoScreen();
+        break;
+      case 4:
+      // page = NewsLetterScreen();
+      default:
+        throw UnimplementedError('no widget for $selectedIndex');
+    }
+
     return BottomNavigationBar(
       selectedItemColor: Colors.green,
       selectedLabelStyle: const TextStyle(
