@@ -37,21 +37,33 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Sign In'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Image.asset('assets/Icon.png', height: 150), // Adjust the height as needed
+              SizedBox(height: 16),
+              Text(
+                'Eco Picker',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
+              ),
+              SizedBox(height: 32),
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                  border: OutlineInputBorder(),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
+                    return 'Please enter your username';
                   }
                   return null;
                 },
@@ -59,7 +71,10 @@ class _SignInPageState extends State<SignInPage> {
               SizedBox(height: 16),
               TextFormField(
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -83,7 +98,12 @@ class _SignInPageState extends State<SignInPage> {
               SizedBox(height: 32),
               ElevatedButton(
                 onPressed: _signIn,
-                child: Text('Sign In'),
+                child: Text('Login'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                  textStyle: TextStyle(fontSize: 16),
+                ),
               ),
               TextButton(
                 onPressed: () {

@@ -11,6 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   camera: ^0.9.4+5
   path_provider: ^2.0.9
 
@@ -27,6 +28,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  
+  assets:
+    - assets/Icon.png
 
 flutter_icons:
   android: true
