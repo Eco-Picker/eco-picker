@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../screens/MyHomePage.dart';
-import '../screens/TakePicturePage.dart';
+import '../screens/home_screen.dart';
+import '../screens/camera_screen.dart';
 import 'package:camera/camera.dart';
-import '../screens/UserInfoPage.dart';
+import '../screens/user_info_screen.dart';
+import '../screens/newsletter_screen.dart';
 
 class Map extends StatefulWidget {
   @override
@@ -20,14 +21,17 @@ class _MyHomePageState extends State<Map> {
         page = MyHomePage();
         break;
       case 1:
+        page = NewsPage();
+        break;
+      case 2:
         //page = TakePicturePage();
         page = TakePicturePage();
         break;
-      case 2:
+      case 3:
         page = Placeholder();
         // page = Map();
         break;
-      case 3:
+      case 4:
         page = UserInfoPage();
         // page = UserInfoPage();
         break;
@@ -49,6 +53,10 @@ class _MyHomePageState extends State<Map> {
                   BottomNavigationBarItem(
                     icon: Icon(Icons.home),
                     label: 'HomePage',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.article),
+                    label: 'Newsletter',
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.camera_alt),
