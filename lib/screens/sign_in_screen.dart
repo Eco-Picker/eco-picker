@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
+import 'sign_up_screen.dart';
+import 'forgot_password_screen.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -15,8 +17,20 @@ class _SignInPageState extends State<SignInPage> {
   void _signIn() {
     if (_formKey.currentState!.validate()) {
       // Perform the sign-in logic (e.g., API call)
-      // If successful, notify the app state
-      Provider.of<MyAppState>(context, listen: false).signIn();
+      // Assume we get emailVerified and temporaryPassword from the API response
+      bool emailVerified = true; // Example value
+      bool temporaryPassword = false; // Example value
+
+      if (!emailVerified) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('You haven\'t verified your email. Please check your inbox and click the verification URL to start.')),
+        );
+      } else {
+        Provider.of<MyAppState>(context, listen: false).signIn(
+          emailVerified: emailVerified,
+          temporaryPassword: temporaryPassword,
+        );
+      }
     }
   }
 
@@ -54,10 +68,31 @@ class _SignInPageState extends State<SignInPage> {
                   return null;
                 },
               ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
+                    );
+                  },
+                  child: Text('Forgot password?'),
+                ),
+              ),
               SizedBox(height: 32),
               ElevatedButton(
                 onPressed: _signIn,
                 child: Text('Sign In'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignUpPage()),
+                  );
+                },
+                child: Text('Don\'t have an account? Sign up'),
               ),
             ],
           ),

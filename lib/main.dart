@@ -1,7 +1,9 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'screens/SignInPage.dart';
+import 'screens/sign_in_screen.dart';
+import 'screens/sign_up_screen.dart';
+import 'screens/forgot_password_screen.dart';
 import 'components/navigation_bar.dart';
 
 Future<void> main() async {
@@ -33,7 +35,7 @@ class AuthWrapper extends StatelessWidget {
     return Consumer<MyAppState>(
       builder: (context, appState, _) {
         if (appState.isSignedIn) {
-          return Map();
+          return Map(); // This should be your main app screen
         } else {
           return SignInPage();
         }
@@ -44,9 +46,13 @@ class AuthWrapper extends StatelessWidget {
 
 class MyAppState extends ChangeNotifier {
   bool isSignedIn = false;
+  bool isEmailVerified = false;
+  bool isUsingTemporaryPassword = false;
 
-  void signIn() {
+  void signIn({required bool emailVerified, required bool temporaryPassword}) {
     isSignedIn = true;
+    isEmailVerified = emailVerified;
+    isUsingTemporaryPassword = temporaryPassword;
     notifyListeners();
   }
 
