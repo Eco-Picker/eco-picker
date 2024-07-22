@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'MyHomePage.dart';
-import 'TakePicturePage.dart';
+import '../screens/MyHomePage.dart';
+import '../screens/TakePicturePage.dart';
 import 'package:camera/camera.dart';
-import 'UserInfoPage.dart';
+import '../screens/UserInfoPage.dart';
 
 class Map extends StatefulWidget {
   @override
