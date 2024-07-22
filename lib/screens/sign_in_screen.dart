@@ -16,10 +16,10 @@ class _SignInPageState extends State<SignInPage> {
 
   void _signIn() {
     if (_formKey.currentState!.validate()) {
-      // Perform the sign-in logic (e.g., API call)
-      // Assume we get emailVerified and temporaryPassword from the API response
-      bool emailVerified = true; // Example value
-      bool temporaryPassword = false; // Example value
+
+      // Assume we get emailVerified and temporaryPassword from the API response, havent implemented API yet mb
+      bool emailVerified = true; 
+      bool temporaryPassword = false; 
 
       if (!emailVerified) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -44,7 +44,7 @@ class _SignInPageState extends State<SignInPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/Icon.png', height: 150), // Adjust the height as needed
+              Image.asset('assets/Icon.png', height: 150), //idk if this is good height but good for now
               SizedBox(height: 16),
               Text(
                 'Eco Picker',
