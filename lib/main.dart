@@ -1,8 +1,8 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'pages/SignInPage.dart';
-import 'pages/Map.dart';
+import 'screens/SignInPage.dart';
+import 'components/navigation_bar.dart';
 
 Future<void> main() async {
   runApp(MyApp());
