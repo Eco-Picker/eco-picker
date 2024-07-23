@@ -4,6 +4,7 @@ import '../screens/camera_screen.dart';
 import 'package:camera/camera.dart';
 import '../screens/user_info_screen.dart';
 import '../screens/newsletter_screen.dart';
+import '../screens/map_screen.dart';
 
 class Map extends StatefulWidget {
   @override
@@ -29,7 +30,7 @@ class _MyHomePageState extends State<Map> {
         break;
       case 3:
         page = Placeholder();
-        // page = Map();
+        page = MapPage();
         break;
       case 4:
         page = UserInfoPage();
@@ -46,30 +47,23 @@ class _MyHomePageState extends State<Map> {
             Expanded(child: page),
             SafeArea(
               child: BottomNavigationBar(
-                backgroundColor: Colors.black,
-                selectedItemColor: Colors.greenAccent,
-                unselectedItemColor: Colors.grey,
+                showSelectedLabels: false,
+                showUnselectedLabels: false,
+                backgroundColor: Color(0xFFF5F5F5),
+                elevation: 0,
+                iconSize: 30,
+                selectedItemColor: Color.fromARGB(255, 76, 175, 79),
+                unselectedItemColor: Color.fromARGB(122, 76, 175, 79),
                 items: [
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.home),
-                    label: 'HomePage',
-                  ),
+                      icon: Icon(Icons.home), label: "Home"),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.article),
-                    label: 'Newsletter',
-                  ),
+                      icon: Icon(Icons.article), label: "Newsletter"),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.camera_alt),
-                    label: 'Take Picture',
-                  ),
+                      icon: Icon(Icons.camera_alt), label: "Camera"),
+                  BottomNavigationBarItem(icon: Icon(Icons.map), label: "Map"),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.map),
-                    label: 'Map',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.person),
-                    label: 'User Information',
-                  ),
+                      icon: Icon(Icons.person), label: "User"),
                 ],
                 currentIndex: selectedIndex,
                 onTap: (value) {
