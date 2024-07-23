@@ -16,14 +16,15 @@ class _SignInPageState extends State<SignInPage> {
 
   void _signIn() {
     if (_formKey.currentState!.validate()) {
-
       // Assume we get emailVerified and temporaryPassword from the API response, havent implemented API yet mb
-      bool emailVerified = true; 
-      bool temporaryPassword = false; 
+      bool emailVerified = true;
+      bool temporaryPassword = false;
 
       if (!emailVerified) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('You haven\'t verified your email. Please check your inbox and click the verification URL to start.')),
+          SnackBar(
+              content: Text(
+                  'You haven\'t verified your email. Please check your inbox and click the verification URL to start.')),
         );
       } else {
         Provider.of<MyAppState>(context, listen: false).signIn(
@@ -44,7 +45,8 @@ class _SignInPageState extends State<SignInPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/Icon.png', height: 150), //idk if this is good height but good for now
+              Image.asset('assets/Icon.png',
+                  height: 150), //idk if this is good height but good for now
               SizedBox(height: 16),
               Text(
                 'Eco Picker',
@@ -89,7 +91,8 @@ class _SignInPageState extends State<SignInPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
+                      MaterialPageRoute(
+                          builder: (context) => ForgotPasswordPage()),
                     );
                   },
                   child: Text('Forgot password?'),
@@ -98,12 +101,12 @@ class _SignInPageState extends State<SignInPage> {
               SizedBox(height: 32),
               ElevatedButton(
                 onPressed: _signIn,
-                child: Text('Login'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                   textStyle: TextStyle(fontSize: 16),
                 ),
+                child: Text('Login'),
               ),
               TextButton(
                 onPressed: () {

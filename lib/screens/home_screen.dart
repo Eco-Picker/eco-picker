@@ -18,9 +18,21 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('EcoPicker Home'),
-      ),
+      appBar: AppBar(title: Text('EcoPicker'), actions: <Widget>[
+        IconButton(
+          icon: const Icon(Icons.help),
+          tooltip: 'Show Guide',
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return Scaffold(
+                    // insert guide in the future
+                    );
+              },
+            ));
+          },
+        ),
+      ]),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -52,7 +64,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Text(
                     'Your Trash Collection Stats:',
-                    style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                   Text('Today: $userTodayCount items'),
                   Text('This Week: $userWeekCount items'),
@@ -74,7 +87,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Text(
                     'Total Trash Collection Stats:',
-                    style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                   Text('Today: $totalTodayCount items'),
                   Text('This Week: $totalWeekCount items'),
@@ -96,7 +110,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Text(
                     'Challenges:',
-                    style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                   Text('Daily Challenge: Collect 100 items'),
                   Text('Weekly Challenge: Collect 500 items'),
@@ -118,7 +133,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Text(
                     'Today\'s Top Collector:',
-                    style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                   Text('1. User123 - 30 items'),
                   // Add more ranks as needed
