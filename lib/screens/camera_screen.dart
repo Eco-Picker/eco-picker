@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../styles.dart';
+
 class TakePicturePage extends StatefulWidget {
   @override
   _TakePicturePageState createState() => _TakePicturePageState();
@@ -49,7 +51,10 @@ class _TakePicturePageState extends State<TakePicturePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Take a picture')),
+      appBar: AppBar(
+        title: Text('Take a picture'),
+        titleTextStyle: headingTextStyle(),
+      ),
       body: FutureBuilder<void>(
         future: _initializeControllerFuture,
         builder: (context, snapshot) {

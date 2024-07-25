@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../styles.dart';
+
 class ForgotPasswordPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
 
@@ -13,29 +15,42 @@ class ForgotPasswordPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Forgot Password'),
+        titleTextStyle: headingTextStyle(),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Email',
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('''Please enter your email address. 
+We\'ll send you a temporary password.''',
+                  textAlign: TextAlign.center, style: bodyTextStyle()),
+              SizedBox(height: 16),
+              TextField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  floatingLabelStyle: TextStyle(color: Color(0xFF27542A)),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xFF4CAF50)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                ),
+                cursorColor: Color(0xFF4CAF50),
               ),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _sendTemporaryPassword,
-              child: Text('Send Temporary Password'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Sign in'),
-            ),
-          ],
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _sendTemporaryPassword,
+                style: submitButtonStyle(),
+                child: Text('Send Temporary Password'),
+              ),
+            ],
+          ),
         ),
       ),
     );
