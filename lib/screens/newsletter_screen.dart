@@ -1,33 +1,43 @@
 import 'package:flutter/material.dart';
 
+import '../styles.dart';
+
 class NewsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('News Letter'),
+        titleTextStyle: headingTextStyle(),
       ),
       body: ListView(
         padding: EdgeInsets.all(16.0),
         children: [
-          NewsCard(title: 'Latest Issues', onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => LatestIssuesPage()),
-            );
-          }),
-          NewsCard(title: 'Events', onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => EventsPage()),
-            );
-          }),
-          NewsCard(title: 'Educational Contents', onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => EducationalContentPage()),
-            );
-          }),
+          NewsCard(
+              title: 'Latest Issues',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LatestIssuesPage()),
+                );
+              }),
+          NewsCard(
+              title: 'Events',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EventsPage()),
+                );
+              }),
+          NewsCard(
+              title: 'Educational Contents',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => EducationalContentPage()),
+                );
+              }),
         ],
       ),
     );
@@ -59,6 +69,7 @@ class LatestIssuesPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Latest Issues'),
+        titleTextStyle: headingTextStyle(),
       ),
       body: ListView(
         padding: EdgeInsets.all(16.0),
@@ -80,6 +91,7 @@ class EventsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Events'),
+        titleTextStyle: headingTextStyle(),
       ),
       body: ListView(
         padding: EdgeInsets.all(16.0),
@@ -101,6 +113,7 @@ class EducationalContentPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Educational Content'),
+        titleTextStyle: headingTextStyle(),
       ),
       body: ListView(
         padding: EdgeInsets.all(16.0),
@@ -121,7 +134,8 @@ class NewsItemCard extends StatelessWidget {
   final String subtitle;
   final VoidCallback onTap;
 
-  NewsItemCard({required this.title, required this.subtitle, required this.onTap});
+  NewsItemCard(
+      {required this.title, required this.subtitle, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

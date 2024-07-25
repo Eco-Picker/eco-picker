@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
 import 'sign_up_screen.dart';
 import 'forgot_password_screen.dart';
+import '../styles.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -11,7 +13,7 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   void _signIn() {
@@ -38,85 +40,123 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset('assets/Icon.png',
-                  height: 150), //idk if this is good height but good for now
-              SizedBox(height: 16),
-              Text(
-                'Eco Picker',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green,
-                ),
-              ),
-              SizedBox(height: 32),
-              TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: 'Username',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your username';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
-                ),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
-                  }
-                  return null;
-                },
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ForgotPasswordPage()),
-                    );
-                  },
-                  child: Text('Forgot password?'),
-                ),
-              ),
-              SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: _signIn,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                  textStyle: TextStyle(fontSize: 16),
-                ),
-                child: Text('Login'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignUpPage()),
-                  );
-                },
-                child: Text('Don\'t have an account? Sign up'),
-              ),
+                  height: 200), //idk if this is good height but good for now
+              Text('Eco Picker',
+                  style: GoogleFonts.quicksand(
+                    fontSize: 34,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF27542A),
+                  )),
+              SizedBox(height: 40),
+              Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _usernameController,
+                        decoration: InputDecoration(
+                          labelText: 'Username',
+                          floatingLabelStyle:
+                              TextStyle(color: Color(0xFF27542A)),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xFF4CAF50)),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                        cursorColor: Color(0xFF4CAF50),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your username';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          floatingLabelStyle:
+                              TextStyle(color: Color(0xFF27542A)),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xFF4CAF50)),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                        cursorColor: Color(0xFF4CAF50),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ForgotPasswordPage()),
+                            );
+                          },
+                          child: Text(
+                            'Forgot password?',
+                            style: greyTextStyle(),
+                          ),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: _signIn,
+                        style: submitButtonStyle(),
+                        child: const Text(
+                          'Login',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            "Don't have an account?",
+                            style: bodyTextStyle(),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SignUpPage()),
+                              );
+                            },
+                            child: Text(
+                              'Sign up',
+                              style: selectTextStyle(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ))
             ],
           ),
         ),
@@ -126,7 +166,7 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }

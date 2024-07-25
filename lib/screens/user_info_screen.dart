@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../styles.dart';
+
 class UserInfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('User Information'),
+        titleTextStyle: headingTextStyle(),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

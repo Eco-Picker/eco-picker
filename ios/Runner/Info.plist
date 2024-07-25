@@ -45,6 +45,8 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>We need camera to take a garbage picture.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location to show your position on the map.</string>
 	<key>MAP_API</key>

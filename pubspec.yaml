@@ -40,6 +40,16 @@ flutter:
 
   assets:
     - assets/Icon.png
+    - assets/google_fonts/OpenSans-ExtraBold.ttf
+    - assets/google_fonts/OpenSans-Bold.ttf
+    - assets/google_fonts/OpenSans-Light.ttf
+    - assets/google_fonts/OpenSans-Medium.ttf
+    - assets/google_fonts/OpenSans-Regular.ttf
+    - assets/google_fonts/OpenSans-SemiBold.ttf
+    - assets/google_fonts/Quicksand-Bold.ttf
+    - assets/google_fonts/Quicksand-Medium.ttf
+    - assets/google_fonts/Quicksand-Regular.ttf
+    - assets/google_fonts/Quicksand-SemiBold.ttf
 
 flutter_icons:
   android: true
