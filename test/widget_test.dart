@@ -11,5 +11,5 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:eco_picker/main.dart';
 
 void main() {
-  runApp();
+  // runApp();
 }

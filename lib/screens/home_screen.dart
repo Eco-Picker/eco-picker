@@ -1,20 +1,28 @@
 import 'package:eco_picker/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:eco_picker/api/api_service.dart';
+import 'package:eco_picker/data/ranking.dart';
 
-class MyHomePage extends StatefulWidget {
+import 'newsletter_screen.dart';
+
+class HomeScreen extends StatefulWidget {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  // Dummy data for demonstration
-  int userTodayCount = 5;
-  int userWeekCount = 20;
-  int userMonthCount = 75;
+class _HomeScreenState extends State<HomeScreen> {
+  final ApiService _apiService = ApiService();
+  late Future<Ranking> _dailyRankingFuture;
+  late Future<Ranking> _weeklyRankingFuture;
+  late Future<Ranking> _monthlyRankingFuture;
 
-  int totalTodayCount = 200;
-  int totalWeekCount = 1000;
-  int totalMonthCount = 4000;
+  @override
+  void initState() {
+    super.initState();
+    _dailyRankingFuture = _apiService.fetchDailyRanking();
+    _weeklyRankingFuture = _apiService.fetchWeeklyRanking();
+    _monthlyRankingFuture = _apiService.fetchMonthlyRanking();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,123 +47,177 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         titleTextStyle: headingTextStyle(),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Container(
-                child: Text('''Hello, username!
-Thanks for saving Earth!'''),
+      body: DefaultTabController(
+        length: 3, // Number of tabs in TabBar
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Hello, username!\nThanks for saving Earth!',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  GestureDetector(
+                    child: Container(
+                      padding: EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFE5E5E5),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Latest Issues',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF27542A),
+                            ),
+                          ),
+                          Text(
+                            'Best Restaurants in Town',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'Experience the most exquisite dining options in the city at ...',
+                            style: greyTextStyle(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => NewsScreen()),
+                      );
+                    },
+                  ),
+                ],
               ),
-              // News ad
-              Container(
-                padding: EdgeInsets.all(16.0),
+            ),
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(
+                    left: 16.0, right: 16.0, bottom: 16.0, top: 8.0),
                 decoration: BoxDecoration(
-                  color: Colors.greenAccent,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Text(
-                  'News Ad (Tip: Plastic Straws can kill turtles and other marine life)',
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-              // User's trash collection stats
-              Container(
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.lightGreenAccent,
-                  borderRadius: BorderRadius.circular(10.0),
+                  color: Color(0xFFE3F5E3),
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Your Trash Collection Stats:',
-                      style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold),
+                    TabBar(
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      indicator: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(8), // Creates border
+                          color: Color(0xFF388E3C)),
+                      dividerColor: Colors.transparent,
+                      labelColor: Colors.white,
+                      unselectedLabelColor: Colors.grey,
+                      tabs: [
+                        Tab(text: 'Today'),
+                        Tab(text: 'This Week'),
+                        Tab(text: 'This Month'),
+                      ],
                     ),
-                    Text('Today: $userTodayCount items'),
-                    Text('This Week: $userWeekCount items'),
-                    Text('This Month: $userMonthCount items'),
+                    Expanded(
+                      child: TabBarView(
+                        children: [
+                          LeaderboardList(rankingFuture: _dailyRankingFuture),
+                          LeaderboardList(rankingFuture: _weeklyRankingFuture),
+                          LeaderboardList(rankingFuture: _monthlyRankingFuture),
+                        ],
+                      ),
+                    ),
+                    Divider(indent: 16.0, endIndent: 16.0, color: Colors.grey),
+                    ListTile(
+                      leading: Text(
+                        '100',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      title: Text(
+                        'user100',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                      trailing: Text(
+                        '100 pt',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    )
                   ],
                 ),
               ),
-              SizedBox(height: 16.0),
-
-              // Total trash collection stats
-              Container(
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.lightBlueAccent,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Total Trash Collection Stats:',
-                      style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold),
-                    ),
-                    Text('Today: $totalTodayCount items'),
-                    Text('This Week: $totalWeekCount items'),
-                    Text('This Month: $totalMonthCount items'),
-                  ],
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-              // Challenge stats
-              Container(
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.orangeAccent,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Challenges:',
-                      style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold),
-                    ),
-                    Text('Daily Challenge: Collect 100 items'),
-                    Text('Weekly Challenge: Collect 500 items'),
-                    Text('Monthly Challenge: Collect 2000 items'),
-                  ],
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-              // Today's top collector
-              Container(
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.pinkAccent,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Today\'s Top Collector:',
-                      style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold),
-                    ),
-                    Text('1. User123 - 30 items'),
-                    // Add more ranks as needed
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
+    );
+  }
+}
+
+class LeaderboardList extends StatelessWidget {
+  final Future<Ranking> rankingFuture;
+  LeaderboardList({required this.rankingFuture});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Ranking>(
+      future: rankingFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error loading data'));
+        } else if (!snapshot.hasData || snapshot.data!.rankers.isEmpty) {
+          return Center(child: Text('No data available'));
+        } else {
+          final rankers = snapshot.data!.rankers;
+          return ListView.builder(
+            itemCount: rankers.length,
+            itemBuilder: (context, index) {
+              final ranker = rankers[index];
+              return ListTile(
+                leading: Text('1'
+                    // '${ranker.rank}',
+                    // style: TextStyle(
+                    //   fontSize: 16,
+                    //   fontWeight: FontWeight.bold,
+                    //   color: ranker.rank <= 3
+                    //       ? (ranker.rank == 1
+                    //           ? Colors.red
+                    //           : ranker.rank == 2
+                    //               ? Colors.orange
+                    //               : Colors.blue)
+                    //       : Colors.black,
+                    // ),
+                    ),
+                title: Text(
+                  ranker.username,
+                  style: TextStyle(fontSize: 14),
+                ),
+                trailing: Text(
+                  '${ranker.point} pt',
+                  style: TextStyle(fontSize: 14),
+                ),
+              );
+            },
+          );
+        }
+      },
     );
   }
 }

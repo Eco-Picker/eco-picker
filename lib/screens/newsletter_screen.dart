@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../styles.dart';
 
-class NewsPage extends StatelessWidget {
+class NewsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

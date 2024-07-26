@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../styles.dart';
 
-class UserInfoPage extends StatelessWidget {
+class UserInfoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

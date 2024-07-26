@@ -5,12 +5,12 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../styles.dart';
 
-class MapPage extends StatefulWidget {
+class MapScreen extends StatefulWidget {
   @override
-  _MapPageState createState() => _MapPageState();
+  _MapScreenState createState() => _MapScreenState();
 }
 
-class _MapPageState extends State<MapPage> {
+class _MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
   LatLng? _currentPosition;
   bool _isLoading = true;

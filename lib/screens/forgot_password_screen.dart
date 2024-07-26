@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../styles.dart';
 
-class ForgotPasswordPage extends StatelessWidget {
+class ForgotPasswordScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
 
   void _sendTemporaryPassword() {

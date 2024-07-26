@@ -40,7 +40,7 @@ class AuthWrapper extends StatelessWidget {
         if (appState.isSignedIn) {
           return Map(); // This should be your main app screen
         } else {
-          return SignInPage();
+          return SignInScreen();
         }
       },
     );

@@ -5,12 +5,12 @@ import 'package:path_provider/path_provider.dart';
 
 import '../styles.dart';
 
-class TakePicturePage extends StatefulWidget {
+class CameraScreen extends StatefulWidget {
   @override
-  _TakePicturePageState createState() => _TakePicturePageState();
+  _CameraScreenState createState() => _CameraScreenState();
 }
 
-class _TakePicturePageState extends State<TakePicturePage> {
+class _CameraScreenState extends State<CameraScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   late List<CameraDescription> cameras;
