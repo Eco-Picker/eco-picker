@@ -19,20 +19,20 @@ class _MyHomePageState extends State<Map> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = MyHomePage();
+        page = HomeScreen();
         break;
       case 1:
-        page = NewsPage();
+        page = NewsScreen();
         break;
       case 2:
-        page = TakePicturePage();
+        page = CameraScreen();
         break;
       case 3:
         page = Placeholder();
-        page = MapPage();
+        page = MapScreen();
         break;
       case 4:
-        page = UserInfoPage();
+        page = UserInfoScreen();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -44,7 +44,7 @@ class _MyHomePageState extends State<Map> {
         showSelectedLabels: false,
         showUnselectedLabels: false,
         backgroundColor: Color(0xFFF5F5F5),
-        elevation: 0,
+        // elevation: 0,
         iconSize: 30,
         selectedItemColor: Color.fromARGB(255, 76, 175, 79),
         unselectedItemColor: Color.fromARGB(122, 76, 175, 79),

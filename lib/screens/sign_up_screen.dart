@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../styles.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignUpScreen extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();

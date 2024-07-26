@@ -6,12 +6,12 @@ import 'sign_up_screen.dart';
 import 'forgot_password_screen.dart';
 import '../styles.dart';
 
-class SignInPage extends StatefulWidget {
+class SignInScreen extends StatefulWidget {
   @override
-  _SignInPageState createState() => _SignInPageState();
+  _SignInScreenState createState() => _SignInScreenState();
 }
 
-class _SignInPageState extends State<SignInPage> {
+class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -116,7 +116,7 @@ class _SignInPageState extends State<SignInPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ForgotPasswordPage()),
+                                  builder: (context) => ForgotPasswordScreen()),
                             );
                           },
                           child: Text(
@@ -145,7 +145,7 @@ class _SignInPageState extends State<SignInPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => SignUpPage()),
+                                    builder: (context) => SignUpScreen()),
                               );
                             },
                             child: Text(
