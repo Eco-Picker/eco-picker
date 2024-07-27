@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../styles.dart';
+import '../utils/styles.dart';
 
 class CameraScreen extends StatefulWidget {
   @override

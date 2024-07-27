@@ -1,8 +1,9 @@
-import 'package:eco_picker/styles.dart';
+import 'package:eco_picker/utils/styles.dart';
 import 'package:flutter/material.dart';
-import 'package:eco_picker/api/api_service.dart';
+import 'package:eco_picker/api/api_ranking_service.dart';
 import 'package:eco_picker/data/ranking.dart';
-
+import '../api/api_user_service.dart';
+import '../data/user.dart';
 import 'newsletter_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,17 +12,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final ApiService _apiService = ApiService();
+  final ApiUserService _apiUserService = ApiUserService();
+  final ApiRankingService _apiRankingService = ApiRankingService();
   late Future<Ranking> _dailyRankingFuture;
   late Future<Ranking> _weeklyRankingFuture;
   late Future<Ranking> _monthlyRankingFuture;
+  late Future<User> _userFuture;
 
   @override
   void initState() {
     super.initState();
-    _dailyRankingFuture = _apiService.fetchDailyRanking();
-    _weeklyRankingFuture = _apiService.fetchWeeklyRanking();
-    _monthlyRankingFuture = _apiService.fetchMonthlyRanking();
+    _userFuture = _apiUserService.fetchUserInfo();
+    _dailyRankingFuture = _apiRankingService.fetchDailyRanking();
+    _weeklyRankingFuture = _apiRankingService.fetchWeeklyRanking();
+    _monthlyRankingFuture = _apiRankingService.fetchMonthlyRanking();
   }
 
   @override
@@ -141,23 +145,38 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Divider(indent: 16.0, endIndent: 16.0, color: Colors.grey),
-                    ListTile(
-                      leading: Text(
-                        '100',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      title: Text(
-                        'user100',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      trailing: Text(
-                        '100 pt',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    )
+                    FutureBuilder<User>(
+                        future: _userFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(child: Text('Error loading data'));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.username.isEmpty) {
+                            return Center(child: Text('No data available'));
+                          } else {
+                            final user = snapshot.data;
+                            return ListTile(
+                              leading: Text(
+                                '100',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              title: Text(
+                                user!.username,
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              trailing: Text(
+                                '100 pt',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            );
+                          }
+                        }),
                   ],
                 ),
               ),

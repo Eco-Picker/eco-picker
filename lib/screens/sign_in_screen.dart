@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import '../api/api_user_service.dart';
 import '../main.dart';
 import 'sign_up_screen.dart';
 import 'forgot_password_screen.dart';
-import '../styles.dart';
+import '../utils/styles.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -12,26 +13,46 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  final ApiUserService _apiUserService = ApiUserService();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _signIn() {
-    if (_formKey.currentState!.validate()) {
-      // Assume we get emailVerified and temporaryPassword from the API response, havent implemented API yet mb
-      bool emailVerified = true;
-      bool temporaryPassword = false;
+  void _signIn() async {
+    final username = _usernameController.text;
+    final password = _passwordController.text;
 
-      if (!emailVerified) {
+    // Check if the form is valid before attempting login
+    if (_formKey.currentState!.validate()) {
+      try {
+        // Wait for the login process to complete
+        await _apiUserService.login(username, password);
+
+        // Assuming the login was successful and the service saves the token
+        bool emailVerified = true;
+        bool temporaryPassword = false;
+
+        if (!emailVerified) {
+          // Show a message if the email is not verified
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  'You haven\'t verified your email. Please check your inbox and click the verification URL to start.'),
+            ),
+          );
+        } else {
+          // Proceed with the sign-in process
+          Provider.of<MyAppState>(context, listen: false).signIn(
+            emailVerified: emailVerified,
+            temporaryPassword: temporaryPassword,
+          );
+        }
+      } catch (e) {
+        // Handle errors, such as network issues or invalid credentials
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text(
-                  'You haven\'t verified your email. Please check your inbox and click the verification URL to start.')),
-        );
-      } else {
-        Provider.of<MyAppState>(context, listen: false).signIn(
-          emailVerified: emailVerified,
-          temporaryPassword: temporaryPassword,
+            content: Text('Failed to login: ${e.toString()}'),
+          ),
         );
       }
     }

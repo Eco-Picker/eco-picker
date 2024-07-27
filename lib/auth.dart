@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-/// A mock authentication service
 class EcoPickerAuth extends ChangeNotifier {
   bool _signedIn = false;
 
