@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hello, username!\nThanks for saving Earth!',
+                    'Hello,\nThanks for saving Earth!',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

@@ -6,6 +6,7 @@ import 'components/navigation_bar.dart';
 import 'utils/token_refresher.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   final tokenRefresher = TokenRefresher();
   tokenRefresher.start();
   runApp(MyApp());
@@ -55,10 +56,9 @@ class MyAppState extends ChangeNotifier {
   bool isEmailVerified = false;
   bool isUsingTemporaryPassword = false;
 
-  void signIn({required bool emailVerified, required bool temporaryPassword}) {
+  void signIn({required bool emailVerified}) {
     isSignedIn = true;
     isEmailVerified = emailVerified;
-    isUsingTemporaryPassword = temporaryPassword;
     notifyListeners();
   }
 
