@@ -3,8 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'screens/sign_in_screen.dart';
 import 'components/navigation_bar.dart';
+import 'utils/token_refresher.dart';
 
 Future<void> main() async {
+  final tokenRefresher = TokenRefresher();
+  tokenRefresher.start();
   runApp(MyApp());
 }
 
@@ -56,6 +59,11 @@ class MyAppState extends ChangeNotifier {
     isSignedIn = true;
     isEmailVerified = emailVerified;
     isUsingTemporaryPassword = temporaryPassword;
+    notifyListeners();
+  }
+
+  void signOut() {
+    isSignedIn = false;
     notifyListeners();
   }
 }

@@ -1,8 +1,10 @@
+import 'package:eco_picker/api/api_user_service.dart';
 import 'package:flutter/material.dart';
 
-import '../styles.dart';
+import '../utils/styles.dart';
 
 class SignUpScreen extends StatelessWidget {
+  final ApiUserService _ApiUserService = ApiUserService();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -10,7 +12,11 @@ class SignUpScreen extends StatelessWidget {
       TextEditingController();
 
   void _signUp() {
-    // Perform the sign-up logic (e.g., API call to send verification email)
+    final username = _usernameController.text;
+    final password = _passwordController.text;
+    final email = _emailController.text;
+
+    _ApiUserService.signUp(username, password, email);
   }
 
   @override

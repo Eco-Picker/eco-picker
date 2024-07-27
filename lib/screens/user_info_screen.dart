@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../styles.dart';
+import '../api/api_user_service.dart';
+import '../main.dart';
+import '../utils/styles.dart';
 
 class UserInfoScreen extends StatelessWidget {
+  final ApiUserService _ApiUserService = ApiUserService();
+
+  void _logout(BuildContext context) {
+    _ApiUserService.logout();
+    Provider.of<MyAppState>(context, listen: false).signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Information'),
         titleTextStyle: headingTextStyle(),
       ),
       body: Padding(
@@ -38,6 +47,17 @@ class UserInfoScreen extends StatelessWidget {
             _buildCertificate('Certificate 2'),
             _buildCertificate('Certificate 3'),
             SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                _logout(context);
+              },
+              style: submitButtonStyle(),
+              child: const Text(
+                'Log out',
+                style: TextStyle(fontSize: 18),
+                // ADD "ARE YOU SURE?" POP-UP
+              ),
+            ),
           ],
         ),
       ),

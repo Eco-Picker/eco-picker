@@ -30,16 +30,17 @@ class Ranking {
   });
 
   factory Ranking.fromJson(Map<String, dynamic> json) {
-    var rankersJson = json['ranking']['rankers'] as List;
+    // Assuming the JSON structure has a 'ranking' field which contains 'rankers'
+    var rankersJson = json['rankers'] as List<dynamic>? ?? [];
     List<Ranker> rankerList =
         rankersJson.map((rankerJson) => Ranker.fromJson(rankerJson)).toList();
 
     return Ranking(
       rankers: rankerList,
-      result: json['result'],
-      timestamp: json['timestamp'],
-      message: json['message'],
-      code: json['code'],
+      result: json['result'] ?? false,
+      timestamp: json['timestamp'] ?? '',
+      message: json['message'] ?? '',
+      code: json['code'] ?? '',
     );
   }
 }
