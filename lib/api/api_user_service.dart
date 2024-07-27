@@ -17,14 +17,15 @@ class ApiUserService {
         await http.get(Uri.parse('$_baseUrl/user/info'), headers: headers);
 
     if (response.statusCode == 200) {
-      final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
-      return User.fromJson(jsonResponse);
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      print(data['userInfo']);
+      return User.fromJson(data['userInfo']);
     } else {
       throw Exception('Failed to load user info');
     }
   }
 
-  Future<void> signUp(String username, String password, String email) async {
+  Future<String> signUp(String username, String password, String email) async {
     final url = Uri.parse('$_baseUrl/p/auth/signup');
     final headers = {'Content-Type': 'application/json'};
     final body = json.encode({
@@ -39,15 +40,25 @@ class ApiUserService {
       if (response.statusCode == 200) {
         // Handle successful response
         final data = json.decode(response.body);
-        print('Sign-up successful: $data');
+        if (data['result'] == true) {
+          return 'true';
+        } else {
+          if (data['code'] == 'ALREADY_REGISTERED_USERNAME') {
+            return 'Username already registered. Please try with another username.';
+          } else if (data['code'] == 'ALREADY_REGISTERED_EMAIL') {
+            return 'Email already registered. Please try with another email.';
+          } else {
+            return 'Please use vaild password.';
+          }
+        }
       } else {
         // Handle errors
         final error = json.decode(response.body);
-        print('Failed to sign up: $error');
+        return ('Failed to sign up: $error');
       }
     } catch (e) {
       // Handle network errors
-      print('Network error: $e');
+      return ('Network error: $e');
     }
   }
 
@@ -68,28 +79,23 @@ class ApiUserService {
       if (response.statusCode == 200) {
         // Handle successful response
         final data = json.decode(response.body);
-        final accessToken = data['accessToken'];
-        final refreshToken = data['refreshToken'];
 
-        if (accessToken == null || refreshToken == null) {
-          print(data);
-          return "failed";
+        if (data['result'] == true) {
+          await _tokenManager.saveTokens(
+              data['accessToken'], data['refreshToken']);
+          print('Login successful: $data');
+          return "success";
+        } else {
+          return "Login failed.\nPlease check your username or password.";
         }
-
-        await _tokenManager.saveTokens(
-            data['accessToken'], data['refreshToken']);
-        print('Login successful: $data');
-        return "success";
       } else {
         // Handle errors
         final error = json.decode(response.body);
-        print('Failed to login: $error');
-        return "failed";
+        return "Failed to login:\n ${response.statusCode}";
       }
     } catch (e) {
       // Handle network errors
-      print('Network error: $e');
-      return "failed";
+      return "Network error:\n ${e.toString()}";
     }
   }
 
@@ -141,6 +147,29 @@ class ApiUserService {
       final code = response.statusCode;
       print('statusCode: $code');
       throw Exception('Failed to logout');
+    }
+  }
+
+  Future<bool> sendTemporaryPassword(String email) async {
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
+    };
+    final body = json.encode({
+      'email': email,
+    });
+    final response = await http.post(
+        Uri.parse('$_baseUrl/p/auth/send_temp_password'),
+        headers: headers,
+        body: body);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['result'];
+    } else {
+      final code = response.statusCode;
+      print('statusCode: $code');
+      throw Exception('Failed to send temporary password.');
     }
   }
 }

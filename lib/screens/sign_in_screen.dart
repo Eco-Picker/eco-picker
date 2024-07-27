@@ -6,6 +6,7 @@ import '../main.dart';
 import 'sign_up_screen.dart';
 import 'forgot_password_screen.dart';
 import '../utils/styles.dart';
+import '../utils/toastbox.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -17,43 +18,51 @@ class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  late Future<void> _loginFuture;
 
-  void _signIn() async {
+  @override
+  void initState() {
+    super.initState();
+    _loginFuture = _signIn();
+  }
+
+  Future<void> _signIn() async {
     final username = _usernameController.text;
     final password = _passwordController.text;
+    bool emailVerified = false;
 
     // Check if the form is valid before attempting login
     if (_formKey.currentState!.validate()) {
       try {
         // Wait for the login process to complete
-        await _apiUserService.login(username, password);
+        var loginStatus = await _apiUserService.login(username, password);
 
-        // Assuming the login was successful and the service saves the token
-        bool emailVerified = true;
-        bool temporaryPassword = false;
+        if (loginStatus == "success") {
+          await Future.delayed(Duration(seconds: 1));
 
-        if (!emailVerified) {
-          // Show a message if the email is not verified
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                  'You haven\'t verified your email. Please check your inbox and click the verification URL to start.'),
-            ),
-          );
+          final user = await _apiUserService.fetchUserInfo();
+          user.onboardingStatus == "COMPLETE"
+              ? emailVerified = true
+              : emailVerified = false;
+
+          if (!emailVerified) {
+            // Show a message if the email is not verified
+            showToast(
+                'You haven\'t verified your email.\nPlease check your inbox and click the verification URL to start.',
+                'error');
+          } else {
+            // Proceed with the sign-in process
+            Provider.of<MyAppState>(context, listen: false).signIn(
+              emailVerified: emailVerified,
+            );
+          }
         } else {
-          // Proceed with the sign-in process
-          Provider.of<MyAppState>(context, listen: false).signIn(
-            emailVerified: emailVerified,
-            temporaryPassword: temporaryPassword,
-          );
+          showToast(loginStatus, 'error');
         }
       } catch (e) {
         // Handle errors, such as network issues or invalid credentials
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to login: ${e.toString()}'),
-          ),
-        );
+        showToast(
+            'Failed to login: ${e?.toString() ?? 'Unknown error'}', 'error');
       }
     }
   }
@@ -146,13 +155,23 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ),
                       ),
-                      ElevatedButton(
-                        onPressed: _signIn,
-                        style: submitButtonStyle(),
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(fontSize: 18),
-                        ),
+                      FutureBuilder<void>(
+                        future: _loginFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else {
+                            return ElevatedButton(
+                              onPressed: _signIn,
+                              style: submitButtonStyle(),
+                              child: const Text(
+                                'Login',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            );
+                          }
+                        },
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
