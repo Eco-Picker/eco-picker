@@ -158,6 +158,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   style: submitButtonStyle(),
                   child: Text('Sign Up'),
                 ),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -166,6 +167,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
+                      style: TextButton.styleFrom(
+                        minimumSize: Size.zero,
+                        padding: EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 3.0),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
                       child: Text(
                         'Sign in',
                         style: selectTextStyle(),
@@ -185,6 +191,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               builder: (context) => ForgotPasswordScreen()),
                         );
                       },
+                      style: TextButton.styleFrom(
+                        minimumSize: Size.zero,
+                        padding: EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 3.0),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
                       child: Text(
                         'Forgot Password',
                         style: selectTextStyle(),
