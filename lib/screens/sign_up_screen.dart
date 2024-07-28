@@ -25,7 +25,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final email = _emailController.text;
 
     if (_formKey.currentState!.validate()) {
-      // 여기에서 null 체크를 추가합니다.
       if (username.isEmpty || password.isEmpty || email.isEmpty) {
         showToast('All fields are required', 'error');
         return;
@@ -99,7 +98,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                   ),
                   cursorColor: Color(0xFF4CAF50),
-                  validator: validateEmail,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your username';
+                    }
+                    return validateEmail(value);
+                  },
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
@@ -122,7 +126,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password';
                     }
-                    return null;
+
+                    return validatePassword(value);
                   },
                 ),
                 const SizedBox(height: 10),
