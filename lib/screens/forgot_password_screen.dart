@@ -29,18 +29,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     }
   }
 
-  // String? _validateEmail(String? value) {
-  //   if (value == null || value.isEmpty) {
-  //     return 'Please enter your email address';
-  //   }
-  //   String pattern = r'^[^@\s]+@[^@\s]+\.[^@\s]+$';
-  //   RegExp regex = RegExp(pattern);
-  //   if (!regex.hasMatch(value)) {
-  //     return 'Please enter a valid email address';
-  //   }
-  //   return null;
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,12 +43,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch, // Add this line
               children: [
                 Text(
-                    'Please enter your email address. \nWe\'ll send you a temporary password.',
-                    textAlign: TextAlign.center,
-                    style: bodyTextStyle()),
-                SizedBox(height: 16),
+                  'Please enter your email address.\nWe\'ll send you a temporary password.',
+                  textAlign: TextAlign.center,
+                  style: bodyTextStyle(),
+                ),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
@@ -78,12 +68,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   cursorColor: Color(0xFF4CAF50),
                   validator: validateEmail,
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: _sendTemporaryPassword,
                   style: submitButtonStyle(),
                   child: Text('Send Temporary Password'),
                 ),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -92,6 +83,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
+                      style: TextButton.styleFrom(
+                        minimumSize: Size.zero,
+                        padding: EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 3.0),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
                       child: Text(
                         'Sign in',
                         style: selectTextStyle(),
@@ -111,6 +107,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               builder: (context) => SignUpScreen()),
                         );
                       },
+                      style: TextButton.styleFrom(
+                        minimumSize: Size.zero,
+                        padding: EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 3.0),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
                       child: Text(
                         'Sign up',
                         style: selectTextStyle(),
