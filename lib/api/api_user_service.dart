@@ -25,6 +25,32 @@ class ApiUserService {
     }
   }
 
+  Future<String> changePassword(
+      String password, String newPassword, String confirmPassword) async {
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
+    };
+    final body = json.encode({
+      "password": "string",
+      "newPassword": "string",
+      "confirmNewPassword": "string"
+    });
+
+    final response = await http.post(
+        Uri.parse('$_baseUrl/user/update_password'),
+        headers: headers,
+        body: body);
+    final data = json.decode(response.body);
+    if (response.statusCode == 200) {
+      return data['code'] ? 'Please type a vaild password.' : 'pass';
+    } else if (response.statusCode == 400) {
+      return data['errors'].message;
+    } else {
+      throw Exception('Failed to load user info');
+    }
+  }
+
   Future<String> signUp(String username, String password, String email) async {
     final url = Uri.parse('$_baseUrl/p/auth/signup');
     final headers = {'Content-Type': 'application/json'};

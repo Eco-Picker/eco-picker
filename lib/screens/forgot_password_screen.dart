@@ -43,7 +43,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch, // Add this line
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
                   'Please enter your email address.\nWe\'ll send you a temporary password.',

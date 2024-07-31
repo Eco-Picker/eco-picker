@@ -1,4 +1,3 @@
-// ranking
 import 'dart:convert';
 import 'package:eco_picker/data/ranking.dart';
 import 'package:http/http.dart' as http;

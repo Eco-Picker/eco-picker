@@ -126,7 +126,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password';
                     }
-
                     return validatePassword(value);
                   },
                 ),

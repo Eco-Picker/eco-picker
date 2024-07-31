@@ -35,10 +35,34 @@ TextStyle selectTextStyle() {
   );
 }
 
+TextStyle bodyImportantTextStyle() {
+  return const TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: Color(0xFF3D3D3D),
+  );
+}
+
 TextStyle greyTextStyle() {
   return TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.w400,
     color: Color(0xFFA3A3A3),
+  );
+}
+
+TextStyle smallTextStyle() {
+  return TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: Color(0xFF3D3D3D),
+  );
+}
+
+TextStyle MidTextStyle() {
+  return TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    color: Color(0xFF3D3D3D),
   );
 }
