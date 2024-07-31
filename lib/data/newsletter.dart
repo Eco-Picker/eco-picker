@@ -57,14 +57,20 @@ class NewsSummary {
 }
 
 class NewsList {
-  final List<NewsSummary> newsletters;
+  final List<NewsSummary> newsletterList;
+  final int totalItems;
+  final int totalPages;
+  final int currentPage;
   final bool result;
   final String timestamp;
-  final String message;
-  final String code;
+  final String? message;
+  final String? code;
 
   NewsList({
-    required this.newsletters,
+    required this.newsletterList,
+    required this.totalItems,
+    required this.totalPages,
+    required this.currentPage,
     required this.result,
     required this.timestamp,
     required this.message,
@@ -72,17 +78,19 @@ class NewsList {
   });
 
   factory NewsList.fromJson(Map<String, dynamic> json) {
-    // Assuming the JSON structure has a 'ranking' field which contains 'rankers'
-    var newsJson = json['newsletters'] as List<dynamic>? ?? [];
+    var newsJson = json['newsletterSummaryList'] as List<dynamic>? ?? [];
     List<NewsSummary> newsList =
         newsJson.map((newsJson) => NewsSummary.fromJson(newsJson)).toList();
 
     return NewsList(
-      newsletters: newsList,
-      result: json['result'] ?? false,
-      timestamp: json['timestamp'] ?? '',
-      message: json['message'] ?? '',
-      code: json['code'] ?? '',
+      newsletterList: newsList,
+      totalItems: json['totalItems'],
+      totalPages: json['totalPages'],
+      currentPage: json['currentPage'],
+      result: json['result'],
+      timestamp: json['timestamp'],
+      message: json['message'],
+      code: json['code'],
     );
   }
 }

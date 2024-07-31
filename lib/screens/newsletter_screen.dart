@@ -19,7 +19,8 @@ class _NewsScreenState extends State<NewsScreen> {
   @override
   void initState() {
     super.initState();
-    _newsFuture = _apiNewsletterService.fetchNewsList(offset: 0, limit: 10);
+    _newsFuture = _apiNewsletterService.fetchNewsList(
+        offset: 0, limit: 10, category: "NEWS");
   }
 
   @override
@@ -47,11 +48,11 @@ class _NewsScreenState extends State<NewsScreen> {
             } else if (snapshot.hasError) {
               return const Center(child: Text('Error loading data'));
             } else if (!snapshot.hasData ||
-                snapshot.data!.newsletters.isEmpty) {
+                snapshot.data!.newsletterList.isEmpty) {
               return const Center(child: Text('No data available'));
             } else {
               return PostList(
-                  newsList: snapshot.data!.newsletters, isPaging: true);
+                  newsList: snapshot.data!.newsletterList, isPaging: true);
             }
           },
         ),

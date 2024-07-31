@@ -42,13 +42,13 @@ class _PostListState extends State<PostList> {
           offset: _offset, limit: _limit);
       setState(() {
         // 중복된 데이터를 걸러냄
-        for (var news in newsList.newsletters) {
+        for (var news in newsList.newsletterList) {
           if (!_newsList.contains(news)) {
             _newsList.add(news);
           }
         }
         _offset += _limit;
-        _hasMore = newsList.newsletters.length == _limit;
+        _hasMore = newsList.newsletterList.length == _limit;
       });
     } catch (e) {
       // Handle error
