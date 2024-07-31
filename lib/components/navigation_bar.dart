@@ -6,12 +6,12 @@ import '../screens/user_info_screen.dart';
 import '../screens/newsletter_screen.dart';
 import '../screens/map_screen.dart';
 
-class Map extends StatefulWidget {
+class MainBar extends StatefulWidget {
   @override
-  State<Map> createState() => _MyHomePageState();
+  State<MainBar> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<Map> {
+class _MyHomePageState extends State<MainBar> {
   var selectedIndex = 0;
 
   @override

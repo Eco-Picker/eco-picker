@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'screens/sign_in_screen.dart';
 import 'components/navigation_bar.dart';
 import 'utils/token_refresher.dart';
+import 'providers/user_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,8 +18,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MyAppState(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => MyAppState()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+      ],
       child: MaterialApp(
         title: 'Eco Picker',
         theme: ThemeData(
@@ -42,7 +46,7 @@ class AuthWrapper extends StatelessWidget {
     return Consumer<MyAppState>(
       builder: (context, appState, _) {
         if (appState.isSignedIn) {
-          return Map(); // This should be your main app screen
+          return MainBar();
         } else {
           return SignInScreen();
         }

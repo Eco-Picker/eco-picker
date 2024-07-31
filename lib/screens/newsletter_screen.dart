@@ -1,151 +1,60 @@
+import 'package:eco_picker/api/api_newsletter_service.dart';
 import 'package:flutter/material.dart';
-
+import '../components/post_list.dart';
+import '../components/post_search.dart';
+import '../data/newsletter.dart';
 import '../utils/styles.dart';
 
-class NewsScreen extends StatelessWidget {
+class NewsScreen extends StatefulWidget {
+  const NewsScreen({super.key});
+
+  @override
+  State<NewsScreen> createState() => _NewsScreenState();
+}
+
+class _NewsScreenState extends State<NewsScreen> {
+  final ApiNewsletterService _apiNewsletterService = ApiNewsletterService();
+  late Future<NewsList> _newsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _newsFuture = _apiNewsletterService.fetchNewsList(offset: 0, limit: 10);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('News Letter'),
         titleTextStyle: headingTextStyle(),
-      ),
-      body: ListView(
-        padding: EdgeInsets.all(16.0),
-        children: [
-          NewsCard(
-              title: 'Latest Issues',
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LatestIssuesPage()),
-                );
-              }),
-          NewsCard(
-              title: 'Events',
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => EventsPage()),
-                );
-              }),
-          NewsCard(
-              title: 'Educational Contents',
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => EducationalContentPage()),
-                );
-              }),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () => showSearch(
+              context: context,
+              delegate: PostSearchDelegate(newsFuture: _newsFuture),
+            ),
+          ),
         ],
       ),
-    );
-  }
-}
-
-class NewsCard extends StatelessWidget {
-  final String title;
-  final VoidCallback onTap;
-
-  NewsCard({required this.title, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: ListTile(
-        title: Text(title),
-        trailing: Icon(Icons.arrow_forward),
-        onTap: onTap,
-      ),
-    );
-  }
-}
-
-class LatestIssuesPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Latest Issues'),
-        titleTextStyle: headingTextStyle(),
-      ),
-      body: ListView(
-        padding: EdgeInsets.all(16.0),
-        children: List.generate(5, (index) {
-          return NewsItemCard(
-            title: 'Best Restaurants in Town',
-            subtitle: 'Experience the most exquisite dining...',
-            onTap: () {},
-          );
-        }),
-      ),
-    );
-  }
-}
-
-class EventsPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Events'),
-        titleTextStyle: headingTextStyle(),
-      ),
-      body: ListView(
-        padding: EdgeInsets.all(16.0),
-        children: List.generate(5, (index) {
-          return NewsItemCard(
-            title: 'Top Rated Hotels',
-            subtitle: 'Enjoy luxury and comfort at these...',
-            onTap: () {},
-          );
-        }),
-      ),
-    );
-  }
-}
-
-class EducationalContentPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Educational Content'),
-        titleTextStyle: headingTextStyle(),
-      ),
-      body: ListView(
-        padding: EdgeInsets.all(16.0),
-        children: List.generate(5, (index) {
-          return NewsItemCard(
-            title: 'Must-Visit Attractions',
-            subtitle: 'Discover the best attractions and...',
-            onTap: () {},
-          );
-        }),
-      ),
-    );
-  }
-}
-
-class NewsItemCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-
-  NewsItemCard(
-      {required this.title, required this.subtitle, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: ListTile(
-        title: Text(title),
-        subtitle: Text(subtitle),
-        trailing: Icon(Icons.arrow_forward),
-        onTap: onTap,
+      body: SafeArea(
+        child: FutureBuilder<NewsList>(
+          future: _newsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return const Center(child: Text('Error loading data'));
+            } else if (!snapshot.hasData ||
+                snapshot.data!.newsletters.isEmpty) {
+              return const Center(child: Text('No data available'));
+            } else {
+              return PostList(
+                  newsList: snapshot.data!.newsletters, isPaging: true);
+            }
+          },
+        ),
       ),
     );
   }

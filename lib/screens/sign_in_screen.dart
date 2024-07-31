@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../api/api_user_service.dart';
 import '../main.dart';
+import '../providers/user_provider.dart';
 import 'sign_up_screen.dart';
 import 'forgot_password_screen.dart';
 import '../utils/styles.dart';
@@ -31,36 +32,35 @@ class _SignInScreenState extends State<SignInScreen> {
     final password = _passwordController.text;
     bool emailVerified = false;
 
-    // Check if the form is valid before attempting login
+    if (_formKey.currentState == null) {
+      return;
+    }
     if (_formKey.currentState!.validate()) {
       try {
-        // Wait for the login process to complete
         var loginStatus = await _apiUserService.login(username, password);
 
         if (loginStatus == "success") {
           await Future.delayed(Duration(seconds: 1));
-
           final user = await _apiUserService.fetchUserInfo();
+
           user.onboardingStatus == "COMPLETE"
               ? emailVerified = true
               : emailVerified = false;
 
           if (!emailVerified) {
-            // Show a message if the email is not verified
             showToast(
                 'You haven\'t verified your email.\nPlease check your inbox and click the verification URL to start.',
                 'error');
           } else {
-            // Proceed with the sign-in process
             Provider.of<MyAppState>(context, listen: false).signIn(
               emailVerified: emailVerified,
             );
+            Provider.of<UserProvider>(context, listen: false).setUser(user);
           }
         } else {
           showToast(loginStatus, 'error');
         }
       } catch (e) {
-        // Handle errors, such as network issues or invalid credentials
         showToast(
             'Failed to login: ${e?.toString() ?? 'Unknown error'}', 'error');
       }
@@ -76,8 +76,7 @@ class _SignInScreenState extends State<SignInScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/Icon.png',
-                  height: 200), //idk if this is good height but good for now
+              Image.asset('assets/Icon.png', height: 200),
               Text('Eco Picker',
                   style: GoogleFonts.quicksand(
                     fontSize: 34,
