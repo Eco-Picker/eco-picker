@@ -2,6 +2,7 @@ import 'package:eco_picker/components/user_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../api/api_user_service.dart';
+import '../components/scoreboard.dart';
 import '../main.dart';
 import '../utils/styles.dart';
 import 'change_password.dart';
@@ -28,6 +29,10 @@ class UserInfoScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               UserDashboard(),
+              SizedBox(
+                height: 16,
+              ),
+              Scoreboard(),
               const Divider(),
               ListTile(
                 title: Text('Update Password'),

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/user_provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../utils/styles.dart';
+import '../utils/constants.dart';
 
 class UserDashboard extends StatefulWidget {
   @override
@@ -30,6 +31,7 @@ class _UserDashboard extends State<UserDashboard> {
             style: MidTextStyle(),
           ),
         SizedBox(height: 8),
+        Text('Collected Garbages'),
         Wrap(
           spacing: 10,
           children: [
@@ -52,37 +54,37 @@ class _UserDashboard extends State<UserDashboard> {
                   PieChartData(
                     sections: [
                       PieChartSectionData(
-                        color: Colors.green[200],
+                        color: categoryColors['Plastic'],
                         value: 10,
                         showTitle: false,
                       ),
                       PieChartSectionData(
-                        color: Colors.green[400],
+                        color: categoryColors['Metal'],
                         value: 10,
                         showTitle: false,
                       ),
                       PieChartSectionData(
-                        color: Colors.yellow[200],
+                        color: categoryColors['Glass'],
                         value: 10,
                         showTitle: false,
                       ),
                       PieChartSectionData(
-                        color: Colors.green[100],
+                        color: categoryColors['Cardboard'],
                         value: 10,
                         showTitle: false,
                       ),
                       PieChartSectionData(
-                        color: Colors.green[700],
+                        color: categoryColors['Food scraps'],
                         value: 10,
                         showTitle: false,
                       ),
                       PieChartSectionData(
-                        color: Colors.yellow[100],
+                        color: categoryColors['Organic yard'],
                         value: 10,
                         showTitle: false,
                       ),
                       PieChartSectionData(
-                        color: Colors.grey[200],
+                        color: categoryColors['Other'],
                         value: 40,
                         showTitle: false,
                       ),
@@ -96,7 +98,7 @@ class _UserDashboard extends State<UserDashboard> {
                   Text('TOTAL', style: TextStyle(color: Colors.grey)),
                   Text('100 point',
                       style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 ],
               ),
             ],
@@ -110,17 +112,20 @@ class _UserDashboard extends State<UserDashboard> {
           crossAxisSpacing: 10,
           childAspectRatio: 5,
           children: [
-            _buildScoreDetail(Colors.green[200]!, 'Plastic', '10 pt'),
-            _buildScoreDetail(Colors.green[400]!, 'Metal', '10 pt'),
-            _buildScoreDetail(Colors.yellow[200]!, 'Glass', '10 pt'),
-            _buildScoreDetail(Colors.green[100]!, 'Cardboard', '10 pt'),
-            _buildScoreDetail(Colors.green[700]!, 'Food scraps', '10 pt'),
-            _buildScoreDetail(Colors.yellow[100]!, 'Organic yard', '10 pt'),
+            _buildScoreDetail(categoryColors['Plastic']!, 'Plastic', '10 pt'),
+            _buildScoreDetail(categoryColors['Metal']!, 'Metal', '10 pt'),
+            _buildScoreDetail(categoryColors['Glass']!, 'Glass', '10 pt'),
+            _buildScoreDetail(
+                categoryColors['Cardboard']!, 'Cardboard', '10 pt'),
+            _buildScoreDetail(
+                categoryColors['Food scraps']!, 'Food scraps', '10 pt'),
+            _buildScoreDetail(
+                categoryColors['Organic yard']!, 'Organic yard', '10 pt'),
           ],
         ),
         const SizedBox(height: 10),
         Center(
-          child: _buildScoreDetail(Colors.grey[200]!, 'Other', '40 pt'),
+          child: _buildScoreDetail(categoryColors['Other']!, 'Other', '40 pt'),
         ),
       ],
     );
@@ -139,7 +144,7 @@ class _UserDashboard extends State<UserDashboard> {
         children: [
           Text(title, style: smallTextStyle()),
           Text(count, style: bodyImportantTextStyle()),
-          Text(subtitle, style: smallTextStyle()),
+          // Text(subtitle, style: smallTextStyle()),
         ],
       ),
     );
@@ -151,14 +156,14 @@ class _UserDashboard extends State<UserDashboard> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          width: 20,
-          height: 20,
-          color: color,
+          width: 18,
+          height: 18,
+          color: categoryColors[label],
         ),
         SizedBox(width: 8),
-        Text(label),
+        Text(label, style: bodyTextStyle()),
         if (label != 'Other') Spacer() else SizedBox(width: 8),
-        Text(points),
+        Text(points, style: bodyTextStyle()),
       ],
     );
   }

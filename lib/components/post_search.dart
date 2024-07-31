@@ -48,10 +48,10 @@ class PostSearchDelegate extends SearchDelegate {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return const Center(child: Text('Error loading data'));
-        } else if (!snapshot.hasData || snapshot.data!.newsletters.isEmpty) {
+        } else if (!snapshot.hasData || snapshot.data!.newsletterList.isEmpty) {
           return const Center(child: Text('No data available'));
         } else {
-          results = snapshot.data!.newsletters
+          results = snapshot.data!.newsletterList
               .where((news) => news.title.contains(query))
               .toList();
           return PostList(newsList: results, isPaging: false);
@@ -69,10 +69,10 @@ class PostSearchDelegate extends SearchDelegate {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return const Center(child: Text('Error loading data'));
-        } else if (!snapshot.hasData || snapshot.data!.newsletters.isEmpty) {
+        } else if (!snapshot.hasData || snapshot.data!.newsletterList.isEmpty) {
           return const Center(child: Text('No data available'));
         } else {
-          final suggestions = snapshot.data!.newsletters
+          final suggestions = snapshot.data!.newsletterList
               .where((news) => news.title.contains(query))
               .toList();
           return PostList(newsList: suggestions, isPaging: false);

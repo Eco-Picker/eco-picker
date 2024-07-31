@@ -1,11 +1,10 @@
-// user, authentication
 import 'dart:convert';
 import 'package:eco_picker/data/user.dart';
 import 'package:http/http.dart' as http;
 import 'token_manager.dart';
+import '../utils/constants.dart';
 
 class ApiUserService {
-  final String _baseUrl = 'http://localhost:15000'; // 백엔드 기본 URL
   final TokenManager _tokenManager = TokenManager();
 
   Future<User> fetchUserInfo() async {
@@ -14,7 +13,7 @@ class ApiUserService {
       'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
     };
     final response =
-        await http.get(Uri.parse('$_baseUrl/user/info'), headers: headers);
+        await http.get(Uri.parse('$baseUrl/user/info'), headers: headers);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body) as Map<String, dynamic>;
@@ -37,10 +36,8 @@ class ApiUserService {
       "confirmNewPassword": "string"
     });
 
-    final response = await http.post(
-        Uri.parse('$_baseUrl/user/update_password'),
-        headers: headers,
-        body: body);
+    final response = await http.post(Uri.parse('$baseUrl/user/update_password'),
+        headers: headers, body: body);
     final data = json.decode(response.body);
     if (response.statusCode == 200) {
       return data['code'] ? 'Please type a vaild password.' : 'pass';
@@ -52,7 +49,7 @@ class ApiUserService {
   }
 
   Future<String> signUp(String username, String password, String email) async {
-    final url = Uri.parse('$_baseUrl/p/auth/signup');
+    final url = Uri.parse('$baseUrl/p/auth/signup');
     final headers = {'Content-Type': 'application/json'};
     final body = json.encode({
       'username': username,
@@ -89,7 +86,7 @@ class ApiUserService {
   }
 
   Future<String> login(String username, String password) async {
-    final url = Uri.parse('$_baseUrl/p/auth/login');
+    final url = Uri.parse('$baseUrl/p/auth/login');
     print(url);
     final headers = {'Content-Type': 'application/json'};
     final body = json.encode({
@@ -126,7 +123,7 @@ class ApiUserService {
   }
 
   Future<void> refreshToken() async {
-    final url = Uri.parse('$_baseUrl/p/auth/renew_access_token');
+    final url = Uri.parse('$baseUrl/p/auth/renew_access_token');
     final headers = {'Content-Type': 'application/json'};
     final refreshToken = await _tokenManager.getRefreshToken();
 
@@ -163,7 +160,7 @@ class ApiUserService {
       'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
     };
     final response =
-        await http.post(Uri.parse('$_baseUrl/auth/logout'), headers: headers);
+        await http.post(Uri.parse('$baseUrl/auth/logout'), headers: headers);
 
     if (response.statusCode == 200) {
       await _tokenManager.clearTokens();
@@ -185,7 +182,7 @@ class ApiUserService {
       'email': email,
     });
     final response = await http.post(
-        Uri.parse('$_baseUrl/p/auth/send_temp_password'),
+        Uri.parse('$baseUrl/p/auth/send_temp_password'),
         headers: headers,
         body: body);
 
