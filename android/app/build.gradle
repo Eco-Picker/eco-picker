@@ -44,7 +44,8 @@ android {
         versionName = flutterVersionName
 
         manifestPlaceholders = [
-                MAP_API_KEY: localProperties.getProperty('MAP_API')
+                MAP_API_KEY: "AIzaSyADq8a3ZvGwLRv_bfb3rnvNjb2E9NuhOqg",
+                applicationName: "com.example.eco_picker"
         ]
     }
 
