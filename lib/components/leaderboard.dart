@@ -10,12 +10,12 @@ class Leaderboard extends StatefulWidget {
 
 class _LeaderboardState extends State<Leaderboard> {
   final ApiRankingService _apiRankingService = ApiRankingService();
-  late Future<Ranking> _dailyRankingFuture;
+  late Future<Ranking> _rankingFuture;
 
   @override
   void initState() {
     super.initState();
-    _dailyRankingFuture = _apiRankingService.fetchDailyRanking();
+    _rankingFuture = _apiRankingService.fetchRanking();
   }
 
   void _showUserDashboard(int id) {
@@ -23,6 +23,7 @@ class _LeaderboardState extends State<Leaderboard> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          title: Text('test'),
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
             height: MediaQuery.of(context).size.height * 0.8,
@@ -36,7 +37,7 @@ class _LeaderboardState extends State<Leaderboard> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Ranking>(
-      future: _dailyRankingFuture,
+      future: _rankingFuture,
       builder: (context, snapshot) {
         List<Ranker> rankers =
             List.generate(10, (index) => Ranker(username: '', point: 0, id: 0));
