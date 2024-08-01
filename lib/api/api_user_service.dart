@@ -118,6 +118,7 @@ class ApiUserService {
       }
     } catch (e) {
       // Handle network errors
+      print('catched some network error');
       return "Network error:\n ${e.toString()}";
     }
   }

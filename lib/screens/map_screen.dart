@@ -21,6 +21,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
+    setMarkerIcon();
     getLocation();
   }
 
@@ -32,15 +33,36 @@ class _MapScreenState extends State<MapScreen> {
   Future<void> getLocation() async {
     var status = await Permission.locationWhenInUse.status;
     if (!status.isGranted) {
-      await Permission.locationWhenInUse.request();
+      status = await Permission.locationWhenInUse.request();
     }
 
-    final position = await _geolocatorUtil.getCurrentLocation();
-    if (position != null) {
+    if (status.isGranted) {
+      try {
+        final position = await _geolocatorUtil.getCurrentLocation();
+        if (position != null) {
+          setState(() {
+            _currentPosition = LatLng(position.latitude, position.longitude);
+            _isLoading = false;
+          });
+        } else {
+          setState(() {
+            _isLoading = false;
+          });
+          // 위치 정보를 가져오지 못했을 때 처리할 코드 추가
+        }
+      } catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
+        // 위치 정보를 가져오는 도중 에러가 발생했을 때 처리할 코드 추가
+        print("Error getting location: $e");
+      }
+    } else {
       setState(() {
-        _currentPosition = LatLng(position.latitude, position.longitude);
         _isLoading = false;
       });
+      // 권한 요청이 거부되었을 때 처리할 코드 추가
+      print("Location permission denied");
     }
   }
 
@@ -82,18 +104,24 @@ class _MapScreenState extends State<MapScreen> {
             )
           : GoogleMap(
               onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: _currentPosition!,
-                zoom: 16.0,
-              ),
+              initialCameraPosition: _currentPosition != null
+                  ? CameraPosition(
+                      target: _currentPosition!,
+                      zoom: 16.0,
+                    )
+                  : CameraPosition(
+                      target: LatLng(0, 0), // 기본 위치 설정 (예: LatLng(0, 0))
+                      zoom: 2.0,
+                    ),
               myLocationEnabled: true, // Show the user's current location
-              markers: {
-                const Marker(
-                  markerId: const MarkerId("Sydney"),
-                  position: LatLng(-33.86, 151.20),
-                )
-              },
-              // markers: _markers!,
+              markers: _markers != null
+                  ? _markers!
+                  : {
+                      Marker(
+                        markerId: MarkerId("default"),
+                        position: LatLng(0, 0),
+                      ),
+                    },
             ),
     );
   }

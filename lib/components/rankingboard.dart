@@ -81,7 +81,7 @@ class _RankingBoardState extends State<Rankingboard> {
                     style: TextStyle(fontSize: 14),
                   ),
                   trailing: Text(
-                    '${userProvider.user?.score ?? 0} pt',
+                    '${0} pt',
                     style: TextStyle(fontSize: 14),
                   ),
                   onTap: userProvider.user != null ? _showUserDashboard : null,
