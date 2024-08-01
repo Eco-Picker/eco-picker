@@ -39,6 +39,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
     // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
+    print('My camera: $_initializeControllerFuture');
   }
 
   @override
@@ -63,7 +64,11 @@ class _CameraScreenState extends State<CameraScreen> {
             return CameraPreview(_controller);
           } else {
             // Otherwise, display a loading indicator.
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+              ),
+            );
           }
         },
       ),

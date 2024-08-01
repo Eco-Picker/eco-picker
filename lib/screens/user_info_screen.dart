@@ -1,25 +1,29 @@
 import 'package:eco_picker/components/user_dashboard.dart';
+import 'package:eco_picker/screens/setting_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../api/api_user_service.dart';
 import '../components/scoreboard.dart';
-import '../main.dart';
 import '../utils/styles.dart';
-import 'change_password.dart';
 
 class UserInfoScreen extends StatelessWidget {
-  final ApiUserService _ApiUserService = ApiUserService();
-
-  void _logout(BuildContext context) {
-    _ApiUserService.logout();
-    Provider.of<MyAppState>(context, listen: false).signOut();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Info'),
+        title: Text('My dashboard'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.settings),
+            color: Color(0xFF27542A),
+            tooltip: 'User settings',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return SettingScreen();
+                },
+              ));
+            },
+          ),
+        ],
         titleTextStyle: headingTextStyle(),
       ),
       body: Padding(
@@ -33,24 +37,6 @@ class UserInfoScreen extends StatelessWidget {
                 height: 16,
               ),
               Scoreboard(),
-              const Divider(),
-              ListTile(
-                title: Text('Update Password'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ChangePasswordScreen()),
-                  );
-                },
-              ),
-              const Divider(),
-              ListTile(
-                title: Text('Logout'),
-                onTap: () {
-                  _logout(context);
-                },
-              ),
             ],
           ),
         ),

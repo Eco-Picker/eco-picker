@@ -25,11 +25,33 @@ class _RandomNewsboxState extends State<RandomNewsbox> {
       future: _randomNewsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+            ),
+          );
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error loading data'));
+          return Container(
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Color(0xFFE5E5E5),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Center(
+              child: Text('Error loading data'),
+            ),
+          );
         } else if (!snapshot.hasData || snapshot.data!.category.isEmpty) {
-          return Center(child: Text('No data available'));
+          return Container(
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Color(0xFFE5E5E5),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Center(
+              child: Text('No data available'),
+            ),
+          );
         } else {
           final newsSummary = snapshot.data;
           return GestureDetector(
@@ -60,6 +82,8 @@ class _RandomNewsboxState extends State<RandomNewsbox> {
                   Text(
                     newsSummary.summary,
                     style: greyTextStyle(),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),

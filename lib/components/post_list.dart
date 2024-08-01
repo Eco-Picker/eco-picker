@@ -76,7 +76,11 @@ class _PostListState extends State<PostList> {
         itemCount: _newsList.length + (widget.isPaging && _hasMore ? 1 : 0),
         itemBuilder: (BuildContext context, int index) {
           if (index == _newsList.length) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+              ),
+            );
           } else {
             return Card(
               margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

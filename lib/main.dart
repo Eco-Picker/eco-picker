@@ -33,6 +33,11 @@ class MyApp extends StatelessWidget {
           appBarTheme: AppBarTheme(
             color: Color(0xFF388E3C),
           ),
+          textSelectionTheme: TextSelectionThemeData(
+            cursorColor: Color(0xFF4CAF50),
+            selectionColor: Color(0xFFC8E6C9),
+            selectionHandleColor: Color(0xFF4CAF50),
+          ),
         ),
         home: AuthWrapper(),
       ),
@@ -58,16 +63,17 @@ class AuthWrapper extends StatelessWidget {
 class MyAppState extends ChangeNotifier {
   bool isSignedIn = false;
   bool isEmailVerified = false;
-  bool isUsingTemporaryPassword = false;
 
   void signIn({required bool emailVerified}) {
     isSignedIn = true;
     isEmailVerified = emailVerified;
     notifyListeners();
+    print('User signed in: $isSignedIn');
   }
 
   void signOut() {
     isSignedIn = false;
+    isEmailVerified = false;
     notifyListeners();
   }
 }

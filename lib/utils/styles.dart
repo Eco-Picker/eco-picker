@@ -43,6 +43,14 @@ TextStyle bodyImportantTextStyle() {
   );
 }
 
+TextStyle titleTextStyle() {
+  return const TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: Color(0xFF3D3D3D),
+  );
+}
+
 TextStyle greyTextStyle() {
   return TextStyle(
     fontSize: 12,

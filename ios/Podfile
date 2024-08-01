@@ -36,6 +36,8 @@ target 'Runner' do
   target 'RunnerTests' do
     inherit! :search_paths
   end
+
+  pod 'GoogleMaps'
 end
 
 post_install do |installer|

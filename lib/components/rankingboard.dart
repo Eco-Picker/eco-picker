@@ -1,9 +1,11 @@
+import 'package:eco_picker/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../api/api_ranking_service.dart';
 import '../data/ranking.dart';
 import '../providers/user_provider.dart';
 import 'leaderboard.dart';
+import 'user_dashboard.dart';
 
 class Rankingboard extends StatefulWidget {
   @override
@@ -11,17 +13,19 @@ class Rankingboard extends StatefulWidget {
 }
 
 class _RankingBoardState extends State<Rankingboard> {
-  final ApiRankingService _apiRankingService = ApiRankingService();
-  late Future<Ranking> _dailyRankingFuture;
-  late Future<Ranking> _weeklyRankingFuture;
-  late Future<Ranking> _monthlyRankingFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _dailyRankingFuture = _apiRankingService.fetchDailyRanking();
-    _weeklyRankingFuture = _apiRankingService.fetchWeeklyRanking();
-    _monthlyRankingFuture = _apiRankingService.fetchMonthlyRanking();
+  void _showUserDashboard() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height * 0.8,
+            child: UserDashboard(),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -30,63 +34,60 @@ class _RankingBoardState extends State<Rankingboard> {
 
     return Expanded(
       child: Container(
-        margin:
-            EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 0.0),
-        decoration: BoxDecoration(
-          color: Color(0xFFE3F5E3),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Column(
-          children: [
-            TabBar(
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicator: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8), // Creates border
-                  color: Color(0xFF388E3C)),
-              dividerColor: Colors.transparent,
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.grey,
-              tabs: [
-                Tab(text: 'Today'),
-                Tab(text: 'This Week'),
-                Tab(text: 'This Month'),
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  Leaderboard(rankingFuture: _dailyRankingFuture),
-                  Leaderboard(rankingFuture: _weeklyRankingFuture),
-                  Leaderboard(rankingFuture: _monthlyRankingFuture),
-                ],
-              ),
-            ),
-            Divider(indent: 16.0, endIndent: 16.0, color: Colors.grey),
-            if (userProvider.isLoading)
-              Center(child: CircularProgressIndicator())
-            else if (userProvider.user == null)
-              Center(child: Text('No data available'))
-            else
-              ListTile(
-                leading: Text(
-                  '100',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+          margin:
+              EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 0.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: Color(0xFFE3F5E3),
+          ),
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(8),
+                    bottom: Radius.circular(0),
                   ),
+                  color: Color(0xFF4CAF50),
                 ),
-                title: Text(
-                  userProvider.user!.username,
-                  style: TextStyle(fontSize: 14),
-                ),
-                trailing: Text(
-                  '${userProvider.user!.score}',
-                  style: TextStyle(fontSize: 14),
+                child: Text(
+                  'Leaderboard',
+                  style: MidTextStyle(),
+                  textAlign: TextAlign.center,
                 ),
               ),
-          ],
-        ),
-      ),
+              Leaderboard(),
+              Divider(indent: 16.0, endIndent: 16.0, color: Colors.grey),
+              if (userProvider.isLoading)
+                Center(
+                  child: CircularProgressIndicator(
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+                  ),
+                )
+              else
+                ListTile(
+                  leading: Text(
+                    '100',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  title: Text(
+                    userProvider.user?.username ?? '',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  trailing: Text(
+                    '${userProvider.user?.score ?? 0} pt',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  onTap: userProvider.user != null ? _showUserDashboard : null,
+                ),
+            ],
+          )),
     );
   }
 }
