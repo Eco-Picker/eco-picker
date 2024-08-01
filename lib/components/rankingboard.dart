@@ -19,8 +19,8 @@ class _RankingBoardState extends State<Rankingboard> {
       builder: (BuildContext context) {
         return AlertDialog(
           content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.height * 0.8,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
             child: UserDashboard(),
           ),
         );

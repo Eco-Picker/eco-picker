@@ -7,57 +7,38 @@ import '../utils/constants.dart';
 class ApiRankingService {
   final TokenManager _tokenManager = TokenManager();
 
-  Future<Ranking> fetchWeeklyRanking() async {
+  Future<Ranking> fetchRanking() async {
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
     };
     final body = json.encode({"offset": 0, "limit": 10});
-    final response = await http.post(Uri.parse('$baseUrl/ranking/weekly'),
+    final response = await http.post(Uri.parse('$baseUrl/ranking'),
         headers: headers, body: body);
 
     if (response.statusCode == 200) {
       // Parse the JSON response into a Ranking object
-      final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
-      return Ranking.fromJson(jsonResponse);
+      final jsonResponse = json.decode(response.body);
+      return Ranking.fromJson(jsonResponse['ranking']);
     } else {
-      throw Exception('Failed to load weekly rankers');
+      throw Exception('Failed to load rankers');
     }
   }
 
-  Future<Ranking> fetchDailyRanking() async {
+  Future<Ranking> fetchRanker(int id) async {
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
     };
-    final body = json.encode({"offset": 0, "limit": 10});
-    final response = await http.post(Uri.parse('$baseUrl/ranking/daily'),
-        headers: headers, body: body);
+    final response =
+        await http.get(Uri.parse('$baseUrl/ranker/$id'), headers: headers);
 
     if (response.statusCode == 200) {
       // Parse the JSON response into a Ranking object
-      final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
-      return Ranking.fromJson(jsonResponse);
+      final jsonResponse = json.decode(response.body);
+      return Ranking.fromJson(jsonResponse['ranking']);
     } else {
-      throw Exception('Failed to load daily rankers');
-    }
-  }
-
-  Future<Ranking> fetchMonthlyRanking() async {
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
-    };
-    final body = json.encode({"offset": 0, "limit": 10});
-    final response = await http.post(Uri.parse('$baseUrl/ranking/monthly'),
-        headers: headers, body: body);
-
-    if (response.statusCode == 200) {
-      // Parse the JSON response into a Ranking object
-      final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
-      return Ranking.fromJson(jsonResponse);
-    } else {
-      throw Exception('Failed to load monthly rankers');
+      throw Exception('Failed to load ranker detail');
     }
   }
 }

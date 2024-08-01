@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import '../screens/home_screen.dart';
 import '../screens/camera_screen.dart';
@@ -6,6 +7,10 @@ import '../screens/newsletter_screen.dart';
 import '../screens/map_screen.dart';
 
 class MainBar extends StatefulWidget {
+  final CameraDescription camera;
+
+  const MainBar({required this.camera});
+
   @override
   State<MainBar> createState() => _MyHomePageState();
 }
@@ -24,7 +29,7 @@ class _MyHomePageState extends State<MainBar> {
         page = NewsScreen();
         break;
       case 2:
-        page = CameraScreen();
+        page = CameraScreen(camera: widget.camera);
         break;
       case 3:
         page = Placeholder();
