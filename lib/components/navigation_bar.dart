@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/home_screen.dart';
 import '../screens/camera_screen.dart';
-import 'package:camera/camera.dart';
 import '../screens/user_info_screen.dart';
 import '../screens/newsletter_screen.dart';
 import '../screens/map_screen.dart';

@@ -1,45 +1,104 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/user_provider.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../utils/styles.dart';
+import '../providers/user_provider.dart';
 import '../utils/constants.dart';
+import '../utils/styles.dart';
 
 class UserDashboard extends StatefulWidget {
   @override
   _UserDashboard createState() => _UserDashboard();
 }
 
-class _UserDashboard extends State<UserDashboard> {
+class _UserDashboard extends State<UserDashboard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  bool _isPointUnit = true; // State to track unit type
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 2),
+    );
+    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _toggleUnit() {
+    setState(() {
+      _isPointUnit = !_isPointUnit;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (userProvider.isLoading)
-          Center(child: CircularProgressIndicator())
+          Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+            ),
+          )
         else if (userProvider.user == null)
           Text(
             'Hello!',
             style: MidTextStyle(),
           )
         else
-          Text(
-            '${userProvider.user!.username}\'s dashboard',
-            style: MidTextStyle(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                userProvider.user!.username,
+                style: MidTextStyle(),
+              ),
+              Text('Rank 5', style: MidTextStyle())
+            ],
           ),
         SizedBox(height: 8),
-        Text('Collected Garbages'),
-        Wrap(
-          spacing: 10,
-          children: [
-            _buildStatColumn('Total', '15', 'Garbages'),
-            _buildStatColumn('Today', '5', 'Garbages'),
-            _buildStatColumn('This Week', '5', 'Garbages'),
-            _buildStatColumn('This Month', '5', 'Garbages'),
-          ],
+        Container(
+          decoration: BoxDecoration(
+            color: Color(0xFFE5E5E5),
+            borderRadius: BorderRadius.all(
+              Radius.circular(8.0),
+            ),
+          ),
+          child: Column(
+            children: [
+              Text(
+                'Collected Garbages (pk)',
+                style: titleTextStyle(),
+              ),
+              SizedBox(height: 8),
+              Wrap(
+                spacing: 10,
+                children: [
+                  _buildStatColumn('Total', '15'),
+                  _buildStatColumn('Today', '5'),
+                  _buildStatColumn('This Week', '5'),
+                  _buildStatColumn('This Month', '5'),
+                ],
+              ),
+              SizedBox(height: 8),
+            ],
+          ),
         ),
         const SizedBox(height: 20),
         Center(
@@ -48,61 +107,70 @@ class _UserDashboard extends State<UserDashboard> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                width: 100,
-                height: 100,
-                child: PieChart(
-                  PieChartData(
-                    sections: [
-                      PieChartSectionData(
-                        color: categoryColors['Plastic'],
-                        value: 10,
-                        showTitle: false,
-                      ),
-                      PieChartSectionData(
-                        color: categoryColors['Metal'],
-                        value: 10,
-                        showTitle: false,
-                      ),
-                      PieChartSectionData(
-                        color: categoryColors['Glass'],
-                        value: 10,
-                        showTitle: false,
-                      ),
-                      PieChartSectionData(
-                        color: categoryColors['Cardboard'],
-                        value: 10,
-                        showTitle: false,
-                      ),
-                      PieChartSectionData(
-                        color: categoryColors['Food scraps'],
-                        value: 10,
-                        showTitle: false,
-                      ),
-                      PieChartSectionData(
-                        color: categoryColors['Organic yard'],
-                        value: 10,
-                        showTitle: false,
-                      ),
-                      PieChartSectionData(
-                        color: categoryColors['Other'],
-                        value: 40,
-                        showTitle: false,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+                  width: 100,
+                  height: 100,
+                  child: AnimatedBuilder(
+                      animation: _animation,
+                      builder: (context, child) {
+                        return PieChart(
+                          PieChartData(
+                            sections: [
+                              PieChartSectionData(
+                                color: categoryColors['Plastic'],
+                                value: 10 * _animation.value,
+                                showTitle: false,
+                              ),
+                              PieChartSectionData(
+                                color: categoryColors['Metal'],
+                                value: 10 * _animation.value,
+                                showTitle: false,
+                              ),
+                              PieChartSectionData(
+                                color: categoryColors['Glass'],
+                                value: 10 * _animation.value,
+                                showTitle: false,
+                              ),
+                              PieChartSectionData(
+                                color: categoryColors['Cardboard'],
+                                value: 10 * _animation.value,
+                                showTitle: false,
+                              ),
+                              PieChartSectionData(
+                                color: categoryColors['Food scraps'],
+                                value: 10 * _animation.value,
+                                showTitle: false,
+                              ),
+                              PieChartSectionData(
+                                color: categoryColors['Organic yard'],
+                                value: 10 * _animation.value,
+                                showTitle: false,
+                              ),
+                              PieChartSectionData(
+                                color: categoryColors['Other'],
+                                value: 40 * _animation.value,
+                                showTitle: false,
+                              ),
+                            ],
+                          ),
+                        );
+                      })),
               const SizedBox(width: 20),
               Column(
-                children: const [
+                children: [
                   Text('TOTAL', style: TextStyle(color: Colors.grey)),
-                  Text('100 point',
+                  Text(_isPointUnit ? '100 pt' : '50 pk',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 ],
               ),
             ],
           ),
+        ),
+        const SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: _toggleUnit,
+          child: Text(
+              _isPointUnit ? 'Switch to Garbage Count' : 'Switch to Points'),
         ),
         const SizedBox(height: 20),
         GridView.count(
@@ -112,26 +180,30 @@ class _UserDashboard extends State<UserDashboard> {
           crossAxisSpacing: 10,
           childAspectRatio: 5,
           children: [
-            _buildScoreDetail(categoryColors['Plastic']!, 'Plastic', '10 pt'),
-            _buildScoreDetail(categoryColors['Metal']!, 'Metal', '10 pt'),
-            _buildScoreDetail(categoryColors['Glass']!, 'Glass', '10 pt'),
-            _buildScoreDetail(
-                categoryColors['Cardboard']!, 'Cardboard', '10 pt'),
-            _buildScoreDetail(
-                categoryColors['Food scraps']!, 'Food scraps', '10 pt'),
-            _buildScoreDetail(
-                categoryColors['Organic yard']!, 'Organic yard', '10 pt'),
+            _buildScoreDetail(categoryColors['Plastic']!, 'Plastic',
+                _isPointUnit ? '10 pt' : '2 pk'),
+            _buildScoreDetail(categoryColors['Metal']!, 'Metal',
+                _isPointUnit ? '10 pt' : '2 pk'),
+            _buildScoreDetail(categoryColors['Glass']!, 'Glass',
+                _isPointUnit ? '10 pt' : '2 pk'),
+            _buildScoreDetail(categoryColors['Cardboard']!, 'Cardboard',
+                _isPointUnit ? '10 pt' : '2 pk'),
+            _buildScoreDetail(categoryColors['Food scraps']!, 'Food scraps',
+                _isPointUnit ? '10 pt' : '2 pk'),
+            _buildScoreDetail(categoryColors['Organic yard']!, 'Organic yard',
+                _isPointUnit ? '10 pt' : '2 pk'),
           ],
         ),
         const SizedBox(height: 10),
         Center(
-          child: _buildScoreDetail(categoryColors['Other']!, 'Other', '40 pt'),
+          child: _buildScoreDetail(categoryColors['Other']!, 'Other',
+              _isPointUnit ? '40 pt' : '8 pk'),
         ),
       ],
     );
   }
 
-  Widget _buildStatColumn(String title, String count, String subtitle) {
+  Widget _buildStatColumn(String title, String count) {
     return Container(
       decoration: BoxDecoration(
         color: Color(0xFFE5E5E5),
@@ -144,7 +216,6 @@ class _UserDashboard extends State<UserDashboard> {
         children: [
           Text(title, style: smallTextStyle()),
           Text(count, style: bodyImportantTextStyle()),
-          // Text(subtitle, style: smallTextStyle()),
         ],
       ),
     );
@@ -158,7 +229,7 @@ class _UserDashboard extends State<UserDashboard> {
         Container(
           width: 18,
           height: 18,
-          color: categoryColors[label],
+          color: color,
         ),
         SizedBox(width: 8),
         Text(label, style: bodyTextStyle()),

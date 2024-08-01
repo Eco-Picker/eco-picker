@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../components/rankingboard.dart';
 import '../providers/user_provider.dart';
-import 'newsletter_screen.dart';
 import '../components/random_newsbox.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -47,7 +46,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (userProvider.isLoading)
-                    Center(child: CircularProgressIndicator())
+                    Center(
+                      child: CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+                      ),
+                    )
                   else if (userProvider.user == null)
                     Text(
                       'Hello,\nThanks for saving Earth!',

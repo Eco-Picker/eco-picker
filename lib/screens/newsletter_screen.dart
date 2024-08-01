@@ -44,7 +44,11 @@ class _NewsScreenState extends State<NewsScreen> {
           future: _newsFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+                ),
+              );
             } else if (snapshot.hasError) {
               return const Center(child: Text('Error loading data'));
             } else if (!snapshot.hasData ||

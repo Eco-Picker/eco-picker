@@ -76,7 +76,9 @@ class _MapScreenState extends State<MapScreen> {
       ),
       body: _isLoading
           ? const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+              ),
             )
           : GoogleMap(
               onMapCreated: _onMapCreated,
