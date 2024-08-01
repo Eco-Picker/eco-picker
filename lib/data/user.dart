@@ -3,14 +3,12 @@ class User {
   final String username;
   final String email;
   final String onboardingStatus;
-  final int score;
 
   User({
     required this.id,
     required this.username,
     required this.email,
     required this.onboardingStatus,
-    required this.score,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -19,7 +17,6 @@ class User {
       username: json['username'],
       email: json['email'],
       onboardingStatus: json['onboardingStatus'],
-      score: json['score'],
     );
   }
 }
