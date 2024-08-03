@@ -24,6 +24,23 @@ class ApiUserService {
     }
   }
 
+  Future<UserStatistics> fetchUserStatistics() async {
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
+    };
+    final response =
+        await http.get(Uri.parse('$baseUrl/user/statistics'), headers: headers);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      print(data['userStatistics']);
+      return UserStatistics.fromJson(data['userStatistics']);
+    } else {
+      throw Exception('Failed to load user statistics');
+    }
+  }
+
   Future<String> changePassword(
       String password, String newPassword, String confirmPassword) async {
     final headers = {

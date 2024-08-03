@@ -44,7 +44,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/Icon.png
+    - assets/images/Icon.png
     - assets/google_fonts/OpenSans-ExtraBold.ttf
     - assets/google_fonts/OpenSans-Bold.ttf
     - assets/google_fonts/OpenSans-Light.ttf
@@ -55,8 +55,9 @@ flutter:
     - assets/google_fonts/Quicksand-Medium.ttf
     - assets/google_fonts/Quicksand-Regular.ttf
     - assets/google_fonts/Quicksand-SemiBold.ttf
+    - assets/images/
 
 flutter_icons:
   android: true
   ios: true
-  image_path: "lib/assets/EcoPickerIcon.png"
+  image_path: "assets/images/Icon.png"
