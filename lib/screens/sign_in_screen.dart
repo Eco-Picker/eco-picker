@@ -75,17 +75,15 @@ class _SignInScreenState extends State<SignInScreen> {
         children: [
           Center(
             child: SingleChildScrollView(
-              // 추가
               padding: EdgeInsets.only(
                 left: 16,
                 right: 16,
-                bottom:
-                    MediaQuery.of(context).viewInsets.bottom + 16, // 키보드 높이 반영
+                bottom: MediaQuery.of(context).viewInsets.bottom + 16,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset('assets/Icon.png', height: 200),
+                  Image.asset('assets/images/Icon.png', height: 200),
                   Text('Eco Picker',
                       style: GoogleFonts.quicksand(
                         fontSize: 34,
