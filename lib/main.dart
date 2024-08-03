@@ -11,17 +11,24 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final tokenRefresher = TokenRefresher();
   tokenRefresher.start();
-  WidgetsFlutterBinding.ensureInitialized();
-  // Obtain a list of the available cameras on the device.
-  final cameras = await availableCameras();
-  // Get a specific camera from the list of available cameras.
-  final firstCamera = cameras.first;
-  print(firstCamera);
+
+  List<CameraDescription> cameras = [];
+  CameraDescription? firstCamera;
+
+  try {
+    // Obtain a list of the available cameras on the device.
+    cameras = await availableCameras();
+    // Get a specific camera from the list of available cameras.
+    firstCamera = cameras.isNotEmpty ? cameras.first : null;
+  } catch (e) {
+    print('Error: $e');
+  }
+
   runApp(MyApp(camera: firstCamera));
 }
 
 class MyApp extends StatelessWidget {
-  final CameraDescription camera;
+  final CameraDescription? camera;
 
   const MyApp({super.key, required this.camera});
 
@@ -55,7 +62,7 @@ class MyApp extends StatelessWidget {
 }
 
 class AuthWrapper extends StatelessWidget {
-  final CameraDescription camera;
+  final CameraDescription? camera;
 
   const AuthWrapper({required this.camera});
   @override
@@ -87,5 +94,73 @@ class MyAppState extends ChangeNotifier {
     isSignedIn = false;
     isEmailVerified = false;
     notifyListeners();
+  }
+}
+
+class MainBar extends StatelessWidget {
+  final CameraDescription? camera;
+
+  const MainBar({required this.camera});
+
+  @override
+  Widget build(BuildContext context) {
+    if (camera == null) {
+      return Scaffold(
+        body: Center(
+          child: Text('No camera available'),
+        ),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('MainBar'),
+      ),
+      body: CameraPreviewWidget(camera: camera!),
+    );
+  }
+}
+
+class CameraPreviewWidget extends StatefulWidget {
+  final CameraDescription camera;
+
+  const CameraPreviewWidget({required this.camera});
+
+  @override
+  _CameraPreviewWidgetState createState() => _CameraPreviewWidgetState();
+}
+
+class _CameraPreviewWidgetState extends State<CameraPreviewWidget> {
+  late CameraController _controller;
+  late Future<void> _initializeControllerFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = CameraController(
+      widget.camera,
+      ResolutionPreset.high,
+    );
+    _initializeControllerFuture = _controller.initialize();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<void>(
+      future: _initializeControllerFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return CameraPreview(_controller);
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
   }
 }
