@@ -7,7 +7,7 @@ import '../screens/newsletter_screen.dart';
 import '../screens/map_screen.dart';
 
 class MainBar extends StatefulWidget {
-  final CameraDescription camera;
+  final CameraDescription? camera;
 
   const MainBar({required this.camera});
 

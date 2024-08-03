@@ -6,7 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'post_picture_screen.dart';
 
 class CameraScreen extends StatefulWidget {
-  final CameraDescription camera;
+  final CameraDescription? camera;
 
   const CameraScreen({required this.camera});
 
@@ -21,10 +21,12 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeCamera();
+    if (widget.camera != null) {
+      _initializeCamera(widget.camera!);
+    }
   }
 
-  Future<void> _initializeCamera() async {
+  Future<void> _initializeCamera(CameraDescription camera) async {
     // Check camera permission
     final status = await Permission.camera.status;
     if (!status.isGranted) {
@@ -51,7 +53,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
     // Initialize the camera controller
     _controller = CameraController(
-      widget.camera,
+      camera,
       ResolutionPreset.high,
     );
     _initializeControllerFuture = _controller.initialize().catchError((e) {
