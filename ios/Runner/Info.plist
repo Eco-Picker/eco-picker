@@ -55,8 +55,8 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location to show your position on the map.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>We need microphone to use the camera feature.</string>
-	<key>MAP_API</key>
-	<string>$(MAP_API)</string>
+	<string>We need microphone to use the camera feature.</string>
+	<key>GMSApiKey</key>
+	<string>$(MAP_API_KEY)</string>
 </dict>
 </plist>

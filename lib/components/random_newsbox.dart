@@ -1,4 +1,5 @@
 import 'package:eco_picker/api/api_newsletter_service.dart';
+import 'package:eco_picker/screens/news_detail_screen.dart';
 import 'package:flutter/material.dart';
 import '../data/newsletter.dart';
 import '../screens/newsletter_screen.dart';
@@ -91,7 +92,11 @@ class _RandomNewsboxState extends State<RandomNewsbox> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NewsScreen()),
+                MaterialPageRoute(
+                    builder: (context) => NewsDetailScreen(
+                          id: newsSummary.id,
+                          category: newsSummary.category,
+                        )),
               );
             },
           );

@@ -1,5 +1,4 @@
-# Google Maps SDK requires platform version 14
-# https://developers.google.com/maps/flutter-package/config#ios
+# Uncomment this line to define a global platform for your project
 platform :ios, '14.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
@@ -37,6 +36,7 @@ target 'Runner' do
     inherit! :search_paths
   end
 
+  pod 'Toast'
   pod 'GoogleMaps'
 end
 

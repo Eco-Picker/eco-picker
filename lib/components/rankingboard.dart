@@ -54,7 +54,7 @@ class _RankingBoardState extends State<Rankingboard> {
                 ),
                 child: Text(
                   'Leaderboard',
-                  style: MidTextStyle(),
+                  style: midTextStyle(),
                   textAlign: TextAlign.center,
                 ),
               ),

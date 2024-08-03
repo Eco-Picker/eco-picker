@@ -12,4 +12,4 @@ const Map<String, Color> categoryColors = {
 };
 
 // const String baseUrl = 'http://localhost:15000';
-const String baseUrl = 'http://10.0.0.66:15000';
+const String baseUrl = 'http://10.0.0.66:15000/api';

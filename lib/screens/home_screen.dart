@@ -55,12 +55,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   else if (userProvider.user == null)
                     Text(
                       'Hello,\nThanks for saving Earth!',
-                      style: MidTextStyle(),
+                      style: midTextStyle(),
                     )
                   else
                     Text(
                       'Hello, ${userProvider.user!.username}!\nThanks for saving Earth!',
-                      style: MidTextStyle(),
+                      style: midTextStyle(),
                     ),
                   SizedBox(height: 10.0),
                   RandomNewsbox(),

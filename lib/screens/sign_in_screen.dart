@@ -74,8 +74,14 @@ class _SignInScreenState extends State<SignInScreen> {
       body: Stack(
         children: [
           Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              // 추가
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                bottom:
+                    MediaQuery.of(context).viewInsets.bottom + 16, // 키보드 높이 반영
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

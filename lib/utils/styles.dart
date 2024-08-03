@@ -67,7 +67,7 @@ TextStyle smallTextStyle() {
   );
 }
 
-TextStyle MidTextStyle() {
+TextStyle midTextStyle() {
   return TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.w600,

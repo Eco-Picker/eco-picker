@@ -9,10 +9,10 @@ import GoogleMaps
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
-    if let googleMapsAPIKey = Bundle.main.infoDictionary?["MAP_API"] as? String {
-            GMSServices.provideAPIKey(googleMapsAPIKey)
+    if let apiKey = ProcessInfo.processInfo.environment["MAP_API_KEY"] {
+            GMSServices.provideAPIKey(apiKey)
         } else {
-            fatalError("Google Maps API Key not found.")
+            fatalError("Google Maps API key is missing!")
         }
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
