@@ -59,7 +59,7 @@ class _UserDashboard extends State<UserDashboard>
         else if (userProvider.user == null)
           Text(
             'Hello!',
-            style: MidTextStyle(),
+            style: midTextStyle(),
           )
         else
           Row(
@@ -67,9 +67,9 @@ class _UserDashboard extends State<UserDashboard>
             children: [
               Text(
                 userProvider.user!.username,
-                style: MidTextStyle(),
+                style: midTextStyle(),
               ),
-              Text('Rank 5', style: MidTextStyle())
+              Text('Bronze', style: midTextStyle())
             ],
           ),
         SizedBox(height: 8),
@@ -156,21 +156,32 @@ class _UserDashboard extends State<UserDashboard>
                       })),
               const SizedBox(width: 20),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('TOTAL', style: TextStyle(color: Colors.grey)),
-                  Text(_isPointUnit ? '100 pt' : '50 pk',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(_isPointUnit ? '100 pt' : '50 pk',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
+                      Transform.translate(
+                        offset: Offset(-10, 0), // 왼쪽으로 4픽셀 이동
+                        child: RawMaterialButton(
+                          onPressed: _toggleUnit,
+                          constraints:
+                              BoxConstraints(minWidth: 0, minHeight: 0),
+                          padding: EdgeInsets.all(0.0),
+                          shape: CircleBorder(),
+                          child: Icon(Icons.change_circle, size: 20),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
-              ),
+              )
             ],
           ),
-        ),
-        const SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: _toggleUnit,
-          child: Text(
-              _isPointUnit ? 'Switch to Garbage Count' : 'Switch to Points'),
         ),
         const SizedBox(height: 20),
         GridView.count(

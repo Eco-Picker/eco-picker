@@ -41,10 +41,11 @@ class _ScoreboardState extends State<Scoreboard>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Eco Score', style: titleTextStyle()),
+            Text('Eco Rank', style: titleTextStyle()),
             Text('100 pt', style: titleTextStyle())
           ],
         ),
+        Text('Collect points to be a master player!'),
         SizedBox(
           height: 8,
         ),

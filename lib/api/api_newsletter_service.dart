@@ -37,9 +37,8 @@ class ApiNewsletterService {
         headers: headers, body: body);
 
     if (response.statusCode == 200) {
-      final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
-
-      return Newsletter.fromJson(jsonResponse);
+      final jsonResponse = json.decode(response.body);
+      return Newsletter.fromJson(jsonResponse['newsletter']);
     } else {
       throw Exception('Failed to load newsletter');
     }
