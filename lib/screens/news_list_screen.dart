@@ -1,3 +1,4 @@
+import 'package:eco_picker/utils/constants.dart';
 import 'package:eco_picker/utils/styles.dart';
 import 'package:flutter/material.dart';
 import '../api/api_newsletter_service.dart';
@@ -95,6 +96,9 @@ class _NewsListScreenState extends State<NewsListScreen>
         bottom: TabBar(
           controller: _tabController,
           tabs: _categories.map((category) => Tab(text: category)).toList(),
+          indicatorColor: categoryColors['Food scraps'],
+          labelColor: categoryColors['Food scraps'],
+          unselectedLabelColor: Colors.grey, 
         ),
       ),
       body: Column(
