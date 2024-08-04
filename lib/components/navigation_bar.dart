@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../screens/home_screen.dart';
 import '../screens/camera_screen.dart';
 import '../screens/user_info_screen.dart';
-import '../screens/newsletter_screen.dart';
+import '../screens/news_list_screen.dart';
 import '../screens/map_screen.dart';
 
 class MainBar extends StatefulWidget {
@@ -26,7 +26,7 @@ class _MyHomePageState extends State<MainBar> {
         page = HomeScreen();
         break;
       case 1:
-        page = NewsScreen();
+        page = NewsListScreen();
         break;
       case 2:
         page = CameraScreen(camera: widget.camera);

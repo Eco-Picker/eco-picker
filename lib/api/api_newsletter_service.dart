@@ -8,19 +8,23 @@ class ApiNewsletterService {
   final TokenManager _tokenManager = TokenManager();
 
   Future<NewsList> fetchNewsList(
-      {int offset = 0, int limit = 10, String category = "NEWS"}) async {
+      {required int offset, required int limit, String? category}) async {
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
     };
-    final body =
-        json.encode({"offset": offset, "limit": limit, "category": category});
+    final String body;
+    if (category == null) {
+      body = json.encode({"offset": offset, "limit": limit});
+    } else {
+      body =
+          json.encode({"offset": offset, "limit": limit, "category": category});
+    }
     final response = await http.post(Uri.parse('$baseUrl/newsletter_summaries'),
         headers: headers, body: body);
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
-
       return NewsList.fromJson(jsonResponse);
     } else {
       throw Exception('Failed to load news list');
