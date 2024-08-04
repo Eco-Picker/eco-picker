@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <application
         android:label="eco_picker"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAP_API_KEY}" />

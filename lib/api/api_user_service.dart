@@ -130,7 +130,7 @@ class ApiUserService {
         }
       } else {
         // Handle errors
-        final error = json.decode(response.body);
+        // final error = json.decode(response.body);
         return "Failed to login:\n ${response.statusCode}";
       }
     } catch (e) {
