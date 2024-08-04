@@ -31,10 +31,10 @@ class ApiUserService {
     };
     final response =
         await http.get(Uri.parse('$baseUrl/user/statistics'), headers: headers);
-
+    print(response);
     if (response.statusCode == 200) {
       final data = json.decode(response.body) as Map<String, dynamic>;
-      print(data['userStatistics']);
+
       return UserStatistics.fromJson(data['userStatistics']);
     } else {
       throw Exception('Failed to load user statistics');

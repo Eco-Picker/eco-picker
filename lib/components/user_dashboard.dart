@@ -1,3 +1,4 @@
+import 'package:eco_picker/api/api_ranking_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../api/api_user_service.dart';
@@ -7,16 +8,22 @@ import '../utils/constants.dart';
 import '../utils/styles.dart';
 
 class UserDashboard extends StatefulWidget {
+  final int? rankerID;
+
+  const UserDashboard({this.rankerID});
   @override
   _UserDashboard createState() => _UserDashboard();
 }
 
+// check if 'user' is me.
+// fetch ranker statistics if rankerID is passed.
 class _UserDashboard extends State<UserDashboard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   bool _isPointUnit = true; // State to track unit type
   final ApiUserService _apiUserService = ApiUserService();
+  final ApiRankingService _apiRankingService = ApiRankingService();
   late Future<UserStatistics> _userStatisticsFuture;
 
   @override
@@ -32,7 +39,12 @@ class _UserDashboard extends State<UserDashboard>
     ));
 
     _controller.forward();
-    _userStatisticsFuture = _apiUserService.fetchUserStatistics();
+
+    if (widget.rankerID == null) {
+      _userStatisticsFuture = _apiUserService.fetchUserStatistics();
+    } else {
+      _userStatisticsFuture = _apiRankingService.fetchRanker(widget.rankerID!);
+    }
   }
 
   @override
@@ -59,6 +71,7 @@ class _UserDashboard extends State<UserDashboard>
             ),
           );
         } else if (snapshot.hasError) {
+          print(snapshot.error);
           return Center(child: Text('Failed to load user statistics'));
         } else if (!snapshot.hasData) {
           return Center(child: Text('No data available'));
@@ -75,7 +88,7 @@ class _UserDashboard extends State<UserDashboard>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'username',
+                  userStatistics.userName,
                   style: midTextStyle(),
                 ),
                 Row(

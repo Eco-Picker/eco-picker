@@ -23,11 +23,12 @@ class _LeaderboardState extends State<Leaderboard> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('test'),
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
             height: MediaQuery.of(context).size.height * 0.8,
-            child: UserDashboard(),
+            child: UserDashboard(
+              rankerID: id,
+            ),
           ),
         );
       },

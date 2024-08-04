@@ -36,40 +36,37 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         titleTextStyle: headingTextStyle(),
       ),
-      body: DefaultTabController(
-        length: 3, // Number of tabs in TabBar
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (userProvider.isLoading)
-                    Center(
-                      child: CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
-                      ),
-                    )
-                  else if (userProvider.user == null)
-                    Text(
-                      'Hello,\nThanks for saving Earth!',
-                      style: midTextStyle(),
-                    )
-                  else
-                    Text(
-                      'Hello, ${userProvider.user!.username}!\nThanks for saving Earth!',
-                      style: midTextStyle(),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (userProvider.isLoading)
+                  Center(
+                    child: CircularProgressIndicator(
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
                     ),
-                  SizedBox(height: 10.0),
-                  RandomNewsbox(),
-                ],
-              ),
+                  )
+                else if (userProvider.user == null)
+                  Text(
+                    'Hello,\nThanks for saving Earth!',
+                    style: midTextStyle(),
+                  )
+                else
+                  Text(
+                    'Hello, ${userProvider.user!.username}!\nThanks for saving Earth!',
+                    style: midTextStyle(),
+                  ),
+                SizedBox(height: 10.0),
+                RandomNewsbox(),
+              ],
             ),
-            Rankingboard(),
-          ],
-        ),
+          ),
+          Rankingboard(),
+        ],
       ),
     );
   }

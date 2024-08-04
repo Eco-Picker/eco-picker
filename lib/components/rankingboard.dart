@@ -1,8 +1,6 @@
 import 'package:eco_picker/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../api/api_ranking_service.dart';
-import '../data/ranking.dart';
 import '../providers/user_provider.dart';
 import 'leaderboard.dart';
 import 'user_dashboard.dart';
@@ -59,33 +57,6 @@ class _RankingBoardState extends State<Rankingboard> {
                 ),
               ),
               Leaderboard(),
-              Divider(indent: 16.0, endIndent: 16.0, color: Colors.grey),
-              if (userProvider.isLoading)
-                Center(
-                  child: CircularProgressIndicator(
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
-                  ),
-                )
-              else
-                ListTile(
-                  leading: Text(
-                    '100',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  title: Text(
-                    userProvider.user?.username ?? '',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  trailing: Text(
-                    '${0} pt',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  onTap: userProvider.user != null ? _showUserDashboard : null,
-                ),
             ],
           )),
     );

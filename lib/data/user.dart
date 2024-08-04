@@ -24,16 +24,32 @@ class User {
 class UserStatistics {
   final Count count;
   final Score score;
+  final String userName;
 
   UserStatistics({
     required this.count,
     required this.score,
+    required this.userName,
   });
 
   factory UserStatistics.fromJson(Map<String, dynamic> json) {
+    String userName;
+    Count count;
+    Score score;
+    if (json.containsKey('rankerStatistics')) {
+      userName = json['username'] ?? 'Unknown';
+      count = Count.fromJson(json['rankerStatistics']['count'] ?? {});
+      score = Score.fromJson(json['rankerStatistics']['score'] ?? {});
+    } else {
+      userName = json['username']['userName'] ?? 'Unknown';
+      count = Count.fromJson(json['count'] ?? {});
+      score = Score.fromJson(json['score'] ?? {});
+    }
+
     return UserStatistics(
-      count: Count.fromJson(json['count']),
-      score: Score.fromJson(json['score']),
+      count: count,
+      score: score,
+      userName: userName,
     );
   }
 
@@ -85,17 +101,17 @@ class Count {
 
   factory Count.fromJson(Map<String, dynamic> json) {
     return Count(
-      totalCount: json['totalCount'],
-      totalDailyCount: json['totalDailyCount'],
-      totalWeeklyCount: json['totalWeeklyCount'],
-      totalMonthlyCount: json['totalMonthlyCount'],
-      totalCardboardPaper: json['totalCardboardPaper'],
-      totalPlastic: json['totalPlastic'],
-      totalGlass: json['totalGlass'],
-      totalOther: json['totalOther'],
-      totalMetal: json['totalMetal'],
-      totalFoodScraps: json['totalFoodScraps'],
-      totalOrganicYardWaste: json['totalOrganicYardWaste'],
+      totalCount: json['totalCount'] ?? 0,
+      totalDailyCount: json['totalDailyCount'] ?? 0,
+      totalWeeklyCount: json['totalWeeklyCount'] ?? 0,
+      totalMonthlyCount: json['totalMonthlyCount'] ?? 0,
+      totalCardboardPaper: json['totalCardboardPaper'] ?? 0,
+      totalPlastic: json['totalPlastic'] ?? 0,
+      totalGlass: json['totalGlass'] ?? 0,
+      totalOther: json['totalOther'] ?? 0,
+      totalMetal: json['totalMetal'] ?? 0,
+      totalFoodScraps: json['totalFoodScraps'] ?? 0,
+      totalOrganicYardWaste: json['totalOrganicYardWaste'] ?? 0,
     );
   }
 }
@@ -123,14 +139,14 @@ class Score {
 
   factory Score.fromJson(Map<String, dynamic> json) {
     return Score(
-      totalScore: json['totalScore'],
-      cardboardPaperScore: json['cardboardPaperScore'],
-      plasticScore: json['plasticScore'],
-      glassScore: json['glassScore'],
-      otherScore: json['otherScore'],
-      metalScore: json['metalScore'],
-      foodScrapsScore: json['foodScrapsScore'],
-      organicYardWasteScore: json['organicYardWasteScore'],
+      totalScore: json['totalScore'] ?? 0,
+      cardboardPaperScore: json['cardboardPaperScore'] ?? 0,
+      plasticScore: json['plasticScore'] ?? 0,
+      glassScore: json['glassScore'] ?? 0,
+      otherScore: json['otherScore'] ?? 0,
+      metalScore: json['metalScore'] ?? 0,
+      foodScrapsScore: json['foodScrapsScore'] ?? 0,
+      organicYardWasteScore: json['organicYardWasteScore'] ?? 0,
     );
   }
 }
