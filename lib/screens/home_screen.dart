@@ -2,7 +2,7 @@ import 'package:eco_picker/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../components/rankingboard.dart';
-import '../providers/user_provider.dart';
+import '../main.dart';
 import '../components/random_newsbox.dart';
 
 class HomeScreen extends StatefulWidget {

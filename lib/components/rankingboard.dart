@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../api/api_ranking_service.dart';
 import '../data/ranking.dart';
-import '../providers/user_provider.dart';
+import '../main.dart';
 import 'leaderboard.dart';
 import 'user_dashboard.dart';
 
