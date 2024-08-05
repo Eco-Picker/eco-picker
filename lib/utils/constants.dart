@@ -11,6 +11,16 @@ const Map<String, Color> categoryColors = {
   'Other': Color(0xFFC8E6C9),
 };
 
+const Map<String, String> categoryENUM = {
+  'Plastic': 'PLASTIC',
+  'Metal': 'METAL',
+  'Glass': 'GLASS',
+  'Cardboard': 'CARDBOARD_PAPER',
+  'Food scraps': 'FOOD_SCRAPS',
+  'Organic yard': 'ORGANIC_YARD_WASTE',
+  'Other': 'OTHER',
+};
+
 // const String baseUrl = 'http://localhost:15000/api';
 const String baseUrl = 'http://10.0.0.66:15000/api';
 // const String baseUrl = 'http://127.0.0.1:15000/api';

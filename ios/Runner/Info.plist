@@ -54,6 +54,8 @@
 	<string>We need camera to take a garbage picture.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location to show your position on the map.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We need your location to show your position on the map.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We need microphone to use the camera feature.</string>
 	<key>GMSApiKey</key>

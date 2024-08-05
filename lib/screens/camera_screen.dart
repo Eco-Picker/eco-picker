@@ -1,8 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:eco_picker/utils/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../utils/geolocator_utils.dart';
 import 'post_picture_screen.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -15,8 +17,10 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
-  late CameraController _controller;
-  late Future<void> _initializeControllerFuture;
+  CameraController? _controller;
+  Future<void>? _initializeControllerFuture;
+  final GeolocatorUtil _geolocatorUtil = GeolocatorUtil();
+  LatLng? _currentPosition;
 
   @override
   void initState() {
@@ -26,8 +30,23 @@ class _CameraScreenState extends State<CameraScreen> {
     }
   }
 
+  Future<void> getLocation() async {
+    try {
+      final position = await _geolocatorUtil.getCurrentLocation();
+      if (position != null) {
+        setState(() {
+          _currentPosition = LatLng(position.latitude, position.longitude);
+        });
+      } else {
+        // 위치 정보를 가져오지 못했을 때 처리할 코드 추가
+      }
+    } catch (e) {
+      // 위치 정보를 가져오는 도중 에러가 발생했을 때 처리할 코드 추가
+      print("Error getting location: $e");
+    }
+  }
+
   Future<void> _initializeCamera(CameraDescription camera) async {
-    // Check camera permission
     final status = await Permission.camera.status;
     if (!status.isGranted) {
       final result = await Permission.camera.request();
@@ -51,13 +70,12 @@ class _CameraScreenState extends State<CameraScreen> {
       }
     }
 
-    // Initialize the camera controller
     _controller = CameraController(
       camera,
       ResolutionPreset.high,
     );
-    _initializeControllerFuture = _controller.initialize().catchError((e) {
-      // Handle initialization error
+
+    _initializeControllerFuture = _controller!.initialize().catchError((e) {
       print('Error initializing camera: $e');
       showDialog(
         context: context,
@@ -79,7 +97,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -89,30 +107,39 @@ class _CameraScreenState extends State<CameraScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text('Camera', style: headingTextStyle())),
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return Container(
-                width: size.width,
-                height: size.height,
-                child: FittedBox(
-                  fit: BoxFit.cover,
-                  child: Container(
-                      width: 100, // the actual width is not important here
-                      child: CameraPreview(_controller!)),
-                ));
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            return Center(
+      body: _initializeControllerFuture != null
+          ? FutureBuilder<void>(
+              future: _initializeControllerFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return Container(
+                    width: size.width,
+                    height: size.height,
+                    child: FittedBox(
+                      fit: BoxFit.cover,
+                      child: Container(
+                        width: 100, // the actual width is not important here
+                        child: CameraPreview(_controller!),
+                      ),
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+                    ),
+                  );
+                }
+              },
+            )
+          : Center(
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
               ),
-            );
-          }
-        },
-      ),
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -120,16 +147,19 @@ class _CameraScreenState extends State<CameraScreen> {
           onPressed: () async {
             try {
               await _initializeControllerFuture;
-              final image = await _controller.takePicture();
+              final image = await _controller!.takePicture();
+              await getLocation();
               if (!context.mounted) return;
-
-              await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => PostPictureScreen(
-                    imagePath: image.path,
+              if (_currentPosition != null) {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => PostPictureScreen(
+                      imagePath: image.path,
+                      location: _currentPosition!,
+                    ),
                   ),
-                ),
-              );
+                );
+              }
             } catch (e) {
               print(e);
             }

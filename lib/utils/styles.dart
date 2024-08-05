@@ -12,6 +12,28 @@ ButtonStyle submitButtonStyle() {
   );
 }
 
+ButtonStyle smallButtonStyle() {
+  return ElevatedButton.styleFrom(
+    backgroundColor: const Color(0xFF4CAF50),
+    foregroundColor: Colors.white,
+    minimumSize: const Size(180, 40),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+    ),
+  );
+}
+
+ButtonStyle greyButtonStyle() {
+  return ElevatedButton.styleFrom(
+    backgroundColor: const Color(0xFFA3A3A3),
+    foregroundColor: Colors.white,
+    minimumSize: const Size(180, 40),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+    ),
+  );
+}
+
 TextStyle headingTextStyle() {
   return GoogleFonts.quicksand(
     fontSize: 24,

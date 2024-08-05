@@ -27,6 +27,14 @@ flutter run
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
+<a href="https://www.flaticon.com/free-icons/tree" title="tree icons">Tree icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/recycle" title="recycle icons">Recycle icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/beer-can" title="beer can icons">Beer can icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/plastic" title="plastic icons">Plastic icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/paper" title="paper icons">Paper icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/bottle" title="bottle icons">Bottle icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/food-waste" title="food waste icons">Food waste icons created by Freepik - Flaticon</a>
+
 Contact
 For any questions or feedback, please contact
 

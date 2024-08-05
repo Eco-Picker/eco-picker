@@ -1,3 +1,5 @@
+import 'package:eco_picker/api/api_garbage_service.dart';
+import 'package:eco_picker/data/garbage.dart';
 import 'package:eco_picker/utils/geolocator_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -11,75 +13,71 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+  final ApiGarbageService _apiGarbageService = ApiGarbageService();
   late GoogleMapController mapController;
   LatLng? _currentPosition;
   bool _isLoading = true;
   final GeolocatorUtil _geolocatorUtil = GeolocatorUtil();
   Set<Marker>? _markers = <Marker>{};
   late BitmapDescriptor myMarker;
+  GarbageLocation? _garbageLocation;
 
   @override
   void initState() {
     super.initState();
-    setMarkerIcon();
     getLocation();
-  }
-
-  void setMarkerIcon() async {
-    myMarker = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(size: Size(50, 50)), 'loginlogo.png');
+    fetchGarbageLocations();
   }
 
   Future<void> getLocation() async {
-    var status = await Permission.locationWhenInUse.status;
-    if (!status.isGranted) {
-      status = await Permission.locationWhenInUse.request();
-    }
-
-    if (status.isGranted) {
-      try {
-        final position = await _geolocatorUtil.getCurrentLocation();
-        if (position != null) {
-          setState(() {
-            _currentPosition = LatLng(position.latitude, position.longitude);
-            _isLoading = false;
-          });
-        } else {
-          setState(() {
-            _isLoading = false;
-          });
-          // 위치 정보를 가져오지 못했을 때 처리할 코드 추가
-        }
-      } catch (e) {
+    try {
+      final position = await _geolocatorUtil.getCurrentLocation();
+      if (position != null) {
+        setState(() {
+          _currentPosition = LatLng(position.latitude, position.longitude);
+          _isLoading = false;
+        });
+      } else {
         setState(() {
           _isLoading = false;
         });
-        // 위치 정보를 가져오는 도중 에러가 발생했을 때 처리할 코드 추가
-        print("Error getting location: $e");
+        // 위치 정보를 가져오지 못했을 때 처리할 코드 추가
       }
-    } else {
+    } catch (e) {
       setState(() {
         _isLoading = false;
       });
-      // 권한 요청이 거부되었을 때 처리할 코드 추가
-      print("Location permission denied");
+      // 위치 정보를 가져오는 도중 에러가 발생했을 때 처리할 코드 추가
+      print("Error getting location: $e");
     }
   }
 
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-    // generateMarkers();
-  }
+  void generateMarkers() async {
+    if (_garbageLocation == null) {
+      print('Error: _garbageLocation is null');
+      return;
+    }
 
-  void generateMarkers() {
     var localMarkers = <Marker>{};
 
-    // for (var location in locationsList!) {
-    //   localMarkers.add(Marker(
-    //       markerId: MarkerId(location.id!),
-    //       position: LatLng(location.lat!, location.lng!),
-    //       icon: myMarker));
-    // }
+    for (var garbage in _garbageLocation!.garbageLocations) {
+      // 카테고리별로 다른 마커 아이콘을 로드
+      final markerIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(size: Size(50, 50)),
+        'assets/images/${garbage.garbageCategory}.png',
+      );
+
+      // 마커 추가
+      localMarkers.add(Marker(
+        markerId: MarkerId(garbage.garbageId.toString()),
+        position: LatLng(garbage.latitude, garbage.longitude),
+        icon: markerIcon,
+        infoWindow: InfoWindow(
+          title: garbage.garbageCategory,
+          snippet: 'Garbage ID: ${garbage.garbageId}',
+        ),
+      ));
+    }
 
     if (mounted) {
       setState(() {
@@ -88,9 +86,28 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  Future<void> fetchGarbageLocations() async {
+    try {
+      final garbageLocations = await _apiGarbageService.getGarbageList();
+      setState(() {
+        _garbageLocation = garbageLocations;
+      });
+      generateMarkers();
+    } catch (e) {
+      print('Error fetching garbage locations: $e');
+    }
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+
+    if (_garbageLocation != null) {
+      generateMarkers();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // setMarkerIcon();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Map'),
@@ -110,7 +127,7 @@ class _MapScreenState extends State<MapScreen> {
                       zoom: 16.0,
                     )
                   : CameraPosition(
-                      target: LatLng(0, 0), // 기본 위치 설정 (예: LatLng(0, 0))
+                      target: LatLng(0, 0),
                       zoom: 2.0,
                     ),
               myLocationEnabled: true, // Show the user's current location
