@@ -1,216 +1,159 @@
 import 'dart:convert';
 import 'package:eco_picker/data/user.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'api_client.dart';
 import 'token_manager.dart';
 import '../utils/constants.dart';
 
 class ApiUserService {
+  final ApiClient _apiClient = ApiClient();
   final TokenManager _tokenManager = TokenManager();
 
   Future<User> fetchUserInfo() async {
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
-    };
-    final response =
-        await http.get(Uri.parse('$baseUrl/user/info'), headers: headers);
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body) as Map<String, dynamic>;
-      print(data['userInfo']);
-      return User.fromJson(data['userInfo']);
-    } else {
-      throw Exception('Failed to load user info');
+    try {
+      final response = await _apiClient.dio.get('/user/info');
+      return User.fromJson(response.data['userInfo']);
+    } catch (e) {
+      throw Exception('Failed to load user info: $e');
     }
   }
 
   Future<UserStatistics> fetchUserStatistics() async {
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
-    };
-    final response =
-        await http.get(Uri.parse('$baseUrl/user/statistics'), headers: headers);
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body) as Map<String, dynamic>;
-      print(data['userStatistics']);
-      return UserStatistics.fromJson(data['userStatistics']);
-    } else {
-      throw Exception('Failed to load user statistics');
+    try {
+      final response = await _apiClient.dio.get('/user/statistics');
+      return UserStatistics.fromJson(response.data['userStatistics']);
+    } catch (e) {
+      throw Exception('Failed to load user statistics: $e');
     }
   }
 
   Future<String> changePassword(
       String password, String newPassword, String confirmPassword) async {
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
-    };
-    final body = json.encode({
-      "password": "string",
-      "newPassword": "string",
-      "confirmNewPassword": "string"
-    });
-
-    final response = await http.post(Uri.parse('$baseUrl/user/update_password'),
-        headers: headers, body: body);
-    final data = json.decode(response.body);
-    if (response.statusCode == 200) {
-      return data['code'] ? 'Please type a vaild password.' : 'pass';
-    } else if (response.statusCode == 400) {
-      return data['errors'].message;
-    } else {
-      throw Exception('Failed to load user info');
+    try {
+      final response = await _apiClient.dio.post(
+        '/user/update_password',
+        data: {
+          "password": password,
+          "newPassword": newPassword,
+          "confirmNewPassword": confirmPassword
+        },
+      );
+      final data = response.data;
+      if (response.statusCode == 200) {
+        return data['code'] ? 'Please type a valid password.' : 'pass';
+      } else if (response.statusCode == 400) {
+        return data['errors']['message'];
+      } else {
+        throw Exception('Failed to change password');
+      }
+    } catch (e) {
+      throw Exception('Failed to change password: $e');
     }
   }
 
   Future<String> signUp(String username, String password, String email) async {
-    final url = Uri.parse('$baseUrl/p/auth/signup');
-    final headers = {'Content-Type': 'application/json'};
-    final body = json.encode({
-      'username': username,
-      'password': password,
-      'email': email,
-    });
-
     try {
-      final response = await http.post(url, headers: headers, body: body);
-
-      if (response.statusCode == 200) {
-        // Handle successful response
-        final data = json.decode(response.body);
-        if (data['result'] == true) {
-          return 'true';
-        } else {
-          if (data['code'] == 'ALREADY_REGISTERED_USERNAME') {
-            return 'Username already registered. Please try with another username.';
-          } else if (data['code'] == 'ALREADY_REGISTERED_EMAIL') {
-            return 'Email already registered. Please try with another email.';
-          } else {
-            return 'Please use vaild password.';
-          }
-        }
+      final response = await _apiClient.dio.post(
+        '/auth/signup',
+        data: {
+          'username': username,
+          'password': password,
+          'email': email,
+        },
+      );
+      final data = response.data;
+      if (data['result'] == true) {
+        return 'true';
       } else {
-        // Handle errors
-        final error = json.decode(response.body);
-        return ('Failed to sign up: $error');
+        if (data['code'] == 'ALREADY_REGISTERED_USERNAME') {
+          return 'Username already registered. Please try with another username.';
+        } else if (data['code'] == 'ALREADY_REGISTERED_EMAIL') {
+          return 'Email already registered. Please try with another email.';
+        } else {
+          return 'Please use a valid password.';
+        }
       }
     } catch (e) {
-      // Handle network errors
-      return ('Network error: $e');
+      throw Exception('Failed to sign up: $e');
     }
   }
+Future<String> login(String username, String password) async {
+  try {
+    final response = await _apiClient.dio.post(
+      '/p/auth/login',
+      data: {
+        'username': username,
+        'password': password,
+      },
+      options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
 
-  Future<String> login(String username, String password) async {
-    final url = Uri.parse('$baseUrl/p/auth/login');
-    print(url);
-    final headers = {'Content-Type': 'application/json'};
-    final body = json.encode({
-      'username': username,
-      'password': password,
-    });
-
-    print("login request: $body");
-
-    try {
-      final response = await http.post(url, headers: headers, body: body);
-
-      if (response.statusCode == 200) {
-        // Handle successful response
-        final data = json.decode(response.body);
-
-        if (data['result'] == true) {
-          await _tokenManager.saveTokens(
-              data['accessToken'], data['refreshToken']);
-          print('Login successful: $data');
-          return "success";
-        } else {
-          return "Login failed.\nPlease check your username or password.";
-        }
-      } else {
-        // Handle errors
-        // final error = json.decode(response.body);
-        return "Failed to login:\n ${response.statusCode}";
-      }
-    } catch (e) {
-      // Handle network errors
-      print('catched some network error');
-      return "Network error:\n ${e.toString()}";
-    }
-  }
-
-  Future<void> refreshToken() async {
-    final url = Uri.parse('$baseUrl/p/auth/renew_access_token');
-    final headers = {'Content-Type': 'application/json'};
-    final refreshToken = await _tokenManager.getRefreshToken();
-
-    if (refreshToken == null) {
-      print('No refresh token available');
-      return;
-    }
-
-    final body = json.encode({
-      'refreshToken': refreshToken,
-    });
-
-    try {
-      final response = await http.post(url, headers: headers, body: body);
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+    if (response.statusCode == 200) {
+      final data = response.data;
+      if (data['result'] == true) {
         await _tokenManager.saveTokens(
             data['accessToken'], data['refreshToken']);
-        print('Token refreshed: $data');
+        return "success";
       } else {
-        // Refresh token이 만료된 경우 로그아웃 처리
+        return "Login failed. Please check your username or password.";
+      }
+    } else {
+      return "Failed to login: ${response.statusCode}";
+    }
+  } catch (e) {
+    if (e is DioError) {
+      print('Dio error occurred: ${e.response?.data}');
+      print('Dio error headers: ${e.response?.headers}');
+      print('Dio error request: ${e.requestOptions}');
+    }
+    throw Exception('Failed to login: $e');
+  }
+}
+
+
+  Future<void> refreshToken() async {
+    final refreshToken = await _tokenManager.getRefreshToken();
+    if (refreshToken != null) {
+      final newAccessToken = await _apiClient.refreshAccessToken(refreshToken);
+      if (newAccessToken != null) {
+        await _tokenManager.saveTokens(newAccessToken, refreshToken);
+        print('Token refreshed');
+      } else {
         await _tokenManager.clearTokens();
         print('Failed to refresh token, logging out');
       }
-    } catch (e) {
-      print('Network error: $e');
+    } else {
+      print('No refresh token available');
     }
   }
 
   Future<void> logout() async {
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
-    };
-    final response =
-        await http.post(Uri.parse('$baseUrl/auth/logout'), headers: headers);
-
-    if (response.statusCode == 200) {
-      await _tokenManager.clearTokens();
-      print('Logged out');
-      return json.decode(response.body);
-    } else {
-      final code = response.statusCode;
-      print('statusCode: $code');
-      throw Exception('Failed to logout');
+    try {
+      final response = await _apiClient.dio.post('/auth/logout');
+      if (response.statusCode == 200) {
+        await _tokenManager.clearTokens();
+        print('Logged out');
+      } else {
+        throw Exception('Failed to logout');
+      }
+    } catch (e) {
+      throw Exception('Failed to logout: $e');
     }
   }
 
   Future<bool> sendTemporaryPassword(String email) async {
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
-    };
-    final body = json.encode({
-      'email': email,
-    });
-    final response = await http.post(
-        Uri.parse('$baseUrl/p/auth/send_temp_password'),
-        headers: headers,
-        body: body);
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return data['result'];
-    } else {
-      final code = response.statusCode;
-      print('statusCode: $code');
-      throw Exception('Failed to send temporary password.');
+    try {
+      final response = await _apiClient.dio.post(
+        '/auth/send_temp_password',
+        data: {'email': email},
+      );
+      return response.data['result'];
+    } catch (e) {
+      throw Exception('Failed to send temporary password: $e');
     }
   }
 }
