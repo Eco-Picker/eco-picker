@@ -42,6 +42,14 @@ TextStyle headingTextStyle() {
   );
 }
 
+TextStyle headingWhiteTextStyle() {
+  return GoogleFonts.quicksand(
+    fontSize: 24,
+    fontWeight: FontWeight.w700,
+    color: Color(0xFFFAFAFA),
+  );
+}
+
 TextStyle bodyTextStyle() {
   return const TextStyle(
     fontSize: 14,

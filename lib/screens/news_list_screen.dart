@@ -110,7 +110,9 @@ class _NewsListScreenState extends State<NewsListScreen>
           if (_isLoading)
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+              ),
             ),
         ],
       ),

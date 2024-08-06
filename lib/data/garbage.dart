@@ -76,9 +76,10 @@ class GarbageLocation {
   });
 
   factory GarbageLocation.fromJson(Map<String, dynamic> json) {
-    var garbageJson = json['newsletterSummaryList'] as List<dynamic>? ?? [];
+    var garbageJsonList = json['garbageLocations'] as List<dynamic>;
+
     List<MapGarbage> garbageLocations =
-        garbageJson.map((newsJson) => MapGarbage.fromJson(newsJson)).toList();
+        garbageJsonList.map((item) => MapGarbage.fromJson(item)).toList();
 
     return GarbageLocation(garbageLocations: garbageLocations);
   }

@@ -1,11 +1,15 @@
-import 'package:eco_picker/api/api_garbage_service.dart';
-import 'package:eco_picker/data/garbage.dart';
-import 'package:eco_picker/utils/geolocator_utils.dart';
+import 'package:eco_picker/utils/toastbox.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:eco_picker/api/api_garbage_service.dart';
+import 'package:eco_picker/components/category_legend.dart';
+import 'package:eco_picker/data/garbage.dart';
+import 'package:eco_picker/utils/geolocator_utils.dart';
+import 'package:eco_picker/utils/get_json_file.dart';
+import 'package:eco_picker/utils/resize_image.dart';
+import 'package:eco_picker/utils/styles.dart';
 
-import '../utils/styles.dart';
+import '../components/Map_Bottom_Sheet.dart';
 
 class MapScreen extends StatefulWidget {
   @override
@@ -19,7 +23,6 @@ class _MapScreenState extends State<MapScreen> {
   bool _isLoading = true;
   final GeolocatorUtil _geolocatorUtil = GeolocatorUtil();
   Set<Marker>? _markers = <Marker>{};
-  late BitmapDescriptor myMarker;
   GarbageLocation? _garbageLocation;
 
   @override
@@ -41,13 +44,13 @@ class _MapScreenState extends State<MapScreen> {
         setState(() {
           _isLoading = false;
         });
-        // 위치 정보를 가져오지 못했을 때 처리할 코드 추가
+        showToast('Unavailable to retrieve your location data.', 'error');
       }
     } catch (e) {
       setState(() {
         _isLoading = false;
       });
-      // 위치 정보를 가져오는 도중 에러가 발생했을 때 처리할 코드 추가
+      showToast('Unavailable to retrieve your location data.', 'error');
       print("Error getting location: $e");
     }
   }
@@ -57,17 +60,12 @@ class _MapScreenState extends State<MapScreen> {
       print('Error: _garbageLocation is null');
       return;
     }
-
     var localMarkers = <Marker>{};
 
     for (var garbage in _garbageLocation!.garbageLocations) {
-      // 카테고리별로 다른 마커 아이콘을 로드
-      final markerIcon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(size: Size(50, 50)),
-        'assets/images/${garbage.garbageCategory}.png',
-      );
+      final markerIcon = BitmapDescriptor.fromBytes(await getBytesFromAsset(
+          'assets/images/${garbage.garbageCategory}.png', 100));
 
-      // 마커 추가
       localMarkers.add(Marker(
         markerId: MarkerId(garbage.garbageId.toString()),
         position: LatLng(garbage.latitude, garbage.longitude),
@@ -104,6 +102,9 @@ class _MapScreenState extends State<MapScreen> {
     if (_garbageLocation != null) {
       generateMarkers();
     }
+
+    getJsonFile('assets/map_style.json')
+        .then((value) => mapController.setMapStyle(value));
   }
 
   @override
@@ -113,33 +114,41 @@ class _MapScreenState extends State<MapScreen> {
         title: const Text('Map'),
         titleTextStyle: headingTextStyle(),
       ),
-      body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
-              ),
-            )
-          : GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: _currentPosition != null
-                  ? CameraPosition(
-                      target: _currentPosition!,
-                      zoom: 16.0,
-                    )
-                  : CameraPosition(
-                      target: LatLng(0, 0),
-                      zoom: 2.0,
-                    ),
-              myLocationEnabled: true, // Show the user's current location
-              markers: _markers != null
-                  ? _markers!
-                  : {
-                      Marker(
-                        markerId: MarkerId("default"),
-                        position: LatLng(0, 0),
-                      ),
-                    },
-            ),
+      body: Stack(
+        children: [
+          _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+                  ),
+                )
+              : GoogleMap(
+                  onMapCreated: _onMapCreated,
+                  initialCameraPosition: _currentPosition != null
+                      ? CameraPosition(
+                          target: _currentPosition!,
+                          zoom: 16.0,
+                        )
+                      : CameraPosition(
+                          target: LatLng(0, 0),
+                          zoom: 2.0,
+                        ),
+                  myLocationEnabled: true,
+                  markers: _markers != null
+                      ? _markers!
+                      : {
+                          Marker(
+                            markerId: MarkerId("default"),
+                            position: LatLng(0, 0),
+                          ),
+                        },
+                  padding: const EdgeInsets.only(bottom: 60),
+                ),
+          CategoryLegend(),
+          MapBottomSheet(garbageLocation: _garbageLocation),
+        ],
+      ),
     );
   }
 }

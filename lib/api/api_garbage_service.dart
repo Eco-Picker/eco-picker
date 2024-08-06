@@ -55,10 +55,11 @@ class ApiGarbageService {
       'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
     };
 
-    final response = await http.post(uri, headers: headers);
+    final response = await http.get(uri, headers: headers);
+
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
-      return GarbageLocation.fromJson(jsonResponse['garbageLocations']);
+      return GarbageLocation.fromJson(jsonResponse);
     } else {
       throw Exception('Failed to load garbage list');
     }

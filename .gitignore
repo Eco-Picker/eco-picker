@@ -65,6 +65,7 @@ lib/generated_plugin_registrant.dart
 **/ios/**/.symlinks/
 **/ios/**/profile
 **/ios/**/xcuserdata
+**/ios/**/xcshareddata
 **/ios/.generated/
 **/ios/Flutter/.last_build_id
 **/ios/Flutter/App.framework

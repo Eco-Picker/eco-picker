@@ -36,6 +36,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           showToast(
               'A verification link has been sent to your email account. Please click on the link that has just been sent to your email account to verify your email to finish sign up process.',
               'pass');
+          Navigator.pop(context);
         } else {
           showToast(result, 'error');
         }
@@ -53,8 +54,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         titleTextStyle: headingTextStyle(),
       ),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          ),
           child: Form(
             key: _formKey,
             child: Column(

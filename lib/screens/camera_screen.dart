@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../utils/geolocator_utils.dart';
+import '../utils/toastbox.dart';
 import 'post_picture_screen.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -38,10 +39,10 @@ class _CameraScreenState extends State<CameraScreen> {
           _currentPosition = LatLng(position.latitude, position.longitude);
         });
       } else {
-        // 위치 정보를 가져오지 못했을 때 처리할 코드 추가
+        showToast('Unavaliable to load your location info.', 'error');
       }
     } catch (e) {
-      // 위치 정보를 가져오는 도중 에러가 발생했을 때 처리할 코드 추가
+      showToast('Unavaliable to load your location info.', 'error');
       print("Error getting location: $e");
     }
   }
