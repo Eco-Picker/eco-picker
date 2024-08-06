@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.eco_picker">
 
     <!-- Internet permission -->
@@ -6,7 +7,8 @@
 
     <application
         android:label="eco_picker"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        tools:replace="android:icon">
         
         <!-- Other components like activities, services, etc. -->
         
