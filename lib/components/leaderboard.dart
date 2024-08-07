@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../api/api_ranking_service.dart';
 import '../data/ranking.dart';
+import '../utils/toastbox.dart';
 import 'user_dashboard.dart';
 
 class Leaderboard extends StatefulWidget {
@@ -42,7 +43,6 @@ class _LeaderboardState extends State<Leaderboard> {
       builder: (context, snapshot) {
         List<Ranker> rankers =
             List.generate(10, (index) => Ranker(username: '', point: 0, id: 0));
-        String errorMessage = '';
 
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -51,7 +51,6 @@ class _LeaderboardState extends State<Leaderboard> {
             ),
           );
         } else if (snapshot.hasError) {
-          errorMessage = 'Error loading data';
         } else if (snapshot.hasData) {
           if (snapshot.data!.rankers.isNotEmpty) {
             rankers = [];
@@ -70,10 +69,10 @@ class _LeaderboardState extends State<Leaderboard> {
               rankers.add(ranker.copyWith(rank: currentRank));
             }
           } else {
-            errorMessage = 'No data available';
+            showToast('No data available', 'error');
           }
         } else {
-          errorMessage = 'No data available';
+          showToast('No data available', 'error');
         }
 
         return Expanded(

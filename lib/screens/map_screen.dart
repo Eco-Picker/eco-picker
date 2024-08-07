@@ -96,7 +96,7 @@ class _MapScreenState extends State<MapScreen> {
             northeast: LatLng(garbage.latitude, garbage.longitude),
           );
         } else {
-          bounds = bounds!.extend(LatLng(garbage.latitude, garbage.longitude));
+          bounds = bounds.extend(LatLng(garbage.latitude, garbage.longitude));
         }
       }
     }
@@ -107,11 +107,11 @@ class _MapScreenState extends State<MapScreen> {
       });
 
       // Move the map camera to fit the bounds if there are markers
-      if (bounds != null && mapController != null) {
+      if (bounds != null) {
         // Calculate the center of the bounds
         final center = LatLng(
-          (bounds!.southwest.latitude + bounds!.northeast.latitude) / 2,
-          (bounds!.southwest.longitude + bounds!.northeast.longitude) / 2,
+          (bounds.southwest.latitude + bounds.northeast.latitude) / 2,
+          (bounds.southwest.longitude + bounds.northeast.longitude) / 2,
         );
 
         mapController.animateCamera(

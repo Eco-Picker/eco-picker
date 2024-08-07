@@ -2,7 +2,6 @@ import 'package:eco_picker/api/api_newsletter_service.dart';
 import 'package:eco_picker/screens/news_detail_screen.dart';
 import 'package:flutter/material.dart';
 import '../data/newsletter.dart';
-import '../screens/news_list_screen.dart';
 import '../utils/styles.dart';
 
 class RandomNewsbox extends StatefulWidget {

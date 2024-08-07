@@ -1,4 +1,3 @@
-import 'package:eco_picker/utils/constants.dart';
 import 'package:eco_picker/utils/styles.dart';
 import 'package:flutter/material.dart';
 import '../api/api_newsletter_service.dart';

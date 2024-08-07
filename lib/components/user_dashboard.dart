@@ -146,49 +146,61 @@ class _UserDashboard extends State<UserDashboard>
                     child: AnimatedBuilder(
                         animation: _animation,
                         builder: (context, child) {
-                          return PieChart(
-                            PieChartData(
-                              sections: [
-                                PieChartSectionData(
-                                  color: categoryColors['Plastic'],
-                                  value: userStatistics.count.totalPlastic *
-                                      _animation.value,
-                                  showTitle: false,
-                                ),
-                                PieChartSectionData(
-                                  color: categoryColors['Metal'],
-                                  value: userStatistics.count.totalMetal *
-                                      _animation.value,
-                                  showTitle: false,
-                                ),
-                                PieChartSectionData(
-                                  color: categoryColors['Glass'],
-                                  value: userStatistics.count.totalGlass *
-                                      _animation.value,
-                                  showTitle: false,
-                                ),
-                                PieChartSectionData(
-                                  color: categoryColors['Cardboard'],
-                                  value:
-                                      userStatistics.count.totalCardboardPaper *
-                                          _animation.value,
-                                  showTitle: false,
-                                ),
-                                PieChartSectionData(
-                                  color: categoryColors['Food scraps'],
-                                  value: userStatistics.count.totalFoodScraps *
-                                      _animation.value,
-                                  showTitle: false,
-                                ),
-                                PieChartSectionData(
-                                  color: categoryColors['Other'],
-                                  value: userStatistics.count.totalOther *
-                                      _animation.value,
-                                  showTitle: false,
-                                ),
-                              ],
-                            ),
-                          );
+                          if (userStatistics.score.totalScore == 0) {
+                            return Container(
+                              width: 100.0,
+                              height: 100.0,
+                              decoration: new BoxDecoration(
+                                border: Border.all(color: Color(0xFF388E3C)),
+                                shape: BoxShape.circle,
+                              ),
+                            );
+                          } else {
+                            return PieChart(
+                              PieChartData(
+                                sections: [
+                                  PieChartSectionData(
+                                    color: categoryColors['Plastic'],
+                                    value: userStatistics.count.totalPlastic *
+                                        _animation.value,
+                                    showTitle: false,
+                                  ),
+                                  PieChartSectionData(
+                                    color: categoryColors['Metal'],
+                                    value: userStatistics.count.totalMetal *
+                                        _animation.value,
+                                    showTitle: false,
+                                  ),
+                                  PieChartSectionData(
+                                    color: categoryColors['Glass'],
+                                    value: userStatistics.count.totalGlass *
+                                        _animation.value,
+                                    showTitle: false,
+                                  ),
+                                  PieChartSectionData(
+                                    color: categoryColors['Cardboard'],
+                                    value: userStatistics
+                                            .count.totalCardboardPaper *
+                                        _animation.value,
+                                    showTitle: false,
+                                  ),
+                                  PieChartSectionData(
+                                    color: categoryColors['Food scraps'],
+                                    value:
+                                        userStatistics.count.totalFoodScraps *
+                                            _animation.value,
+                                    showTitle: false,
+                                  ),
+                                  PieChartSectionData(
+                                    color: categoryColors['Other'],
+                                    value: userStatistics.count.totalOther *
+                                        _animation.value,
+                                    showTitle: false,
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
                         }),
                   ),
                   const SizedBox(width: 20),

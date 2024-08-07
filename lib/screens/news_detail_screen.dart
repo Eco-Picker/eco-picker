@@ -1,3 +1,4 @@
+import 'package:eco_picker/utils/toastbox.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../api/api_newsletter_service.dart';
@@ -32,7 +33,6 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
       body: FutureBuilder<Newsletter>(
         future: _newsletterFuture,
         builder: (context, snapshot) {
-          String errorMessage = '';
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(
@@ -40,7 +40,6 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
               ),
             );
           } else if (snapshot.hasError) {
-            errorMessage = 'Error loading data';
           } else if (snapshot.hasData) {
             if (snapshot.data!.title.isNotEmpty) {
               Newsletter newsletter = snapshot as Newsletter;
@@ -84,10 +83,10 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                 ),
               );
             } else {
-              errorMessage = 'No data available';
+              showToast('No data available', 'error');
             }
           } else {
-            errorMessage = 'No data available';
+            showToast('No data available', 'error');
           }
           return Text('Not a valid newsletter.');
         },

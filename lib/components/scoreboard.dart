@@ -16,6 +16,7 @@ class _ScoreboardState extends State<Scoreboard>
   late Animation<double> _animation;
   final ApiUserService _apiUserService = ApiUserService();
   late Future<UserStatistics> _userStatisticsFuture;
+  double _animationEndValue = 0.0; // Default value
 
   @override
   void initState() {
@@ -24,12 +25,13 @@ class _ScoreboardState extends State<Scoreboard>
       vsync: this,
       duration: Duration(seconds: 2),
     );
-    _animation = Tween<double>(begin: 0.0, end: 0.10).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    _animation = Tween<double>(begin: 0.0, end: _animationEndValue).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
 
-    _controller.forward();
     _userStatisticsFuture = _apiUserService.fetchUserStatistics();
   }
 
@@ -57,8 +59,13 @@ class _ScoreboardState extends State<Scoreboard>
         }
 
         final userStatistics = snapshot.data!;
-        final rank = userStatistics.getRank();
         final totalScore = userStatistics.score.totalScore;
+        final newEndValue = totalScore / 10000.0;
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _updateAnimationEndValue(newEndValue);
+        });
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -70,9 +77,7 @@ class _ScoreboardState extends State<Scoreboard>
               ],
             ),
             Text('Collect points to be a master player!'),
-            SizedBox(
-              height: 8,
-            ),
+            SizedBox(height: 8),
             // Progress Bar
             AnimatedBuilder(
               animation: _animation,
@@ -101,6 +106,32 @@ class _ScoreboardState extends State<Scoreboard>
         );
       },
     );
+  }
+
+  void _updateAnimationEndValue(double endValue) {
+    if (_controller.isAnimating || _controller.isCompleted) {
+      // Restart animation with new end value if already running
+      _animation =
+          Tween<double>(begin: _animation.value, end: endValue).animate(
+        CurvedAnimation(
+          parent: _controller,
+          curve: Curves.easeInOut,
+        ),
+      );
+      _controller.forward(from: 0.0); // Restart animation with new end value
+    } else {
+      // If not animating, set the end value directly
+      setState(() {
+        _animation =
+            Tween<double>(begin: _animation.value, end: endValue).animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: Curves.easeInOut,
+          ),
+        );
+      });
+      _controller.forward();
+    }
   }
 
   Widget _buildStepIndicator(String number, String rank) {

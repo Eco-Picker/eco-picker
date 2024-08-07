@@ -57,8 +57,7 @@ class _SignInScreenState extends State<SignInScreen> {
           showToast(loginStatus, 'error');
         }
       } catch (e) {
-        showToast(
-            'Failed to login: ${e?.toString() ?? 'Unknown error'}', 'error');
+        showToast('Failed to login: ${e.toString()}', 'error');
       } finally {
         setState(() {
           _isLoading = false;

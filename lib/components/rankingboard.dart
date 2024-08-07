@@ -1,9 +1,5 @@
 import 'package:eco_picker/utils/styles.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../api/api_ranking_service.dart';
-import '../data/ranking.dart';
-import '../main.dart';
 import 'leaderboard.dart';
 import 'user_dashboard.dart';
 
@@ -30,8 +26,6 @@ class _RankingBoardState extends State<Rankingboard> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-
     return Expanded(
       child: Container(
           margin:

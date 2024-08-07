@@ -6,8 +6,8 @@ import '../utils/styles.dart';
 import 'package:eco_picker/data/garbage.dart';
 
 class MapBottomSheet extends StatefulWidget {
-  DraggableScrollableController? controller;
-  Garbage? garbageDetail;
+  final DraggableScrollableController? controller;
+  final Garbage? garbageDetail;
   final void Function({String? categoryFilter}) onCategorySelected;
 
   MapBottomSheet({
