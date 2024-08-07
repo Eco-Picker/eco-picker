@@ -109,7 +109,6 @@ class _PostPictureScreenState extends State<PostPictureScreen> {
                     'Glass',
                     'Cardboard',
                     'Food scraps',
-                    'Organic yard',
                     'Other',
                   ].map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(

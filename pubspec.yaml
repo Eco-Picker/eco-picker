@@ -30,6 +30,10 @@ dependencies:
   path: ^1.9.0
   http_parser: ^4.0.2
   intl: ^0.19.0
+  flutter_dotenv: ^5.1.0
+
+dependency_overrides:
+  geolocator_web: ^4.1.0
 
 dev_dependencies:
   flutter_test:
@@ -57,6 +61,7 @@ flutter:
     - assets/google_fonts/Quicksand-SemiBold.ttf
     - assets/images/
     - assets/map_style.json
+    - .env
 
 flutter_launcher_icons:
   android: "launcher_icon"

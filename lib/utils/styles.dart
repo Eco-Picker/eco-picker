@@ -81,6 +81,14 @@ TextStyle titleTextStyle() {
   );
 }
 
+TextStyle titleWhiteTextStyle() {
+  return const TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: Color(0xFFFAFAFA),
+  );
+}
+
 TextStyle greyTextStyle() {
   return TextStyle(
     fontSize: 12,

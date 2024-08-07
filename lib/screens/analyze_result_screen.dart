@@ -88,14 +88,6 @@ class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Memo: ', style: bodyTextStyle()),
-                        Text(widget.garbageResult!.memo,
-                            style: bodyImportantTextStyle()),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
                         Text('Picked up at: ', style: bodyTextStyle()),
                         Text(changeDateFormat(widget.garbageResult!.pickedUpAt),
                             style: bodyImportantTextStyle()),

@@ -64,4 +64,21 @@ class ApiGarbageService {
       throw Exception('Failed to load garbage list');
     }
   }
+
+  Future<Garbage> getGarbageByID(int id) async {
+    final uri = Uri.parse('$baseUrl/garbage/$id');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
+    };
+
+    final response = await http.get(uri, headers: headers);
+
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
+      return Garbage.fromJson(jsonResponse['garbage']);
+    } else {
+      throw Exception('Failed to load garbage list');
+    }
+  }
 }

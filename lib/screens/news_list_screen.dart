@@ -96,9 +96,9 @@ class _NewsListScreenState extends State<NewsListScreen>
         bottom: TabBar(
           controller: _tabController,
           tabs: _categories.map((category) => Tab(text: category)).toList(),
-          indicatorColor: categoryColors['Food scraps'],
-          labelColor: categoryColors['Food scraps'],
-          unselectedLabelColor: Colors.grey, 
+          indicatorColor: Color(0xFFE3F5E3),
+          labelColor: Color(0xFFE3F5E3),
+          unselectedLabelColor: Color(0xFFE5E5E5),
         ),
       ),
       body: Column(

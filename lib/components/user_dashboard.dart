@@ -181,13 +181,6 @@ class _UserDashboard extends State<UserDashboard>
                                   showTitle: false,
                                 ),
                                 PieChartSectionData(
-                                  color: categoryColors['Organic yard'],
-                                  value: userStatistics
-                                          .count.totalOrganicYardWaste *
-                                      _animation.value,
-                                  showTitle: false,
-                                ),
-                                PieChartSectionData(
                                   color: categoryColors['Other'],
                                   value: userStatistics.count.totalOther *
                                       _animation.value,
@@ -268,12 +261,6 @@ class _UserDashboard extends State<UserDashboard>
                     _isPointUnit
                         ? '${userStatistics.score.foodScrapsScore} pt'
                         : '${userStatistics.count.totalFoodScraps} pk'),
-                _buildScoreDetail(
-                    categoryColors['Organic yard']!,
-                    'Organic yard',
-                    _isPointUnit
-                        ? '${userStatistics.score.organicYardWasteScore} pt'
-                        : '${userStatistics.count.totalOrganicYardWaste} pk'),
               ],
             ),
             const SizedBox(height: 10),

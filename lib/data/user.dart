@@ -83,7 +83,6 @@ class Count {
   final int totalOther;
   final int totalMetal;
   final int totalFoodScraps;
-  final int totalOrganicYardWaste;
 
   Count({
     required this.totalCount,
@@ -96,7 +95,6 @@ class Count {
     required this.totalOther,
     required this.totalMetal,
     required this.totalFoodScraps,
-    required this.totalOrganicYardWaste,
   });
 
   factory Count.fromJson(Map<String, dynamic> json) {
@@ -111,7 +109,6 @@ class Count {
       totalOther: json['totalOther'] ?? 0,
       totalMetal: json['totalMetal'] ?? 0,
       totalFoodScraps: json['totalFoodScraps'] ?? 0,
-      totalOrganicYardWaste: json['totalOrganicYardWaste'] ?? 0,
     );
   }
 }
@@ -124,7 +121,6 @@ class Score {
   final int otherScore;
   final int metalScore;
   final int foodScrapsScore;
-  final int organicYardWasteScore;
 
   Score({
     required this.totalScore,
@@ -134,7 +130,6 @@ class Score {
     required this.otherScore,
     required this.metalScore,
     required this.foodScrapsScore,
-    required this.organicYardWasteScore,
   });
 
   factory Score.fromJson(Map<String, dynamic> json) {
@@ -146,7 +141,6 @@ class Score {
       otherScore: json['otherScore'] ?? 0,
       metalScore: json['metalScore'] ?? 0,
       foodScrapsScore: json['foodScrapsScore'] ?? 0,
-      organicYardWasteScore: json['organicYardWasteScore'] ?? 0,
     );
   }
 }

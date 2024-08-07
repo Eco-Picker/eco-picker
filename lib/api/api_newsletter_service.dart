@@ -31,12 +31,12 @@ class ApiNewsletterService {
     }
   }
 
-  Future<Newsletter> fetchNewsletter(int id, String category) async {
+  Future<Newsletter> fetchNewsletter(int id) async {
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
     };
-    final body = json.encode({"id": id, "category": category});
+    final body = json.encode({"id": id});
     final response = await http.post(Uri.parse('$baseUrl/newsletter'),
         headers: headers, body: body);
 

@@ -19,8 +19,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _newsletterFuture =
-        _apiNewsletterService.fetchNewsletter(widget.id, widget.category);
+    _newsletterFuture = _apiNewsletterService.fetchNewsletter(widget.id);
   }
 
   @override
