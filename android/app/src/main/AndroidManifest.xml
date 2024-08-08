@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <application
-        android:label="eco_picker"
+        android:label="Eco Picker"
         android:icon="@mipmap/launcher_icon"
         tools:replace="android:icon">
         <meta-data

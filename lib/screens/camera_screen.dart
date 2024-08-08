@@ -28,6 +28,23 @@ class _CameraScreenState extends State<CameraScreen> {
     super.initState();
     if (widget.camera != null) {
       _initializeCamera(widget.camera!);
+    } else {
+      getCamera();
+    }
+  }
+
+  Future<void> getCamera() async {
+    CameraDescription? newCamera;
+    List<CameraDescription> cameras = [];
+    try {
+      // Obtain a list of the available cameras on the device.
+      cameras = await availableCameras();
+      // Get a specific camera from the list of available cameras.
+      newCamera = cameras.isNotEmpty ? cameras.first : null;
+    } catch (e) {
+      print('Error: $e');
+    } finally {
+      _initializeCamera(newCamera!);
     }
   }
 

@@ -276,16 +276,13 @@ class _UserDashboard extends State<UserDashboard>
                     _isPointUnit
                         ? '${userStatistics.score.foodScrapsScore} pt'
                         : '${userStatistics.count.totalFoodScraps} pk'),
+                _buildScoreDetail(
+                    categoryColors['Other']!,
+                    'Other',
+                    _isPointUnit
+                        ? '${userStatistics.score.otherScore} pt'
+                        : '${userStatistics.count.totalOther} pk'),
               ],
-            ),
-            const SizedBox(height: 10),
-            Center(
-              child: _buildScoreDetail(
-                  categoryColors['Other']!,
-                  'Other',
-                  _isPointUnit
-                      ? '${userStatistics.score.otherScore} pt'
-                      : '${userStatistics.count.totalOther} pk'),
             ),
           ],
         );
@@ -323,7 +320,7 @@ class _UserDashboard extends State<UserDashboard>
         ),
         SizedBox(width: 8),
         Text(label, style: bodyTextStyle()),
-        if (label != 'Other') Spacer() else SizedBox(width: 8),
+        Spacer(),
         Text(points, style: bodyTextStyle()),
       ],
     );

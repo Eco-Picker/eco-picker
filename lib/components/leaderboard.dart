@@ -20,16 +20,44 @@ class _LeaderboardState extends State<Leaderboard> {
   }
 
   void _showUserDashboard(int id) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (BuildContext context) {
-        return AlertDialog(
-          content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.height * 0.8,
-            child: UserDashboard(
-              rankerID: id,
-            ),
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.65,
+          child: Column(
+            children: [
+              // Close Button
+              Container(
+                height: 50,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                  color: Color(0xFF6BBD6E),
+                ),
+                padding: EdgeInsets.all(8),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon: Icon(Icons.close, color: Colors.white, size: 24),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close the BottomSheet
+                    },
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: UserDashboard(
+                    rankerID: id,
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -51,6 +79,7 @@ class _LeaderboardState extends State<Leaderboard> {
             ),
           );
         } else if (snapshot.hasError) {
+          showToast('An error occurred: ${snapshot.error}', 'error');
         } else if (snapshot.hasData) {
           if (snapshot.data!.rankers.isNotEmpty) {
             rankers = [];
