@@ -1,22 +1,17 @@
 import 'dart:convert';
 import 'package:eco_picker/data/ranking.dart';
-import 'package:http/http.dart' as http;
 import '../data/user.dart';
-import 'token_manager.dart';
 import '../utils/constants.dart';
+import 'api_service.dart';
 
 class ApiRankingService {
-  final TokenManager _tokenManager = TokenManager();
-
   Future<Ranking> fetchRanking() async {
+    const url = '$baseUrl/ranking';
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
     };
-    final body = json.encode({"offset": 0, "limit": 10});
-    final response = await http.post(Uri.parse('$baseUrl/ranking'),
-        headers: headers, body: body);
-
+    final body = {"offset": 0, "limit": 10};
+    final response = await ApiService().post(url, headers, body);
     if (response.statusCode == 200) {
       // Parse the JSON response into a Ranking object
       final jsonResponse = json.decode(response.body);
@@ -27,13 +22,11 @@ class ApiRankingService {
   }
 
   Future<UserStatistics> fetchRanker(int id) async {
+    String url = '$baseUrl/ranker/$id';
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
     };
-    final response =
-        await http.get(Uri.parse('$baseUrl/ranker/$id'), headers: headers);
-
+    final response = await ApiService().get(url, headers);
     if (response.statusCode == 200) {
       // Parse the JSON response into a Ranking object
       final data = json.decode(response.body) as Map<String, dynamic>;

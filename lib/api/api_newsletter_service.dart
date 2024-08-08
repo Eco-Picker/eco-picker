@@ -1,27 +1,22 @@
 import 'dart:convert';
 import 'package:eco_picker/data/newsletter.dart';
-import 'package:http/http.dart' as http;
-import 'token_manager.dart';
+import 'api_service.dart';
 import '../utils/constants.dart';
 
 class ApiNewsletterService {
-  final TokenManager _tokenManager = TokenManager();
-
   Future<NewsList> fetchNewsList(
       {required int offset, required int limit, String? category}) async {
+    const url = '$baseUrl/newsletter_summaries';
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
     };
-    final String body;
+    final Map<String, Object> body;
     if (category == null) {
-      body = json.encode({"offset": offset, "limit": limit});
+      body = {"offset": offset, "limit": limit};
     } else {
-      body =
-          json.encode({"offset": offset, "limit": limit, "category": category});
+      body = {"offset": offset, "limit": limit, "category": category};
     }
-    final response = await http.post(Uri.parse('$baseUrl/newsletter_summaries'),
-        headers: headers, body: body);
+    final response = await ApiService().post(url, headers, body);
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
@@ -32,13 +27,11 @@ class ApiNewsletterService {
   }
 
   Future<Newsletter> fetchNewsletter(int id) async {
+    String url = '$baseUrl/newsletter/$id';
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
     };
-    final response =
-        await http.get(Uri.parse('$baseUrl/newsletter/$id'), headers: headers);
-
+    final response = await ApiService().get(url, headers);
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
       return Newsletter.fromJson(jsonResponse['newsletter']);
@@ -48,13 +41,11 @@ class ApiNewsletterService {
   }
 
   Future<NewsSummary> fetchRandomNews() async {
+    const url = '$baseUrl/random_newsletter_summary';
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
     };
-    final response = await http
-        .get(Uri.parse('$baseUrl/random_newsletter_summary'), headers: headers);
-
+    final response = await ApiService().get(url, headers);
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
       return NewsSummary.fromJson(jsonResponse['newsletterSummary']);

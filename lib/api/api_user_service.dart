@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:eco_picker/data/user.dart';
 import 'package:http/http.dart' as http;
+import 'api_service.dart';
 import 'token_manager.dart';
 import '../utils/constants.dart';
 
@@ -8,13 +9,10 @@ class ApiUserService {
   final TokenManager _tokenManager = TokenManager();
 
   Future<User> fetchUserInfo() async {
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
-    };
-    final response =
-        await http.get(Uri.parse('$baseUrl/user/info'), headers: headers);
+    const url = '$baseUrl/user/info';
+    final headers = {'Content-Type': 'application/json'};
 
+    final response = await ApiService().get(url, headers);
     if (response.statusCode == 200) {
       final data = json.decode(response.body) as Map<String, dynamic>;
       print(data['userInfo']);
@@ -25,12 +23,9 @@ class ApiUserService {
   }
 
   Future<UserStatistics> fetchUserStatistics() async {
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
-    };
-    final response =
-        await http.get(Uri.parse('$baseUrl/user/statistics'), headers: headers);
+    const url = '$baseUrl/user/statistics';
+    final headers = {'Content-Type': 'application/json'};
+    final response = await ApiService().get(url, headers);
     print(response);
     if (response.statusCode == 200) {
       final data = json.decode(response.body) as Map<String, dynamic>;
@@ -43,21 +38,20 @@ class ApiUserService {
 
   Future<String> changePassword(
       String password, String newPassword, String confirmPassword) async {
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
+    const url = '$baseUrl/user/update_password';
+    final headers = {'Content-Type': 'application/json'};
+    final body = {
+      "password": password,
+      "newPassword": newPassword,
+      "confirmNewPassword": confirmPassword
     };
-    final body = json.encode({
-      "password": "string",
-      "newPassword": "string",
-      "confirmNewPassword": "string"
-    });
-
-    final response = await http.post(Uri.parse('$baseUrl/user/update_password'),
-        headers: headers, body: body);
+    print(body);
+    final response = await ApiService().post(url, headers, body);
     final data = json.decode(response.body);
     if (response.statusCode == 200) {
-      return data['code'] ? 'Please type a vaild password.' : 'pass';
+      return data['code'] == 'INVALID_PASSWORD'
+          ? 'Please type a vaild password.'
+          : 'pass';
     } else if (response.statusCode == 400) {
       return data['errors'].message;
     } else {
@@ -103,18 +97,15 @@ class ApiUserService {
   }
 
   Future<String> login(String username, String password) async {
-    final url = Uri.parse('$baseUrl/p/auth/login');
-    print(url);
+    const url = '$baseUrl/p/auth/login';
     final headers = {'Content-Type': 'application/json'};
-    final body = json.encode({
+    final body = {
       'username': username,
       'password': password,
-    });
-
-    print("login request: $body");
+    };
 
     try {
-      final response = await http.post(url, headers: headers, body: body);
+      final response = await ApiService().post(url, headers, body);
 
       if (response.statusCode == 200) {
         // Handle successful response
@@ -129,8 +120,6 @@ class ApiUserService {
           return "Login failed.\nPlease check your username or password.";
         }
       } else {
-        // Handle errors
-        // final error = json.decode(response.body);
         return "Failed to login:\n ${response.statusCode}";
       }
     } catch (e) {
@@ -140,46 +129,10 @@ class ApiUserService {
     }
   }
 
-  Future<void> refreshToken() async {
-    final url = Uri.parse('$baseUrl/p/auth/renew_access_token');
-    final headers = {'Content-Type': 'application/json'};
-    final refreshToken = await _tokenManager.getRefreshToken();
-
-    if (refreshToken == null) {
-      print('No refresh token available');
-      return;
-    }
-
-    final body = json.encode({
-      'refreshToken': refreshToken,
-    });
-
-    try {
-      final response = await http.post(url, headers: headers, body: body);
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        await _tokenManager.saveTokens(
-            data['accessToken'], data['refreshToken']);
-        print('Token refreshed: $data');
-      } else {
-        // Refresh token이 만료된 경우 로그아웃 처리
-        await _tokenManager.clearTokens();
-        print('Failed to refresh token, logging out');
-      }
-    } catch (e) {
-      print('Network error: $e');
-    }
-  }
-
   Future<void> logout() async {
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
-    };
-    final response =
-        await http.post(Uri.parse('$baseUrl/auth/logout'), headers: headers);
-
+    const url = '$baseUrl/auth/logout';
+    final headers = {'Content-Type': 'application/json'};
+    final response = await ApiService().post(url, headers);
     if (response.statusCode == 200) {
       await _tokenManager.clearTokens();
       print('Logged out');
@@ -192,17 +145,12 @@ class ApiUserService {
   }
 
   Future<bool> sendTemporaryPassword(String email) async {
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
-    };
-    final body = json.encode({
+    const url = '$baseUrl/p/auth/send_temp_password';
+    final headers = {'Content-Type': 'application/json'};
+    final body = {
       'email': email,
-    });
-    final response = await http.post(
-        Uri.parse('$baseUrl/p/auth/send_temp_password'),
-        headers: headers,
-        body: body);
+    };
+    final response = await ApiService().post(url, headers, body);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

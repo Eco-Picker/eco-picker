@@ -3,32 +3,24 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import '../data/garbage.dart';
-import 'token_manager.dart';
 import '../utils/constants.dart';
+import 'api_service.dart';
 
 class ApiGarbageService {
-  final TokenManager _tokenManager = TokenManager();
-
   Future<Map<String, dynamic>> analyzeGarbage(File image) async {
-    final uri = Uri.parse('$baseUrl/analyze');
+    const url = '$baseUrl/analyze';
 
     final headers = {
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
-      'Content-Type': 'multipart/form-data'
+      'Content-Type': 'multipart/form-data',
     };
 
-    final request = http.MultipartRequest('POST', uri)
-      ..headers.addAll(headers)
-      ..files.add(await http.MultipartFile.fromPath(
-        'file',
-        image.path,
-        contentType: MediaType('image', 'jpeg'),
-      ));
+    final file = await http.MultipartFile.fromPath(
+      'file',
+      image.path,
+      contentType: MediaType('image', 'jpeg'),
+    );
 
-    final streamedResponse = await request.send();
-    final response = await http.Response.fromStream(streamedResponse);
-
-    print(response.statusCode);
+    final response = await ApiService().postMultipart(url, headers, [file]);
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
@@ -39,13 +31,12 @@ class ApiGarbageService {
   }
 
   Future<bool> saveGarbage(Garbage garbage) async {
-    final uri = Uri.parse('$baseUrl/save');
+    const url = '$baseUrl/save';
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
     };
-    final body = json.encode({"garbage": garbage.toJson()});
-    final response = await http.post(uri, headers: headers, body: body);
+    final body = {"garbage": garbage.toJson()};
+    final response = await ApiService().post(url, headers, body);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -55,13 +46,11 @@ class ApiGarbageService {
   }
 
   Future<GarbageLocation> getGarbageList() async {
-    final uri = Uri.parse('$baseUrl/maps');
+    const url = '$baseUrl/maps';
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
     };
-
-    final response = await http.get(uri, headers: headers);
+    final response = await ApiService().get(url, headers);
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
@@ -72,13 +61,12 @@ class ApiGarbageService {
   }
 
   Future<Garbage> getGarbageByID(int id) async {
-    final uri = Uri.parse('$baseUrl/garbage/$id');
+    final url = '$baseUrl/garbage/$id';
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
     };
 
-    final response = await http.get(uri, headers: headers);
+    final response = await ApiService().get(url, headers);
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;

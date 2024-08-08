@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../api/api_user_service.dart';
 import '../utils/styles.dart';
-import 'change_password.dart';
+import 'change_password_screen.dart';
 import 'sign_in_screen.dart';
 
 class SettingScreen extends StatelessWidget {
