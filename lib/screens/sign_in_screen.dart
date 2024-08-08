@@ -23,6 +23,9 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TokenManager _tokenManager = TokenManager();
   bool _isLoading = false;
+  bool _showErrors = false;
+  bool _usernameError = false;
+  bool _passwordError = false;
 
   Future<void> saveUserId() async {
     Map<String, dynamic> decodedToken =
@@ -39,6 +42,15 @@ class _SignInScreenState extends State<SignInScreen> {
     if (_formKey.currentState == null) {
       return;
     }
+
+    setState(() {
+      _showErrors = true;
+      _usernameError = username.isEmpty ||
+          (_formKey.currentState?.validate() == false && username.isNotEmpty);
+      _passwordError = password.isEmpty ||
+          (_formKey.currentState?.validate() == false && password.isNotEmpty);
+    });
+
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
@@ -106,26 +118,19 @@ class _SignInScreenState extends State<SignInScreen> {
                         children: [
                           TextFormField(
                             controller: _usernameController,
-                            decoration: InputDecoration(
-                              labelText: 'Username',
-                              floatingLabelStyle:
-                                  TextStyle(color: Color(0xFF27542A)),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Color(0xFF4CAF50)),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              contentPadding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                            ),
+                            decoration: inputStyle('Username', _formKey,
+                                _showErrors, _usernameError),
                             cursorColor: Color(0xFF4CAF50),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
+                                setState(() {
+                                  _usernameError = true;
+                                });
                                 return 'Please enter your username';
                               }
+                              setState(() {
+                                _usernameError = false;
+                              });
                               return null;
                             },
                           ),
@@ -133,26 +138,19 @@ class _SignInScreenState extends State<SignInScreen> {
                           TextFormField(
                             controller: _passwordController,
                             obscureText: true,
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              floatingLabelStyle:
-                                  TextStyle(color: Color(0xFF27542A)),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Color(0xFF4CAF50)),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              contentPadding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                            ),
+                            decoration: inputStyle('Password', _formKey,
+                                _showErrors, _passwordError),
                             cursorColor: Color(0xFF4CAF50),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
+                                setState(() {
+                                  _passwordError = true;
+                                });
                                 return 'Please enter your password';
                               }
+                              setState(() {
+                                _passwordError = false;
+                              });
                               return null;
                             },
                           ),

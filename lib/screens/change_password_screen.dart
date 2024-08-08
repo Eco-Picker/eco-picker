@@ -17,11 +17,28 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  bool _showErrors = false;
+  bool _currentPasswordError = false;
+  bool _newPasswordError = false;
+  bool _confirmPasswordError = false;
 
   Future<void> _changePassword() async {
     final currentPassword = _currentPasswordController.text;
     final newPassword = _newPasswordController.text;
     final confirmPassword = _confirmPasswordController.text;
+
+    setState(() {
+      _showErrors = true;
+      _currentPasswordError = currentPassword.isEmpty ||
+          (_formKey.currentState?.validate() == false &&
+              currentPassword.isNotEmpty);
+      _newPasswordError = newPassword.isEmpty ||
+          (_formKey.currentState?.validate() == false &&
+              newPassword.isNotEmpty);
+      _confirmPasswordError = confirmPassword.isEmpty ||
+          (_formKey.currentState?.validate() == false &&
+              confirmPassword.isNotEmpty);
+    });
 
     if (_formKey.currentState!.validate()) {
       if (currentPassword.isEmpty ||
@@ -64,75 +81,70 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               children: [
                 TextFormField(
                   controller: _currentPasswordController,
-                  decoration: InputDecoration(
-                    labelText: 'Current Password',
-                    floatingLabelStyle: TextStyle(color: Color(0xFF27542A)),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4CAF50)),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                  ),
+                  decoration: inputStyle('Current Password', _formKey,
+                      _showErrors, _currentPasswordError),
                   cursorColor: Color(0xFF4CAF50),
                   obscureText: true,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your current password';
+                    String? validMsg = validatePassword(value);
+                    if (validMsg == null) {
+                      setState(() {
+                        _currentPasswordError = false;
+                      });
+                      return validMsg;
+                    } else {
+                      setState(() {
+                        _currentPasswordError = true;
+                      });
+                      return validMsg;
                     }
-                    return validatePassword(value);
                   },
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _newPasswordController,
-                  decoration: InputDecoration(
-                    labelText: 'New Password',
-                    floatingLabelStyle: TextStyle(color: Color(0xFF27542A)),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4CAF50)),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                  ),
+                  decoration: inputStyle(
+                      'New Password', _formKey, _showErrors, _newPasswordError),
                   cursorColor: Color(0xFF4CAF50),
                   obscureText: true,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your new password';
+                    String? validMsg = validatePassword(value);
+                    if (validMsg == null) {
+                      setState(() {
+                        _newPasswordError = false;
+                      });
+                      return validMsg;
+                    } else {
+                      setState(() {
+                        _newPasswordError = true;
+                      });
+                      return validMsg;
                     }
-                    return validatePassword(value);
                   },
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _confirmPasswordController,
-                  decoration: InputDecoration(
-                    labelText: 'Confirm Password',
-                    floatingLabelStyle: TextStyle(color: Color(0xFF27542A)),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4CAF50)),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                  ),
+                  decoration: inputStyle('Confirm Password', _formKey,
+                      _showErrors, _confirmPasswordError),
                   cursorColor: Color(0xFF4CAF50),
                   obscureText: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
+                      setState(() {
+                        _confirmPasswordError = true;
+                      });
                       return 'Please confirm your password';
                     }
                     if (value != _newPasswordController.text) {
+                      setState(() {
+                        _confirmPasswordError = true;
+                      });
                       return 'Passwords do not match';
                     }
+                    setState(() {
+                      _confirmPasswordError = false;
+                    });
                     return null;
                   },
                 ),

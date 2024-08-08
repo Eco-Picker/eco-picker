@@ -34,6 +34,32 @@ ButtonStyle greyButtonStyle() {
   );
 }
 
+InputDecoration inputStyle(
+    String label, GlobalKey<FormState> formKey, bool showErr, bool formError) {
+  return InputDecoration(
+    labelText: label,
+    floatingLabelStyle: TextStyle(
+      color: (showErr && formError) ? Colors.red : Color(0xFF27542A),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: Colors.red),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: Colors.red),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: Color(0xFF4CAF50)),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+    ),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+  );
+}
+
 TextStyle headingTextStyle() {
   return GoogleFonts.quicksand(
     fontSize: 24,

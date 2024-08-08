@@ -14,9 +14,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final ApiUserService _apiUserService = ApiUserService();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
+  bool _showErrors = false;
+  bool _emailError = false;
 
   Future<void> _sendTemporaryPassword() async {
     final email = _emailController.text;
+
+    _showErrors = true;
+    _emailError = email.isEmpty ||
+        (_formKey.currentState?.validate() == false && email.isNotEmpty);
+
     if (_formKey.currentState!.validate()) {
       final result = await _apiUserService.sendTemporaryPassword(email);
       if (result == true) {
@@ -53,20 +60,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    floatingLabelStyle: TextStyle(color: Color(0xFF27542A)),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4CAF50)),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                  ),
+                  decoration:
+                      inputStyle('Email', _formKey, _showErrors, _emailError),
                   cursorColor: Color(0xFF4CAF50),
-                  validator: validateEmail,
+                  validator: (value) {
+                    String? validMsg = validateEmail(value);
+                    if (validMsg == null) {
+                      setState(() {
+                        _emailError = false;
+                      });
+                      return validMsg;
+                    } else {
+                      setState(() {
+                        _emailError = true;
+                      });
+                      return validMsg;
+                    }
+                  },
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(

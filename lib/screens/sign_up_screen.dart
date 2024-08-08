@@ -18,11 +18,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _showErrors = false;
+  bool _usernameError = false;
+  bool _emailError = false;
+  bool _passwordError = false;
+  bool _confirmPasswordError = false;
 
   Future<void> _signUp() async {
     final username = _usernameController.text;
-    final password = _passwordController.text;
     final email = _emailController.text;
+    final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+
+    setState(() {
+      _showErrors = true;
+      _usernameError = username.isEmpty ||
+          (_formKey.currentState?.validate() == false && username.isNotEmpty);
+      _emailError = email.isEmpty ||
+          (_formKey.currentState?.validate() == false && email.isNotEmpty);
+      _passwordError = password.isEmpty ||
+          (_formKey.currentState?.validate() == false && password.isNotEmpty);
+      _confirmPasswordError = confirmPassword.isEmpty ||
+          (_formKey.currentState?.validate() == false &&
+              confirmPassword.isNotEmpty);
+    });
 
     if (_formKey.currentState!.validate()) {
       if (username.isEmpty || password.isEmpty || email.isEmpty) {
@@ -67,97 +86,88 @@ class _SignUpScreenState extends State<SignUpScreen> {
               children: [
                 TextFormField(
                   controller: _usernameController,
-                  decoration: InputDecoration(
-                    labelText: 'Username',
-                    floatingLabelStyle: TextStyle(color: Color(0xFF27542A)),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4CAF50)),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                  ),
+                  decoration: inputStyle(
+                      'Username', _formKey, _showErrors, _usernameError),
                   cursorColor: Color(0xFF4CAF50),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
+                      setState(() {
+                        _usernameError = true;
+                      });
                       return 'Please enter your username';
                     }
+                    setState(() {
+                      _usernameError = false;
+                    });
                     return null;
                   },
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    floatingLabelStyle: TextStyle(color: Color(0xFF27542A)),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4CAF50)),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                  ),
+                  decoration:
+                      inputStyle('Email', _formKey, _showErrors, _emailError),
                   cursorColor: Color(0xFF4CAF50),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your username';
+                    String? validMsg = validateEmail(value);
+                    if (validMsg == null) {
+                      setState(() {
+                        _emailError = false;
+                      });
+                      return validMsg;
+                    } else {
+                      setState(() {
+                        _emailError = true;
+                      });
+                      return validMsg;
                     }
-                    return validateEmail(value);
                   },
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _passwordController,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    floatingLabelStyle: TextStyle(color: Color(0xFF27542A)),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4CAF50)),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                  ),
+                  decoration: inputStyle(
+                      'Password', _formKey, _showErrors, _passwordError),
                   cursorColor: Color(0xFF4CAF50),
                   obscureText: true,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
+                    String? validMsg = validatePassword(value);
+                    if (validMsg == null) {
+                      setState(() {
+                        _passwordError = false;
+                      });
+                      return validMsg;
+                    } else {
+                      setState(() {
+                        _passwordError = true;
+                      });
+                      return validMsg;
                     }
-                    return validatePassword(value);
                   },
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _confirmPasswordController,
-                  decoration: InputDecoration(
-                    labelText: 'Confirm Password',
-                    floatingLabelStyle: TextStyle(color: Color(0xFF27542A)),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4CAF50)),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                  ),
+                  decoration: inputStyle('Confirm Password', _formKey,
+                      _showErrors, _confirmPasswordError),
                   cursorColor: Color(0xFF4CAF50),
                   obscureText: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
+                      setState(() {
+                        _confirmPasswordError = true;
+                      });
                       return 'Please confirm your password';
                     }
                     if (value != _passwordController.text) {
+                      setState(() {
+                        _confirmPasswordError = true;
+                      });
                       return 'Passwords do not match';
                     }
+                    setState(() {
+                      _confirmPasswordError = false;
+                    });
                     return null;
                   },
                 ),
