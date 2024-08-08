@@ -1,3 +1,4 @@
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenManager {
@@ -9,6 +10,14 @@ class TokenManager {
 
   Future<String?> getAccessToken() async {
     final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+    final tokenPayload =
+        JwtDecoder.decode(accessToken!); // Decodes the JWT payload
+    final expiration = tokenPayload['exp'] * 1000;
+    final now = DateTime.now().millisecondsSinceEpoch;
+    if (expiration < now) {
+      return null;
+    }
     return prefs.getString('accessToken');
   }
 

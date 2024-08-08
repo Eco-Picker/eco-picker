@@ -105,7 +105,8 @@ class ApiUserService {
     };
 
     try {
-      final response = await ApiService().post(url, headers, body);
+      final response = await http.post(Uri.parse(url),
+          headers: headers, body: jsonEncode(body));
 
       if (response.statusCode == 200) {
         // Handle successful response

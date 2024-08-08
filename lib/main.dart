@@ -11,8 +11,6 @@ import '../data/user.dart';
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
-  final tokenRefresher = TokenRefresher();
-  tokenRefresher.start();
 
   List<CameraDescription> cameras = [];
   CameraDescription? firstCamera;
@@ -66,9 +64,10 @@ class MyApp extends StatelessWidget {
 class AuthWrapper extends StatelessWidget {
   final CameraDescription? camera;
 
-  const AuthWrapper({required this.camera});
+  const AuthWrapper({this.camera});
   @override
   Widget build(BuildContext context) {
+    print('AuthWrapper build called');
     return Consumer<MyAppState>(
       builder: (context, appState, _) {
         if (appState.isSignedIn) {
@@ -88,13 +87,26 @@ class MyAppState extends ChangeNotifier {
   void signIn({required bool emailVerified}) {
     isSignedIn = true;
     isEmailVerified = emailVerified;
+
+    // Start the token refresher
+    final tokenRefresher = TokenRefresher();
+    tokenRefresher.start(this); // Pass the current instance of MyAppState
+
     notifyListeners();
     print('User signed in: $isSignedIn');
   }
 
-  void signOut() {
+  void signOut(BuildContext context) {
     isSignedIn = false;
     isEmailVerified = false;
+    final tokenRefresher = TokenRefresher();
+    tokenRefresher.stop();
     notifyListeners();
+    print('is signed in? $isSignedIn');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => AuthWrapper()),
+      );
+    });
   }
 }

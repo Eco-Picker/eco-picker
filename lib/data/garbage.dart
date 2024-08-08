@@ -1,5 +1,5 @@
 class Garbage {
-  final int id;
+  int? id;
   final String name;
   final String category;
   final String pickedUpAt;
@@ -7,7 +7,7 @@ class Garbage {
   double? longitude;
 
   Garbage({
-    required this.id,
+    this.id,
     required this.name,
     required this.category,
     required this.pickedUpAt,

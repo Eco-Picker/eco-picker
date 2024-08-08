@@ -1,10 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
-import 'package:provider/provider.dart';
-import '../main.dart';
-import '../screens/sign_in_screen.dart';
 import '../utils/constants.dart';
 import 'token_manager.dart';
 
@@ -19,18 +14,6 @@ class ApiService {
     final response = await http.post(Uri.parse(url),
         headers: headers, body: jsonEncode(body));
 
-    if (response.statusCode == 401) {
-      // Token expired, try to refresh it
-      final refreshResponse = await refreshToken();
-      if (refreshResponse) {
-        // Retry the original request with new token
-        final newAccessToken = await _tokenManager.getAccessToken();
-        headers['Authorization'] = 'Bearer $newAccessToken';
-        return http.post(Uri.parse(url),
-            headers: headers, body: jsonEncode(body));
-      }
-    }
-
     return response;
   }
 
@@ -39,13 +22,15 @@ class ApiService {
     Map<String, String> headers,
   ) async {
     final accessToken = await _tokenManager.getAccessToken();
+
     headers['Authorization'] = 'Bearer $accessToken';
 
     final response = await http.get(Uri.parse(url), headers: headers);
 
-    if (response.statusCode == 401) {
+    if (response.statusCode == 403) {
       // Token expired, try to refresh it
       final refreshResponse = await refreshToken();
+      print(refreshResponse);
       if (refreshResponse) {
         // Retry the original request with new token
         final newAccessToken = await _tokenManager.getAccessToken();
@@ -72,9 +57,10 @@ class ApiService {
     final streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);
 
-    if (response.statusCode == 401) {
+    if (response.statusCode == 403) {
       final refreshResponse = await refreshToken();
       if (refreshResponse) {
+        print(refreshResponse);
         final newAccessToken = await _tokenManager.getAccessToken();
         headers['Authorization'] = 'Bearer $newAccessToken';
 
@@ -91,8 +77,11 @@ class ApiService {
   }
 
   Future<bool> refreshToken() async {
-    const url = '$baseUrl/p/auth/renew_access_token';
-    final headers = {'Content-Type': 'application/json'};
+    const url = '$baseUrl/auth/renew_access_token';
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
+    };
     final refreshToken = await _tokenManager.getRefreshToken();
 
     if (refreshToken == null) {
@@ -103,27 +92,29 @@ class ApiService {
     final body = json.encode({
       'refreshToken': refreshToken,
     });
+    print(body);
 
     try {
       final response =
           await http.post(Uri.parse(url), headers: headers, body: body);
-
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        await _tokenManager.saveTokens(
-            data['accessToken'], data['refreshToken']);
-        print('Token refreshed: $data');
-        return true;
+
+        if (data['accessToken'] != null) {
+          // Save the new access token and retain the old refresh token
+          await _tokenManager.saveTokens(
+            data['accessToken'],
+            refreshToken, // Retaining the old refresh token
+          );
+          print('Token refreshed: ${data['accessToken']}');
+          return true;
+        } else {
+          print('No access token returned from server');
+          return false;
+        }
       } else {
-        // Log out when refresh token is terminated
         await _tokenManager.clearTokens();
         print('Failed to refresh token, logging out');
-        Provider.of<MyAppState>(context as BuildContext, listen: false)
-            .signOut();
-        Navigator.of(context as BuildContext).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => SignInScreen()),
-          (route) => false,
-        );
         return false;
       }
     } catch (e) {

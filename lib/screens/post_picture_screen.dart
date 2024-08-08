@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../api/api_garbage_service.dart';
 import '../data/garbage.dart';
 import '../utils/styles.dart';
+import '../utils/toastbox.dart';
 
 class PostPictureScreen extends StatefulWidget {
   final String imagePath;
@@ -36,20 +37,20 @@ class _PostPictureScreenState extends State<PostPictureScreen> {
         _analyzeGarbageFuture = analyzeResult;
       });
 
-      // if (_analyzeGarbageFuture['code'] == "VALIDATION_FAILED") {
-      //   showToast('Please try again with the valid garbage picture.', 'error');
-      //   Navigator.pop(context);
-      // } else {
-      _garbageResult = Garbage.fromJson(_analyzeGarbageFuture['garbage']);
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-            builder: (context) => AnalyzeResultScreen(
-                  imagePath: widget.imagePath,
-                  garbageResult: _garbageResult,
-                  location: widget.location,
-                )),
-      );
-      // }
+      if (_analyzeGarbageFuture['code'] == "VALIDATION_FAILED") {
+        showToast('Please try again with the valid garbage picture.', 'error');
+        Navigator.pop(context);
+      } else {
+        _garbageResult = Garbage.fromJson(_analyzeGarbageFuture['garbage']);
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+              builder: (context) => AnalyzeResultScreen(
+                    imagePath: widget.imagePath,
+                    garbageResult: _garbageResult,
+                    location: widget.location,
+                  )),
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),

@@ -17,11 +17,12 @@ class SettingScreen extends StatelessWidget {
     } catch (e) {
       showToast('Failed to logout: ${e.toString()}', 'status');
     } finally {
-      Provider.of<MyAppState>(context, listen: false).signOut();
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => SignInScreen()),
-        (route) => false,
-      );
+      final appState = Provider.of<MyAppState>(context, listen: false);
+      appState.signOut(context);
+      // Navigator.of(context).pushAndRemoveUntil(
+      //   MaterialPageRoute(builder: (context) => SignInScreen()),
+      //   (Route<dynamic> route) => false,
+      // );
     }
   }
 

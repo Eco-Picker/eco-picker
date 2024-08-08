@@ -34,6 +34,7 @@ dependencies:
   jwt_decoder: ^2.0.1
   url_launcher: ^6.3.0
   share: ^2.0.4
+  flutter_riverpod: ^1.0.0
 
 dependency_overrides:
   geolocator_web: ^4.1.0
