@@ -36,9 +36,8 @@ class ApiNewsletterService {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
     };
-    final body = json.encode({"id": id});
-    final response = await http.post(Uri.parse('$baseUrl/newsletter'),
-        headers: headers, body: body);
+    final response =
+        await http.get(Uri.parse('$baseUrl/newsletter/$id'), headers: headers);
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);

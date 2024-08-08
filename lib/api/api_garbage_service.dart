@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import '../data/garbage.dart';
 import 'token_manager.dart';
 import '../utils/constants.dart';
@@ -8,32 +9,37 @@ import '../utils/constants.dart';
 class ApiGarbageService {
   final TokenManager _tokenManager = TokenManager();
 
-  Future<Map<String, dynamic>> analyzeGarbage(
-      String category, File image) async {
-    final uri = Uri.parse('$baseUrl/garbage/analyze');
-    String? categoryEnum = categoryENUM[category];
-
-    final imageBytes = await image.readAsBytes();
-    final base64Image = base64Encode(imageBytes);
+  Future<Map<String, dynamic>> analyzeGarbage(File image) async {
+    final uri = Uri.parse('$baseUrl/analyze');
 
     final headers = {
-      'Content-Type': 'application/json',
       'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',
+      'Content-Type': 'multipart/form-data'
     };
 
-    final body = json.encode({"category": categoryEnum, "image": base64Image});
-    final response = await http.post(uri, headers: headers, body: body);
+    final request = http.MultipartRequest('POST', uri)
+      ..headers.addAll(headers)
+      ..files.add(await http.MultipartFile.fromPath(
+        'file',
+        image.path,
+        contentType: MediaType('image', 'jpeg'),
+      ));
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    print(response.statusCode);
+
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
       return jsonResponse;
-      // return Garbage.fromJson(jsonResponse['garbage']);
     } else {
       throw Exception('Failed to analyze');
     }
   }
 
   Future<bool> saveGarbage(Garbage garbage) async {
-    final uri = Uri.parse('$baseUrl/garbage/save');
+    final uri = Uri.parse('$baseUrl/save');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',

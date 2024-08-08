@@ -1,6 +1,8 @@
+import 'package:eco_picker/utils/change_date_format.dart';
 import 'package:eco_picker/utils/toastbox.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../api/api_newsletter_service.dart';
 import '../data/newsletter.dart';
 import '../utils/styles.dart';
@@ -17,6 +19,15 @@ class NewsDetailScreen extends StatefulWidget {
 class _NewsDetailScreenState extends State<NewsDetailScreen> {
   late ApiNewsletterService _apiNewsletterService = ApiNewsletterService();
   late Future<Newsletter> _newsletterFuture;
+
+  Future<void> _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -40,9 +51,12 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
               ),
             );
           } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
           } else if (snapshot.hasData) {
-            if (snapshot.data!.title.isNotEmpty) {
-              Newsletter newsletter = snapshot as Newsletter;
+            Newsletter? newsletter = snapshot.data;
+            if (newsletter != null && newsletter.title.isNotEmpty) {
               return Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -50,32 +64,35 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                   children: [
                     Text(
                       newsletter.title,
-                      style: midTextStyle(),
+                      style: newsTitleTextStyle(),
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'Published at: ${DateFormat('yyyy.MM.dd').format(newsletter.publishedAt as DateTime)}',
-                      style: greyTextStyle(),
+                      'Published at: ${changeDateFormat(newsletter.publishedAt ?? '')}',
+                      style: newsGreyTextStyle(),
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: 8),
                     Text(
                       newsletter.content,
-                      style: bodyTextStyle(),
+                      style: newsBodyTextStyle(),
                     ),
                     SizedBox(height: 8),
-                    Align(
-                      alignment: Alignment.topRight,
+                    GestureDetector(
+                      onTap: () => _launchURL(newsletter.source),
                       child: Text(
                         'Source: ${newsletter.source}',
-                        style: greyTextStyle(),
+                        style: newsGreyTextStyle().copyWith(
+                          decoration: TextDecoration.underline,
+                        ),
                       ),
                     ),
                     SizedBox(height: 16),
                     Center(
                       child: IconButton(
-                        icon: Icon(Icons.open_in_new),
+                        icon: Icon(Icons.share),
                         onPressed: () {
-                          // 클릭 시 다른 화면으로 이동하거나 웹 페이지 열기 등의 액션을 추가
+                          Share.share(
+                              'Check out this article from Eco Picker!: ${newsletter.source}');
                         },
                       ),
                     ),

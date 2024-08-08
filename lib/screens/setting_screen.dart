@@ -1,4 +1,5 @@
 import 'package:eco_picker/main.dart';
+import 'package:eco_picker/utils/toastbox.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,12 +12,17 @@ class SettingScreen extends StatelessWidget {
   final ApiUserService _ApiUserService = ApiUserService();
 
   void _logout(BuildContext context) {
-    _ApiUserService.logout();
-    Provider.of<MyAppState>(context, listen: false).signOut();
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => SignInScreen()),
-      (route) => false,
-    );
+    try {
+      _ApiUserService.logout();
+    } catch (e) {
+      showToast('Failed to logout: ${e.toString()}', 'status');
+    } finally {
+      Provider.of<MyAppState>(context, listen: false).signOut();
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => SignInScreen()),
+        (route) => false,
+      );
+    }
   }
 
   @override

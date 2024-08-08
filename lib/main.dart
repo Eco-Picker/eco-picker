@@ -7,7 +7,6 @@ import 'screens/sign_in_screen.dart';
 import 'components/navigation_bar.dart';
 import 'utils/token_refresher.dart';
 import '../data/user.dart';
-import '../api/api_user_service.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
@@ -40,7 +39,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => MyAppState()),
-        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => UserName()),
       ],
       child: MaterialApp(
         title: 'Eco Picker',
@@ -96,36 +95,6 @@ class MyAppState extends ChangeNotifier {
   void signOut() {
     isSignedIn = false;
     isEmailVerified = false;
-    notifyListeners();
-  }
-}
-
-class UserProvider with ChangeNotifier {
-  User? _user;
-  bool _isLoading = true;
-
-  User? get user => _user;
-  bool get isLoading => _isLoading;
-
-  UserProvider() {
-    fetchUser();
-  }
-
-  Future<void> fetchUser() async {
-    try {
-      _user = await ApiUserService().fetchUserInfo();
-    } catch (e) {
-      print('Error fetching user info: $e');
-      _user = null;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  void setUser(User user) {
-    _user = user;
-    _isLoading = false;
     notifyListeners();
   }
 }

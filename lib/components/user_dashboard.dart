@@ -1,6 +1,7 @@
 import 'package:eco_picker/api/api_ranking_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:provider/provider.dart';
 import '../api/api_user_service.dart';
 import '../data/user.dart';
 import '../utils/rank_image.dart';
@@ -25,6 +26,7 @@ class _UserDashboard extends State<UserDashboard>
   final ApiUserService _apiUserService = ApiUserService();
   final ApiRankingService _apiRankingService = ApiRankingService();
   late Future<UserStatistics> _userStatisticsFuture;
+  String? userName;
 
   @override
   void initState() {
@@ -42,6 +44,7 @@ class _UserDashboard extends State<UserDashboard>
 
     if (widget.rankerID == null) {
       _userStatisticsFuture = _apiUserService.fetchUserStatistics();
+      userName = Provider.of<UserName>(context).userName;
     } else {
       _userStatisticsFuture = _apiRankingService.fetchRanker(widget.rankerID!);
     }
@@ -88,7 +91,7 @@ class _UserDashboard extends State<UserDashboard>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  userStatistics.userName,
+                  userName ?? userStatistics.userName!,
                   style: midTextStyle(),
                 ),
                 Row(

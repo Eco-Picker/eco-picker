@@ -19,31 +19,19 @@ class PostPictureScreen extends StatefulWidget {
 
 class _PostPictureScreenState extends State<PostPictureScreen> {
   final ApiGarbageService _apiGarbageService = ApiGarbageService();
-  String _selectedCategory = 'Select a category';
   bool _isLoading = false;
   Garbage? _garbageResult;
   late Map<String, dynamic> _analyzeGarbageFuture;
 
   Future<void> analyzeImage() async {
-    if (_selectedCategory == 'Select a category') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please select a category')),
-      );
-      return;
-    }
-
     setState(() {
       _isLoading = true;
     });
 
     try {
       final imageFile = File(widget.imagePath);
+      final analyzeResult = await _apiGarbageService.analyzeGarbage(imageFile);
 
-      // API 호출을 async로 처리
-      final analyzeResult =
-          await _apiGarbageService.analyzeGarbage(_selectedCategory, imageFile);
-
-      // 상태 업데이트는 setState 안에서 처리
       setState(() {
         _analyzeGarbageFuture = analyzeResult;
       });
@@ -91,32 +79,6 @@ class _PostPictureScreenState extends State<PostPictureScreen> {
               ),
               SizedBox(
                 height: 8,
-              ),
-              Text('Choose Category of the image:'),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: DropdownButton<String>(
-                  value: _selectedCategory,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _selectedCategory = newValue!;
-                    });
-                  },
-                  items: <String>[
-                    'Select a category',
-                    'Plastic',
-                    'Metal',
-                    'Glass',
-                    'Cardboard',
-                    'Food scraps',
-                    'Other',
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,

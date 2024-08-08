@@ -19,7 +19,12 @@ class _NewsListScreenState extends State<NewsListScreen>
   late TabController _tabController;
   String _selectedCategory = 'ALL';
 
-  final List<String> _categories = ['ALL', 'NEWS', 'EVENT', 'EDUCATION'];
+  final List<String> _categories = [
+    'ALL',
+    'NEWS',
+    'EVENT',
+    'EDUCATION',
+  ];
 
   @override
   void initState() {
@@ -94,7 +99,14 @@ class _NewsListScreenState extends State<NewsListScreen>
         titleTextStyle: headingTextStyle(),
         bottom: TabBar(
           controller: _tabController,
-          tabs: _categories.map((category) => Tab(text: category)).toList(),
+          tabs: _categories
+              .map((category) => Tab(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(category),
+                    ),
+                  ))
+              .toList(),
           indicatorColor: Color(0xFFE3F5E3),
           labelColor: Color(0xFFE3F5E3),
           unselectedLabelColor: Color(0xFFE5E5E5),

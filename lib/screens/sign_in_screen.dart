@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:provider/provider.dart';
 import '../api/api_user_service.dart';
+import '../api/token_manager.dart';
+import '../data/user.dart';
 import '../main.dart';
 import 'sign_up_screen.dart';
 import 'forgot_password_screen.dart';
@@ -18,7 +21,15 @@ class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TokenManager _tokenManager = TokenManager();
   bool _isLoading = false;
+
+  Future<void> saveUserId() async {
+    Map<String, dynamic> decodedToken =
+        JwtDecoder.decode(await _tokenManager.getAccessToken() ?? '');
+    Provider.of<UserName>(context, listen: false)
+        .setUserName(decodedToken['sub']);
+  }
 
   Future<void> _signIn() async {
     final username = _usernameController.text;
@@ -48,10 +59,10 @@ class _SignInScreenState extends State<SignInScreen> {
                 'You haven\'t verified your email.\nPlease check your inbox and click the verification URL to start.',
                 'error');
           } else {
+            saveUserId();
             Provider.of<MyAppState>(context, listen: false).signIn(
               emailVerified: emailVerified,
             );
-            Provider.of<UserProvider>(context, listen: false).setUser(user);
           }
         } else {
           showToast(loginStatus, 'error');

@@ -22,10 +22,14 @@ PODS:
     - FlutterMacOS
   - permission_handler_apple (9.3.0):
     - Flutter
+  - share (0.0.1):
+    - Flutter
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
   - Toast (4.1.1)
+  - url_launcher_ios (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
@@ -37,8 +41,10 @@ DEPENDENCIES:
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - Toast
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
   trunk:
@@ -62,8 +68,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
+  share:
+    :path: ".symlinks/plugins/share/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
   camera_avfoundation: dd002b0330f4981e1bbcb46ae9b62829237459a4
@@ -75,8 +85,10 @@ SPEC CHECKSUMS:
   image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
+  share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   Toast: 1f5ea13423a1e6674c4abdac5be53587ae481c4e
+  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
 
 PODFILE CHECKSUM: 7b0edbc4028c882f2141582c2e627dd810fd2fb9
 

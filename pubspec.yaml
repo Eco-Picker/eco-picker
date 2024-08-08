@@ -31,6 +31,9 @@ dependencies:
   http_parser: ^4.0.2
   intl: ^0.19.0
   flutter_dotenv: ^5.1.0
+  jwt_decoder: ^2.0.1
+  url_launcher: ^6.3.0
+  share: ^2.0.4
 
 dependency_overrides:
   geolocator_web: ^4.1.0

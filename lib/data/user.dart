@@ -1,3 +1,16 @@
+import 'package:flutter/material.dart';
+
+class UserName extends ChangeNotifier {
+  String? _userName;
+
+  String? get userName => _userName;
+
+  void setUserName(String userName) {
+    _userName = userName;
+    notifyListeners();
+  }
+}
+
 class User {
   final int id;
   final String username;
@@ -24,16 +37,16 @@ class User {
 class UserStatistics {
   final Count count;
   final Score score;
-  final String userName;
+  String? userName;
 
   UserStatistics({
     required this.count,
     required this.score,
-    required this.userName,
+    this.userName,
   });
 
   factory UserStatistics.fromJson(Map<String, dynamic> json) {
-    String userName;
+    String? userName;
     Count count;
     Score score;
     if (json.containsKey('rankerStatistics')) {
@@ -41,7 +54,6 @@ class UserStatistics {
       count = Count.fromJson(json['rankerStatistics']['count'] ?? {});
       score = Score.fromJson(json['rankerStatistics']['score'] ?? {});
     } else {
-      userName = json['username']['userName'] ?? 'Unknown';
       count = Count.fromJson(json['count'] ?? {});
       score = Score.fromJson(json['score'] ?? {});
     }
@@ -49,7 +61,7 @@ class UserStatistics {
     return UserStatistics(
       count: count,
       score: score,
-      userName: userName,
+      userName: json['username'] ?? 'Unknown',
     );
   }
 
@@ -67,7 +79,7 @@ class UserStatistics {
     } else if (totalScore >= 0) {
       return 'Bronze';
     } else {
-      return 'Unknown'; // 점수가 0보다 작은 경우를 대비한 처리
+      return 'Unknown';
     }
   }
 }

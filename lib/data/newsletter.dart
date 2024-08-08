@@ -5,8 +5,6 @@ class Newsletter {
   final String category;
   final String source;
   final String? publishedAt;
-  final String? startAt;
-  final String? endAt;
 
   Newsletter({
     required this.id,
@@ -15,8 +13,6 @@ class Newsletter {
     required this.category,
     required this.source,
     this.publishedAt,
-    this.startAt,
-    this.endAt,
   });
 
   factory Newsletter.fromJson(Map<String, dynamic> json) {
@@ -27,8 +23,6 @@ class Newsletter {
       category: json["category"],
       source: json["source"],
       publishedAt: json["publishedAt"],
-      startAt: json["startAt"],
-      endAt: json["endAt"],
     );
   }
 }

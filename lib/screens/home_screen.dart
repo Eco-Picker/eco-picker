@@ -2,7 +2,7 @@ import 'package:eco_picker/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../components/rankingboard.dart';
-import '../main.dart';
+import '../data/user.dart';
 import '../components/random_newsbox.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,8 +13,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-
+    String? userName = Provider.of<UserName>(context).userName;
     return Scaffold(
       appBar: AppBar(
         title: Text('EcoPicker'),
@@ -43,21 +42,14 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (userProvider.isLoading)
-                  Center(
-                    child: CircularProgressIndicator(
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
-                    ),
-                  )
-                else if (userProvider.user == null)
+                if (userName == null)
                   Text(
                     'Hello,\nThanks for saving Earth!',
                     style: midTextStyle(),
                   )
                 else
                   Text(
-                    'Hello, ${userProvider.user!.username}!\nThanks for saving Earth!',
+                    'Hello, $userName!\nThanks for saving Earth!',
                     style: midTextStyle(),
                   ),
                 SizedBox(height: 10.0),

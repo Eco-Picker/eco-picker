@@ -2,7 +2,6 @@ class Garbage {
   final int id;
   final String name;
   final String category;
-  String? memo;
   final String pickedUpAt;
   double? latitude;
   double? longitude;
@@ -11,7 +10,6 @@ class Garbage {
     required this.id,
     required this.name,
     required this.category,
-    this.memo,
     required this.pickedUpAt,
     this.latitude,
     this.longitude,
@@ -22,7 +20,6 @@ class Garbage {
       id: json['id'],
       name: json['name'],
       category: json['category'],
-      memo: json['memo'],
       pickedUpAt: json['pickedUpAt'],
       latitude: json['latitude'],
       longitude: json['longitude'],
@@ -39,7 +36,6 @@ class Garbage {
       'id': id,
       'name': name,
       'category': category,
-      'memo': memo,
       'pickedUpAt': pickedUpAt,
       'latitude': latitude,
       'longitude': longitude,

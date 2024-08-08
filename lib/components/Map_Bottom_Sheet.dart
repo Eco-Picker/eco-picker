@@ -228,7 +228,6 @@ class _MapBottomSheetState extends State<MapBottomSheet> {
                   )
                 else
                   Text('No coordinates available', style: bodyTextStyle()),
-                Text(garbage.memo ?? '', style: greyTextStyle()),
               ],
             ),
           ),

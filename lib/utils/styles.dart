@@ -112,3 +112,27 @@ TextStyle midTextStyle() {
     color: Color(0xFF3D3D3D),
   );
 }
+
+TextStyle newsTitleTextStyle() {
+  return const TextStyle(
+    fontSize: 21,
+    fontWeight: FontWeight.w600,
+    color: Color(0xFF3D3D3D),
+  );
+}
+
+TextStyle newsGreyTextStyle() {
+  return TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.w400,
+    color: Color(0xFFA3A3A3),
+  );
+}
+
+TextStyle newsBodyTextStyle() {
+  return const TextStyle(
+      fontSize: 17,
+      fontWeight: FontWeight.w500,
+      color: Color(0xFF3D3D3D),
+      height: 1.5);
+}
