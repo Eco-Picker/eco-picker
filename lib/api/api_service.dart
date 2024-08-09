@@ -27,18 +27,6 @@ class ApiService {
 
     final response = await http.get(Uri.parse(url), headers: headers);
 
-    if (response.statusCode == 403) {
-      // Token expired, try to refresh it
-      final refreshResponse = await refreshToken();
-      print(refreshResponse);
-      if (refreshResponse) {
-        // Retry the original request with new token
-        final newAccessToken = await _tokenManager.getAccessToken();
-        headers['Authorization'] = 'Bearer $newAccessToken';
-        return http.get(Uri.parse(url), headers: headers);
-      }
-    }
-
     return response;
   }
 
@@ -56,22 +44,6 @@ class ApiService {
 
     final streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);
-
-    if (response.statusCode == 403) {
-      final refreshResponse = await refreshToken();
-      if (refreshResponse) {
-        print(refreshResponse);
-        final newAccessToken = await _tokenManager.getAccessToken();
-        headers['Authorization'] = 'Bearer $newAccessToken';
-
-        final retryRequest = http.MultipartRequest('POST', Uri.parse(url))
-          ..headers.addAll(headers)
-          ..files.addAll(files);
-
-        final retryStreamedResponse = await retryRequest.send();
-        response = await http.Response.fromStream(retryStreamedResponse);
-      }
-    }
 
     return response;
   }

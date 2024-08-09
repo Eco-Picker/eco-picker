@@ -17,6 +17,8 @@ class ApiUserService {
       final data = json.decode(response.body) as Map<String, dynamic>;
       print(data['userInfo']);
       return User.fromJson(data['userInfo']);
+    } else if (response.statusCode == 403) {
+      throw Exception('LOG_OUT');
     } else {
       throw Exception('Failed to load user info');
     }
@@ -31,6 +33,8 @@ class ApiUserService {
       final data = json.decode(response.body) as Map<String, dynamic>;
 
       return UserStatistics.fromJson(data['userStatistics']);
+    } else if (response.statusCode == 403) {
+      throw Exception('LOG_OUT');
     } else {
       throw Exception('Failed to load user statistics');
     }
@@ -52,8 +56,8 @@ class ApiUserService {
       return data['code'] == 'INVALID_PASSWORD'
           ? 'Please type a vaild password.'
           : 'pass';
-    } else if (response.statusCode == 400) {
-      return data['errors'].message;
+    } else if (response.statusCode == 403) {
+      throw Exception('LOG_OUT');
     } else {
       throw Exception('Failed to load user info');
     }
@@ -125,7 +129,6 @@ class ApiUserService {
       }
     } catch (e) {
       // Handle network errors
-      print('catched some network error');
       return "Network error:\n ${e.toString()}";
     }
   }
@@ -139,8 +142,6 @@ class ApiUserService {
       print('Logged out');
       return json.decode(response.body);
     } else {
-      final code = response.statusCode;
-      print('statusCode: $code');
       throw Exception('Failed to logout');
     }
   }
@@ -152,14 +153,18 @@ class ApiUserService {
       'email': email,
     };
     final response = await ApiService().post(url, headers, body);
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return data['result'];
-    } else {
-      final code = response.statusCode;
-      print('statusCode: $code');
-      throw Exception('Failed to send temporary password.');
+    try {
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['result'];
+      } else {
+        final code = response.statusCode;
+        print('statusCode: $code');
+        throw Exception('Failed to send temporary password.');
+      }
+    } catch (e) {
+      // Handle network errors
+      throw "Network error:\n ${e.toString()}";
     }
   }
 }

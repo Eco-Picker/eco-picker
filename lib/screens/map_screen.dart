@@ -3,13 +3,14 @@ import 'package:eco_picker/utils/toastbox.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:eco_picker/api/api_garbage_service.dart';
-import 'package:eco_picker/components/category_legend.dart';
 import 'package:eco_picker/data/garbage.dart';
 import 'package:eco_picker/utils/geolocator_utils.dart';
 import 'package:eco_picker/utils/get_json_file.dart';
 import 'package:eco_picker/utils/resize_image.dart';
 import 'package:eco_picker/utils/styles.dart';
+import 'package:provider/provider.dart';
 import '../components/map_bottom_sheet.dart';
+import '../main.dart';
 
 class MapScreen extends StatefulWidget {
   @override
@@ -70,19 +71,30 @@ class _MapScreenState extends State<MapScreen> {
           position: LatLng(garbage.latitude, garbage.longitude),
           icon: markerIcon,
           onTap: () async {
-            final garbageDetails =
-                await _apiGarbageService.getGarbageByID(garbage.garbageId);
-            if (mounted) {
-              showModalBottomSheet(
-                backgroundColor: Colors.transparent,
-                context: context,
-                builder: (context) {
-                  return MapBottomSheet(
-                    garbageDetail: garbageDetails,
-                    onCategorySelected: generateMarkers,
-                  );
-                },
-              );
+            try {
+              final garbageDetails =
+                  await _apiGarbageService.getGarbageByID(garbage.garbageId);
+              if (mounted) {
+                showModalBottomSheet(
+                  backgroundColor: Colors.transparent,
+                  context: context,
+                  builder: (context) {
+                    return MapBottomSheet(
+                      garbageDetail: garbageDetails,
+                      onCategorySelected: generateMarkers,
+                    );
+                  },
+                );
+              }
+            } catch (e) {
+              if (e == 'LOG_OUT') {
+                showToast('User token expired. Logging out.', 'error');
+                final appState =
+                    Provider.of<MyAppState>(context, listen: false);
+                appState.signOut(context);
+              } else {
+                showToast('Error analyzing garbage: $e', 'error');
+              }
             }
           },
         );
@@ -108,19 +120,8 @@ class _MapScreenState extends State<MapScreen> {
 
       // Move the map camera to fit the bounds if there are markers
       if (bounds != null) {
-        // Calculate the center of the bounds
-        final center = LatLng(
-          (bounds.southwest.latitude + bounds.northeast.latitude) / 2,
-          (bounds.southwest.longitude + bounds.northeast.longitude) / 2,
-        );
-
         mapController.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: center,
-              zoom: 16.0,
-            ),
-          ),
+          CameraUpdate.newLatLngBounds(bounds, 50), // Padding added
         );
       }
     }
@@ -145,7 +146,13 @@ class _MapScreenState extends State<MapScreen> {
       // Generate markers after fetching garbage locations
       generateMarkers();
     } catch (e) {
-      print('Error fetching garbage locations: $e');
+      if (e == 'LOG_OUT') {
+        showToast('User token expired. Logging out.', 'error');
+        final appState = Provider.of<MyAppState>(context, listen: false);
+        appState.signOut(context);
+      } else {
+        showToast('Error fetching garbage locations: $e', 'error');
+      }
     }
   }
 
@@ -197,9 +204,8 @@ class _MapScreenState extends State<MapScreen> {
                             position: LatLng(0, 0),
                           ),
                         },
-                  padding: const EdgeInsets.only(bottom: 60),
+                  padding: const EdgeInsets.only(bottom: 70),
                 ),
-          CategoryLegend(),
           MapBottomSheet(
             controller: _sheetController,
             onCategorySelected: generateMarkers,

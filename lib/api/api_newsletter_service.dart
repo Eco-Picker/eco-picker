@@ -21,6 +21,8 @@ class ApiNewsletterService {
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
       return NewsList.fromJson(jsonResponse);
+    } else if (response.statusCode == 403) {
+      throw Exception('LOG_OUT');
     } else {
       throw Exception('Failed to load news list');
     }
@@ -35,6 +37,8 @@ class ApiNewsletterService {
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
       return Newsletter.fromJson(jsonResponse['newsletter']);
+    } else if (response.statusCode == 403) {
+      throw Exception('LOG_OUT');
     } else {
       throw Exception('Failed to load newsletter');
     }
@@ -49,6 +53,8 @@ class ApiNewsletterService {
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
       return NewsSummary.fromJson(jsonResponse['newsletterSummary']);
+    } else if (response.statusCode == 403) {
+      throw Exception('LOG_OUT');
     } else {
       throw Exception('Failed to generate random newsletter');
     }

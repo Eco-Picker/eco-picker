@@ -98,9 +98,9 @@ class _MapBottomSheetState extends State<MapBottomSheet> {
                 collapsedHeight: 45,
                 toolbarHeight: 45,
                 pinned: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Text('Choose Category', style: titleWhiteTextStyle()),
-                ),
+                title: Center(
+                    child:
+                        Text('Choose Category', style: titleWhiteTextStyle())),
               ),
               SliverList(
                 delegate: SliverChildBuilderDelegate(

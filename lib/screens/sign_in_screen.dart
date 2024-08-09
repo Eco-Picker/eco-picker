@@ -57,24 +57,32 @@ class _SignInScreenState extends State<SignInScreen> {
       });
       try {
         var loginStatus = await _apiUserService.login(username, password);
-
         if (loginStatus == "success") {
           await Future.delayed(Duration(seconds: 1));
-          final user = await _apiUserService.fetchUserInfo();
+          try {
+            User user = await _apiUserService.fetchUserInfo();
+            user.onboardingStatus == "COMPLETE"
+                ? emailVerified = true
+                : emailVerified = false;
 
-          user.onboardingStatus == "COMPLETE"
-              ? emailVerified = true
-              : emailVerified = false;
-
-          if (!emailVerified) {
-            showToast(
-                'You haven\'t verified your email.\nPlease check your inbox and click the verification URL to start.',
-                'error');
-          } else {
-            saveUserId();
-            Provider.of<MyAppState>(context, listen: false).signIn(
-              emailVerified: emailVerified,
-            );
+            if (!emailVerified) {
+              showToast(
+                  'You haven\'t verified your email.\nPlease check your inbox and click the verification URL to start.',
+                  'error');
+            } else {
+              saveUserId();
+              Provider.of<MyAppState>(context, listen: false).signIn(
+                emailVerified: emailVerified,
+              );
+            }
+          } catch (e) {
+            if (e == 'LOG_OUT') {
+              showToast('User token expired. Logging out.', 'error');
+              final appState = Provider.of<MyAppState>(context, listen: false);
+              appState.signOut(context);
+            } else {
+              showToast('Error fetching user info: $e', 'error');
+            }
           }
         } else {
           showToast(loginStatus, 'error');

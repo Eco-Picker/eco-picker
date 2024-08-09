@@ -2,8 +2,10 @@ import 'dart:io';
 import 'package:eco_picker/screens/analyze_result_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import '../api/api_garbage_service.dart';
 import '../data/garbage.dart';
+import '../main.dart';
 import '../utils/styles.dart';
 import '../utils/toastbox.dart';
 
@@ -33,14 +35,13 @@ class _PostPictureScreenState extends State<PostPictureScreen> {
       final imageFile = File(widget.imagePath);
       final analyzeResult = await _apiGarbageService.analyzeGarbage(imageFile);
 
-      setState(() {
-        _analyzeGarbageFuture = analyzeResult;
-      });
-
-      if (_analyzeGarbageFuture['code'] == "VALIDATION_FAILED") {
+      if (_analyzeGarbageFuture['result'] == false) {
         showToast('Please try again with the valid garbage picture.', 'error');
         Navigator.pop(context);
       } else {
+        setState(() {
+          _analyzeGarbageFuture = analyzeResult;
+        });
         _garbageResult = Garbage.fromJson(_analyzeGarbageFuture['garbage']);
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
@@ -52,9 +53,13 @@ class _PostPictureScreenState extends State<PostPictureScreen> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      if (e == 'LOG_OUT') {
+        showToast('User token expired. Logging out.', 'error');
+        final appState = Provider.of<MyAppState>(context, listen: false);
+        appState.signOut(context);
+      } else {
+        showToast('Error analyzing garbage: $e', 'error');
+      }
     } finally {
       setState(() {
         _isLoading = false;

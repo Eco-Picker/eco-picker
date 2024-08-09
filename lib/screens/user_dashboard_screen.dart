@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../components/scoreboard.dart';
 import '../utils/styles.dart';
 
-class UserInfoScreen extends StatelessWidget {
+class UserDashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

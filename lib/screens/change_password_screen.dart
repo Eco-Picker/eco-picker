@@ -1,6 +1,8 @@
 import 'package:eco_picker/utils/toastbox.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../api/api_user_service.dart';
+import '../main.dart';
 import '../utils/styles.dart';
 import '../utils/validator.dart';
 
@@ -58,7 +60,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           showToast(result, 'error');
         }
       } catch (e) {
-        showToast('An error occurred: $e', 'error');
+        if (e == 'LOG_OUT') {
+          showToast('User token expired. Logging out.', 'error');
+          final appState = Provider.of<MyAppState>(context, listen: false);
+          appState.signOut(context);
+        } else {
+          showToast('Error changing password: $e', 'error');
+        }
       }
     }
   }

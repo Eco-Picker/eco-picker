@@ -4,9 +4,11 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 import '../api/api_user_service.dart';
 import '../data/user.dart';
+import '../main.dart';
 import '../utils/rank_image.dart';
 import '../utils/constants.dart';
 import '../utils/styles.dart';
+import '../utils/toastbox.dart';
 
 class UserDashboard extends StatefulWidget {
   final int? rankerID;
@@ -16,8 +18,6 @@ class UserDashboard extends StatefulWidget {
   _UserDashboard createState() => _UserDashboard();
 }
 
-// check if 'user' is me.
-// fetch ranker statistics if rankerID is passed.
 class _UserDashboard extends State<UserDashboard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
@@ -43,10 +43,38 @@ class _UserDashboard extends State<UserDashboard>
     _controller.forward();
 
     if (widget.rankerID == null) {
-      _userStatisticsFuture = _apiUserService.fetchUserStatistics();
-      userName = Provider.of<UserName>(context).userName;
+      try {
+        _userStatisticsFuture = _apiUserService.fetchUserStatistics();
+      } catch (e) {
+        if (e == 'LOG_OUT') {
+          showToast('User token expired. Logging out.', 'error');
+          final appState = Provider.of<MyAppState>(context, listen: false);
+          appState.signOut(context);
+        } else {
+          showToast('Error analyzing garbage: $e', 'error');
+        }
+      }
     } else {
-      _userStatisticsFuture = _apiRankingService.fetchRanker(widget.rankerID!);
+      try {
+        _userStatisticsFuture =
+            _apiRankingService.fetchRanker(widget.rankerID!);
+      } catch (e) {
+        if (e == 'LOG_OUT') {
+          showToast('User token expired. Logging out.', 'error');
+          final appState = Provider.of<MyAppState>(context, listen: false);
+          appState.signOut(context);
+        } else {
+          showToast('Error analyzing garbage: $e', 'error');
+        }
+      }
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (widget.rankerID == null) {
+      userName = Provider.of<UserName>(context).userName;
     }
   }
 
@@ -245,6 +273,7 @@ class _UserDashboard extends State<UserDashboard>
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
               childAspectRatio: 5,
+              physics: const NeverScrollableScrollPhysics(),
               children: [
                 _buildScoreDetail(
                     categoryColors['Plastic']!,

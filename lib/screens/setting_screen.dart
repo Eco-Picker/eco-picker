@@ -18,10 +18,6 @@ class SettingScreen extends StatelessWidget {
     } finally {
       final appState = Provider.of<MyAppState>(context, listen: false);
       appState.signOut(context);
-      // Navigator.of(context).pushAndRemoveUntil(
-      //   MaterialPageRoute(builder: (context) => SignInScreen()),
-      //   (Route<dynamic> route) => false,
-      // );
     }
   }
 

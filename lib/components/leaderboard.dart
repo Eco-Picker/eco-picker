@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../api/api_ranking_service.dart';
 import '../data/ranking.dart';
+import '../main.dart';
 import '../utils/toastbox.dart';
 import 'user_dashboard.dart';
 
@@ -16,7 +18,17 @@ class _LeaderboardState extends State<Leaderboard> {
   @override
   void initState() {
     super.initState();
-    _rankingFuture = _apiRankingService.fetchRanking();
+    try {
+      _rankingFuture = _apiRankingService.fetchRanking();
+    } catch (e) {
+      if (e == 'LOG_OUT') {
+        showToast('User token expired. Logging out.', 'error');
+        final appState = Provider.of<MyAppState>(context, listen: false);
+        appState.signOut(context);
+      } else {
+        showToast('Error analyzing garbage: $e', 'error');
+      }
+    }
   }
 
   void _showUserDashboard(int id) {
@@ -24,11 +36,10 @@ class _LeaderboardState extends State<Leaderboard> {
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return Container(
+        return SizedBox(
           height: MediaQuery.of(context).size.height * 0.65,
           child: Column(
             children: [
-              // Close Button
               Container(
                 height: 50,
                 decoration: const BoxDecoration(
@@ -38,7 +49,7 @@ class _LeaderboardState extends State<Leaderboard> {
                   ),
                   color: Color(0xFF6BBD6E),
                 ),
-                padding: EdgeInsets.all(8),
+                padding: EdgeInsets.all(8.0),
                 child: Align(
                   alignment: Alignment.topRight,
                   child: IconButton(
@@ -51,7 +62,7 @@ class _LeaderboardState extends State<Leaderboard> {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: UserDashboard(
                     rankerID: id,
                   ),
@@ -83,13 +94,13 @@ class _LeaderboardState extends State<Leaderboard> {
         } else if (snapshot.hasData) {
           if (snapshot.data!.rankers.isNotEmpty) {
             rankers = [];
-            int currentRank = 1;
+            int currentRank = 0;
             int lastPoint = -1;
             int rankCounter = 1;
 
             for (var ranker in snapshot.data!.rankers) {
               if (ranker.point != lastPoint) {
-                currentRank += rankCounter - 1;
+                currentRank += rankCounter;
                 rankCounter = 1;
               } else {
                 rankCounter++;

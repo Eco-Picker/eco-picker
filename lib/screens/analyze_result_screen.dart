@@ -3,8 +3,10 @@ import 'package:eco_picker/screens/post_picture_screen.dart';
 import 'package:eco_picker/utils/toastbox.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import '../api/api_garbage_service.dart';
 import '../data/garbage.dart';
+import '../main.dart';
 import '../utils/change_date_format.dart';
 import '../utils/styles.dart';
 
@@ -26,13 +28,22 @@ class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
   Future<void> saveData() async {
     widget.garbageResult?.setPosition(widget.location.latitude.toDouble(),
         widget.location.longitude.toDouble());
-    print(widget.garbageResult!.name);
-    bool didSave = await _apiGarbageService.saveGarbage(widget.garbageResult!);
-    if (didSave) {
-      showToast('Saved your garbage data.', 'success');
-      Navigator.popUntil(context, (route) => route.isFirst);
-    } else {
-      showToast('Failed to save your garbage data. Please try again.', 'error');
+    try {
+      bool didSave =
+          await _apiGarbageService.saveGarbage(widget.garbageResult!);
+      if (didSave) {
+        showToast('Saved your garbage data.', 'success');
+        Navigator.popUntil(context, (route) => route.isFirst);
+      }
+    } catch (e) {
+      if (e == 'LOG_OUT') {
+        showToast('User token expired. Logging out.', 'error');
+        final appState = Provider.of<MyAppState>(context, listen: false);
+        appState.signOut(context);
+      } else {
+        showToast(
+            'Failed to save your garbage data. Please try again.', 'error');
+      }
     }
   }
 

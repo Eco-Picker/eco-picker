@@ -1,8 +1,11 @@
 import 'package:eco_picker/utils/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../api/api_newsletter_service.dart';
 import '../data/newsletter.dart';
 import '../components/post_list.dart';
+import '../main.dart';
+import '../utils/toastbox.dart';
 
 class NewsListScreen extends StatefulWidget {
   @override
@@ -76,7 +79,13 @@ class _NewsListScreenState extends State<NewsListScreen>
         _hasMore = _currentPage < newsList.totalPages;
       });
     } catch (e) {
-      print(e);
+      if (e == 'LOG_OUT') {
+        showToast('User token expired. Logging out.', 'error');
+        final appState = Provider.of<MyAppState>(context, listen: false);
+        appState.signOut(context);
+      } else {
+        showToast('Error fetching newslist: $e', 'error');
+      }
     } finally {
       setState(() {
         _isLoading = false;

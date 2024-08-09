@@ -2,7 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import '../screens/home_screen.dart';
 import '../screens/camera_screen.dart';
-import '../screens/user_info_screen.dart';
+import '../screens/user_dashboard_screen.dart';
 import '../screens/news_list_screen.dart';
 import '../screens/map_screen.dart';
 
@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MainBar> {
         page = MapScreen();
         break;
       case 4:
-        page = UserInfoScreen();
+        page = UserDashboardScreen();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -53,8 +53,10 @@ class _MyHomePageState extends State<MainBar> {
         unselectedItemColor: Color.fromARGB(122, 76, 175, 79),
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.article), label: "Newsletter"),
-          BottomNavigationBarItem(icon: Icon(Icons.camera_alt), label: "Camera"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.article), label: "Newsletter"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.camera_alt), label: "Camera"),
           BottomNavigationBarItem(icon: Icon(Icons.map), label: "Map"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "User"),
         ],

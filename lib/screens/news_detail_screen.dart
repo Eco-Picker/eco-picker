@@ -1,10 +1,12 @@
 import 'package:eco_picker/utils/change_date_format.dart';
 import 'package:eco_picker/utils/toastbox.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../api/api_newsletter_service.dart';
 import '../data/newsletter.dart';
+import '../main.dart';
 import '../utils/styles.dart';
 
 class NewsDetailScreen extends StatefulWidget {
@@ -31,7 +33,17 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _newsletterFuture = _apiNewsletterService.fetchNewsletter(widget.id);
+    try {
+      _newsletterFuture = _apiNewsletterService.fetchNewsletter(widget.id);
+    } catch (e) {
+      if (e == 'LOG_OUT') {
+        showToast('User token expired. Logging out.', 'error');
+        final appState = Provider.of<MyAppState>(context, listen: false);
+        appState.signOut(context);
+      } else {
+        showToast('Error analyzing garbage: $e', 'error');
+      }
+    }
   }
 
   @override

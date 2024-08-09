@@ -139,6 +139,14 @@ TextStyle midTextStyle() {
   );
 }
 
+TextStyle midGreenTextStyle() {
+  return TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+    color: Color(0xFF27542A),
+  );
+}
+
 TextStyle newsTitleTextStyle() {
   return const TextStyle(
     fontSize: 21,

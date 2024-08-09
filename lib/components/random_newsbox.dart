@@ -1,8 +1,11 @@
 import 'package:eco_picker/api/api_newsletter_service.dart';
 import 'package:eco_picker/screens/news_detail_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../data/newsletter.dart';
+import '../main.dart';
 import '../utils/styles.dart';
+import '../utils/toastbox.dart';
 
 class RandomNewsbox extends StatefulWidget {
   @override
@@ -16,7 +19,17 @@ class _RandomNewsboxState extends State<RandomNewsbox> {
   @override
   void initState() {
     super.initState();
-    _randomNewsFuture = _apiNewsletterService.fetchRandomNews();
+    try {
+      _randomNewsFuture = _apiNewsletterService.fetchRandomNews();
+    } catch (e) {
+      if (e == 'LOG_OUT') {
+        showToast('User token expired. Logging out.', 'error');
+        final appState = Provider.of<MyAppState>(context, listen: false);
+        appState.signOut(context);
+      } else {
+        showToast('Error analyzing garbage: $e', 'error');
+      }
+    }
   }
 
   @override
@@ -66,11 +79,7 @@ class _RandomNewsboxState extends State<RandomNewsbox> {
                 children: [
                   Text(
                     newsSummary!.category,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF27542A),
-                    ),
+                    style: midGreenTextStyle(),
                   ),
                   Text(
                     newsSummary.title,

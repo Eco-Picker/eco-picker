@@ -1,9 +1,12 @@
 import 'package:eco_picker/utils/rank_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../api/api_user_service.dart';
 import '../data/user.dart';
+import '../main.dart';
 import '../utils/styles.dart';
+import '../utils/toastbox.dart';
 
 class Scoreboard extends StatefulWidget {
   @override
@@ -31,8 +34,17 @@ class _ScoreboardState extends State<Scoreboard>
         curve: Curves.easeInOut,
       ),
     );
-
-    _userStatisticsFuture = _apiUserService.fetchUserStatistics();
+    try {
+      _userStatisticsFuture = _apiUserService.fetchUserStatistics();
+    } catch (e) {
+      if (e == 'LOG_OUT') {
+        showToast('User token expired. Logging out.', 'error');
+        final appState = Provider.of<MyAppState>(context, listen: false);
+        appState.signOut(context);
+      } else {
+        showToast('Error fetching newslist: $e', 'error');
+      }
+    }
   }
 
   @override

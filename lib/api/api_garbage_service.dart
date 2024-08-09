@@ -8,7 +8,7 @@ import 'api_service.dart';
 
 class ApiGarbageService {
   Future<Map<String, dynamic>> analyzeGarbage(File image) async {
-    const url = '$baseUrl/analyze';
+    const url = '$baseUrl/garbage/analyze';
 
     final headers = {
       'Content-Type': 'multipart/form-data',
@@ -21,17 +21,18 @@ class ApiGarbageService {
     );
 
     final response = await ApiService().postMultipart(url, headers, [file]);
-
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
       return jsonResponse;
+    } else if (response.statusCode == 403) {
+      throw Exception('LOG_OUT');
     } else {
       throw Exception('Failed to analyze');
     }
   }
 
   Future<bool> saveGarbage(Garbage garbage) async {
-    const url = '$baseUrl/save';
+    const url = '$baseUrl/garbage/save';
     final headers = {
       'Content-Type': 'application/json',
     };
@@ -39,8 +40,9 @@ class ApiGarbageService {
     final response = await ApiService().post(url, headers, body);
     if (response.statusCode == 200) {
       return true;
+    } else if (response.statusCode == 403) {
+      throw Exception('LOG_OUT');
     } else {
-      print(response.statusCode);
       throw Exception('Failed to save');
     }
   }
@@ -55,6 +57,8 @@ class ApiGarbageService {
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
       return GarbageLocation.fromJson(jsonResponse);
+    } else if (response.statusCode == 403) {
+      throw Exception('LOG_OUT');
     } else {
       throw Exception('Failed to load garbage list');
     }
@@ -71,6 +75,8 @@ class ApiGarbageService {
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
       return Garbage.fromJson(jsonResponse['garbage']);
+    } else if (response.statusCode == 403) {
+      throw Exception('LOG_OUT');
     } else {
       throw Exception('Failed to load garbage list');
     }

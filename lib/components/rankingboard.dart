@@ -32,7 +32,7 @@ class _RankingBoardState extends State<Rankingboard> {
               EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 0.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: Color(0xFFE3F5E3),
+            color: Color(0xFFE5E5E5),
           ),
           child: Column(
             children: [
@@ -44,11 +44,11 @@ class _RankingBoardState extends State<Rankingboard> {
                     top: Radius.circular(8),
                     bottom: Radius.circular(0),
                   ),
-                  color: Color(0xFF4CAF50),
+                  color: Color(0xFF6BBD6E),
                 ),
                 child: Text(
                   'Leaderboard',
-                  style: midTextStyle(),
+                  style: midGreenTextStyle(),
                   textAlign: TextAlign.center,
                 ),
               ),

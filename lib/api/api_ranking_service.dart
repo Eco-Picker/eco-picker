@@ -16,6 +16,8 @@ class ApiRankingService {
       // Parse the JSON response into a Ranking object
       final jsonResponse = json.decode(response.body);
       return Ranking.fromJson(jsonResponse['ranking']);
+    } else if (response.statusCode == 403) {
+      throw Exception('LOG_OUT');
     } else {
       throw Exception('Failed to load rankers');
     }
@@ -32,6 +34,8 @@ class ApiRankingService {
       final data = json.decode(response.body) as Map<String, dynamic>;
       print('ranker data: $data');
       return UserStatistics.fromJson(data['rankerDetail']);
+    } else if (response.statusCode == 403) {
+      throw Exception('LOG_OUT');
     } else {
       throw Exception('Failed to load ranker detail');
     }

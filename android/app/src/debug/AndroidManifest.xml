@@ -6,9 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:label="eco_picker"
-        android:icon="@mipmap/ic_launcher"
-        tools:replace="android:icon">
+        android:label="Eco Picker">
         
         <!-- Other components like activities, services, etc. -->
         
