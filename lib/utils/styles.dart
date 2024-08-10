@@ -60,6 +60,14 @@ InputDecoration inputStyle(
   );
 }
 
+TextStyle onboardingTextStyle() {
+  return GoogleFonts.quicksand(
+    fontSize: 40,
+    fontWeight: FontWeight.w700,
+    color: Color(0xFF27542A),
+  );
+}
+
 TextStyle headingTextStyle() {
   return GoogleFonts.quicksand(
     fontSize: 24,
@@ -103,6 +111,14 @@ TextStyle titleTextStyle() {
   return const TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w600,
+    color: Color(0xFF3D3D3D),
+  );
+}
+
+TextStyle titleNormalTextStyle() {
+  return const TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
     color: Color(0xFF3D3D3D),
   );
 }

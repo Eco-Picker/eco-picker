@@ -10,6 +10,15 @@ final categories = [
   'Other'
 ];
 
+const List<String> categoriesReverse = [
+  '',
+  'OTHER',
+  'FOOD_SCRAPS',
+  'CARDBOARD_PAPER',
+  'GLASS',
+  'METAL',
+  'PLASTIC'
+];
 const Map<String, Color> categoryColors = {
   'Plastic': Color(0xFF0288D1),
   'Metal': Color(0xFF4FC3F7),

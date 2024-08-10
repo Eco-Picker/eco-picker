@@ -4,6 +4,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:provider/provider.dart';
 import '../api/api_user_service.dart';
 import '../api/token_manager.dart';
+import '../data/provider.dart';
 import '../data/user.dart';
 import '../main.dart';
 import 'sign_up_screen.dart';
@@ -30,7 +31,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Future<void> saveUserId() async {
     Map<String, dynamic> decodedToken =
         JwtDecoder.decode(await _tokenManager.getAccessToken() ?? '');
-    Provider.of<UserName>(context, listen: false)
+    Provider.of<UserProvider>(context, listen: false)
         .setUserName(decodedToken['sub']);
   }
 

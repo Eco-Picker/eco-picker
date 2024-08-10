@@ -34,6 +34,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 <a href="https://www.flaticon.com/free-icons/paper" title="paper icons">Paper icons created by Freepik - Flaticon</a>
 <a href="https://www.flaticon.com/free-icons/bottle" title="bottle icons">Bottle icons created by Freepik - Flaticon</a>
 <a href="https://www.flaticon.com/free-icons/food-waste" title="food waste icons">Food waste icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/garbage" title="garbage icons">Garbage icons created by surang - Flaticon</a>
 
 Contact
 For any questions or feedback, please contact

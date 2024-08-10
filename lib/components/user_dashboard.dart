@@ -1,4 +1,5 @@
 import 'package:eco_picker/api/api_ranking_service.dart';
+import 'package:eco_picker/data/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
@@ -74,7 +75,7 @@ class _UserDashboard extends State<UserDashboard>
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (widget.rankerID == null) {
-      userName = Provider.of<UserName>(context).userName;
+      userName = Provider.of<UserProvider>(context).userName;
     }
   }
 

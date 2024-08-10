@@ -1,5 +1,4 @@
 import 'package:eco_picker/utils/get_address.dart';
-import 'package:eco_picker/utils/toastbox.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:eco_picker/api/api_garbage_service.dart';
@@ -8,6 +7,7 @@ import 'package:eco_picker/utils/geolocator_utils.dart';
 import 'package:eco_picker/utils/get_json_file.dart';
 import 'package:eco_picker/utils/resize_image.dart';
 import 'package:eco_picker/utils/styles.dart';
+import 'package:eco_picker/utils/toastbox.dart';
 import 'package:provider/provider.dart';
 import '../components/map_bottom_sheet.dart';
 import '../main.dart';
@@ -50,7 +50,7 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
-  void generateMarkers({String? categoryFilter}) async {
+  Future<void> generateMarkers({String? categoryFilter}) async {
     if (_garbageLocation == null) {
       print('Error: _garbageLocation is null');
       return;
@@ -101,7 +101,6 @@ class _MapScreenState extends State<MapScreen> {
 
         localMarkers.add(marker);
 
-        // Calculate bounds
         if (bounds == null) {
           bounds = LatLngBounds(
             southwest: LatLng(garbage.latitude, garbage.longitude),
@@ -116,12 +115,12 @@ class _MapScreenState extends State<MapScreen> {
     if (mounted) {
       setState(() {
         _markers = localMarkers;
+        _isLoading = false;
       });
 
-      // Move the map camera to fit the bounds if there are markers
       if (bounds != null) {
         mapController.animateCamera(
-          CameraUpdate.newLatLngBounds(bounds, 50), // Padding added
+          CameraUpdate.newLatLngBounds(bounds, 50),
         );
       }
     }
@@ -139,12 +138,12 @@ class _MapScreenState extends State<MapScreen> {
   Future<void> fetchGarbageLocations() async {
     try {
       final garbageLocations = await _apiGarbageService.getGarbageList();
-      setState(() {
-        _isLoading = false;
-        _garbageLocation = garbageLocations;
-      });
-      // Generate markers after fetching garbage locations
-      generateMarkers();
+      if (mounted) {
+        setState(() {
+          _garbageLocation = garbageLocations;
+        });
+        generateMarkers();
+      }
     } catch (e) {
       if (e == 'LOG_OUT') {
         showToast('User token expired. Logging out.', 'error');
@@ -158,8 +157,10 @@ class _MapScreenState extends State<MapScreen> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+    print('MapController initialized');
 
     if (_garbageLocation != null) {
+      print('controller generated');
       generateMarkers();
     }
 
@@ -176,36 +177,29 @@ class _MapScreenState extends State<MapScreen> {
       ),
       body: Stack(
         children: [
-          _isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
-                  ),
-                )
-              : GoogleMap(
-                  onMapCreated: _onMapCreated,
-                  onCameraMove: _onCameraMove,
-                  initialCameraPosition: _currentPosition != null
-                      ? CameraPosition(
-                          target: _currentPosition!,
-                          zoom: 16.0,
-                        )
-                      : CameraPosition(
-                          target: LatLng(0, 0),
-                          zoom: 16.0,
-                        ),
-                  myLocationEnabled: true,
-                  markers: _markers != null
-                      ? _markers!
-                      : {
-                          Marker(
-                            markerId: MarkerId("default"),
-                            position: LatLng(0, 0),
-                          ),
-                        },
-                  padding: const EdgeInsets.only(bottom: 70),
-                ),
+          if (_isLoading)
+            const Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+              ),
+            )
+          else
+            GoogleMap(
+              onMapCreated: _onMapCreated,
+              onCameraMove: _onCameraMove,
+              initialCameraPosition: _currentPosition != null
+                  ? CameraPosition(
+                      target: _currentPosition!,
+                      zoom: 16.0,
+                    )
+                  : CameraPosition(
+                      target: LatLng(0, 0),
+                      zoom: 16.0,
+                    ),
+              myLocationEnabled: true,
+              markers: _markers ?? {},
+              padding: const EdgeInsets.only(bottom: 70),
+            ),
           MapBottomSheet(
             controller: _sheetController,
             onCategorySelected: generateMarkers,

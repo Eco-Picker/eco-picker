@@ -1,4 +1,3 @@
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import '../screens/home_screen.dart';
 import '../screens/camera_screen.dart';
@@ -7,16 +6,24 @@ import '../screens/news_list_screen.dart';
 import '../screens/map_screen.dart';
 
 class MainBar extends StatefulWidget {
-  final CameraDescription? camera;
+  final int? index;
 
-  const MainBar({required this.camera});
+  const MainBar({this.index});
 
   @override
-  State<MainBar> createState() => _MyHomePageState();
+  State<MainBar> createState() => _MainBarState();
 }
 
-class _MyHomePageState extends State<MainBar> {
-  var selectedIndex = 0;
+class _MainBarState extends State<MainBar> {
+  int selectedIndex = 0;
+  final PageStorageBucket _bucket = PageStorageBucket();
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the selectedIndex based on the widget's index parameter
+    selectedIndex = widget.index ?? 0;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +36,7 @@ class _MyHomePageState extends State<MainBar> {
         page = NewsListScreen();
         break;
       case 2:
-        page = CameraScreen(camera: widget.camera);
+        page = CameraScreen();
         break;
       case 3:
         page = MapScreen();
@@ -38,11 +45,14 @@ class _MyHomePageState extends State<MainBar> {
         page = UserDashboardScreen();
         break;
       default:
-        throw UnimplementedError('no widget for $selectedIndex');
+        throw UnimplementedError('No widget for $selectedIndex');
     }
 
     return Scaffold(
-      body: page,
+      body: PageStorage(
+        bucket: _bucket,
+        child: page,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         showSelectedLabels: false,

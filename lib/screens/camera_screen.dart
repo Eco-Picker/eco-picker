@@ -3,16 +3,14 @@ import 'package:eco_picker/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
+import '../data/provider.dart';
 import '../utils/geolocator_utils.dart';
 import '../utils/toastbox.dart';
 import 'post_picture_screen.dart';
 
 class CameraScreen extends StatefulWidget {
-  final CameraDescription? camera;
-
-  const CameraScreen({required this.camera});
-
   @override
   _CameraScreenState createState() => _CameraScreenState();
 }
@@ -26,50 +24,14 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.camera != null) {
-      _initializeCamera(widget.camera!);
-    } else {
-      getCamera();
-    }
+    _initializeCamera();
   }
 
   Future<void> getCamera() async {
-    CameraDescription? newCamera;
-    List<CameraDescription> cameras = [];
-    try {
-      // Obtain a list of the available cameras on the device.
-      cameras = await availableCameras();
-      // Get a specific camera from the list of available cameras.
-      newCamera = cameras.isNotEmpty ? cameras.first : null;
-    } catch (e) {
-      print('Error: $e');
-    } finally {
-      _initializeCamera(newCamera!);
-    }
-  }
-
-  Future<void> getLocation() async {
-    try {
-      final position = await _geolocatorUtil.getCurrentLocation();
-      if (position != null) {
-        setState(() {
-          _currentPosition = LatLng(position.latitude, position.longitude);
-        });
-      } else {
-        showToast('Unavaliable to load your location info.', 'error');
-      }
-    } catch (e) {
-      showToast('Unavaliable to load your location info.', 'error');
-      print("Error getting location: $e");
-    }
-  }
-
-  Future<void> _initializeCamera(CameraDescription camera) async {
     final status = await Permission.camera.status;
     if (!status.isGranted) {
       final result = await Permission.camera.request();
       if (result.isDenied) {
-        // Handle permission denial
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -86,6 +48,47 @@ class _CameraScreenState extends State<CameraScreen> {
         );
         return;
       }
+    }
+
+    CameraDescription? newCamera;
+    List<CameraDescription> cameras = [];
+    try {
+      cameras = await availableCameras();
+      newCamera = cameras.isNotEmpty ? cameras.first : null;
+    } catch (e) {
+      print('Error: $e');
+    } finally {
+      final cameraProvider =
+          Provider.of<CameraProvider>(context, listen: false);
+      cameraProvider.setCamera(newCamera);
+    }
+  }
+
+  Future<void> getLocation() async {
+    try {
+      final position = await _geolocatorUtil.getCurrentLocation();
+      if (position != null) {
+        setState(() {
+          _currentPosition = LatLng(position.latitude, position.longitude);
+        });
+      } else {
+        showToast('Unable to load your location info.', 'error');
+      }
+    } catch (e) {
+      showToast('Unable to load your location info.', 'error');
+      print("Error getting location: $e");
+    }
+  }
+
+  Future<void> _initializeCamera() async {
+    if (Provider.of<CameraProvider>(context, listen: false).camera == null) {
+      await getCamera();
+    }
+
+    final camera = Provider.of<CameraProvider>(context, listen: false).camera;
+    if (camera == null) {
+      print('No camera available');
+      return;
     }
 
     _controller = CameraController(
@@ -133,13 +136,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   return Container(
                     width: size.width,
                     height: size.height,
-                    child: FittedBox(
-                      fit: BoxFit.cover,
-                      child: Container(
-                        width: 100, // the actual width is not important here
-                        child: CameraPreview(_controller!),
-                      ),
-                    ),
+                    child: CameraPreview(_controller!),
                   );
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
@@ -164,7 +161,6 @@ class _CameraScreenState extends State<CameraScreen> {
         child: FloatingActionButton(
           onPressed: () async {
             try {
-              await _initializeControllerFuture;
               final image = await _controller!.takePicture();
               await getLocation();
               if (!context.mounted) return;

@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 0.0.1+1
+version: 1.0.0+1
 
 environment:
   sdk: ^3.1.1
@@ -34,6 +34,8 @@ dependencies:
   jwt_decoder: ^2.0.1
   url_launcher: ^6.3.0
   share: ^2.0.4
+  introduction_screen: ^3.1.14
+  confetti: ^0.7.0
 
 dependency_overrides:
   geolocator_web: ^4.1.0
@@ -71,6 +73,7 @@ flutter_launcher_icons:
   ios: true
   image_path: "assets/images/Icon.png"
   adaptive_icon_background: "#ffffff"
+  image_path_ios: "assets/images/Icon_ios.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
   web:
     generate: true

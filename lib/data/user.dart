@@ -1,16 +1,3 @@
-import 'package:flutter/material.dart';
-
-class UserName extends ChangeNotifier {
-  String? _userName;
-
-  String? get userName => _userName;
-
-  void setUserName(String userName) {
-    _userName = userName;
-    notifyListeners();
-  }
-}
-
 class User {
   final int id;
   final String username;
@@ -46,6 +33,7 @@ class UserStatistics {
   });
 
   factory UserStatistics.fromJson(Map<String, dynamic> json) {
+    // ignore: unused_local_variable
     String? userName;
     Count count;
     Score score;

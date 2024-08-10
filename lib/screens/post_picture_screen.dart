@@ -24,7 +24,7 @@ class _PostPictureScreenState extends State<PostPictureScreen> {
   final ApiGarbageService _apiGarbageService = ApiGarbageService();
   bool _isLoading = false;
   Garbage? _garbageResult;
-  late Map<String, dynamic> _analyzeGarbageFuture;
+  Map<String, dynamic>? _analyzeGarbageFuture;
 
   Future<void> analyzeImage() async {
     setState(() {
@@ -34,22 +34,22 @@ class _PostPictureScreenState extends State<PostPictureScreen> {
     try {
       final imageFile = File(widget.imagePath);
       final analyzeResult = await _apiGarbageService.analyzeGarbage(imageFile);
-
-      if (_analyzeGarbageFuture['result'] == false) {
+      setState(() {
+        _analyzeGarbageFuture = analyzeResult;
+      });
+      if (_analyzeGarbageFuture!['result'] == false) {
         showToast('Please try again with the valid garbage picture.', 'error');
         Navigator.pop(context);
       } else {
-        setState(() {
-          _analyzeGarbageFuture = analyzeResult;
-        });
-        _garbageResult = Garbage.fromJson(_analyzeGarbageFuture['garbage']);
-        Navigator.of(context).pushReplacement(
+        _garbageResult = Garbage.fromJson(_analyzeGarbageFuture!['garbage']);
+        Navigator.of(context).push(
           MaterialPageRoute(
-              builder: (context) => AnalyzeResultScreen(
-                    imagePath: widget.imagePath,
-                    garbageResult: _garbageResult,
-                    location: widget.location,
-                  )),
+            builder: (context) => AnalyzeResultScreen(
+              imagePath: widget.imagePath,
+              garbageResult: _garbageResult,
+              location: widget.location,
+            ),
+          ),
         );
       }
     } catch (e) {
@@ -73,48 +73,57 @@ class _PostPictureScreenState extends State<PostPictureScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text('Post Picture', style: headingTextStyle())),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.file(
-                File(widget.imagePath),
-                width: size.width / 1.5,
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Column(
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
-                    onPressed: analyzeImage,
-                    style: smallButtonStyle(),
-                    child: Text('Analyze Image'),
+                  Image.file(
+                    File(widget.imagePath),
+                    width: size.width / 1.5,
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    style: greyButtonStyle(),
-                    child: Text('Take again'),
+                  SizedBox(height: 8),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: _isLoading ? null : analyzeImage,
+                        style: smallButtonStyle(),
+                        child: Text('Analyze Image'),
+                      ),
+                      ElevatedButton(
+                        onPressed: _isLoading
+                            ? null
+                            : () {
+                                Navigator.pop(context);
+                              },
+                        style: greyButtonStyle(),
+                        child: Text('Take again'),
+                      ),
+                    ],
                   ),
+                  if (_garbageResult != null)
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text('Analysis Result: $_garbageResult'),
+                    ),
                 ],
               ),
-              if (_isLoading)
-                CircularProgressIndicator(
+            ),
+          ),
+          if (_isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: Center(
+                child: CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
                 ),
-              if (_garbageResult != null)
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text('Analysis Result: $_garbageResult'),
-                ),
-            ],
-          ),
-        ),
+              ),
+            ),
+        ],
       ),
     );
   }

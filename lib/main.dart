@@ -1,14 +1,16 @@
 import 'package:camera/camera.dart';
+import 'package:eco_picker/screens/onboarding_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'data/provider.dart';
 import 'screens/loading_screen.dart';
 import 'screens/sign_in_screen.dart';
 import 'components/navigation_bar.dart';
 import 'utils/token_refresher.dart';
-import '../data/user.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
@@ -25,6 +27,7 @@ Future<void> main() async {
   } catch (e) {
     print('Error: $e');
   }
+  print('firstCamera: $firstCamera');
 
   runApp(MyApp(camera: firstCamera));
 }
@@ -39,7 +42,14 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => MyAppState()),
-        ChangeNotifierProvider(create: (_) => UserName()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(
+          create: (_) {
+            final cameraProvider = CameraProvider();
+            cameraProvider.setCamera(camera);
+            return cameraProvider;
+          },
+        ),
       ],
       child: MaterialApp(
         title: 'Eco Picker',
@@ -60,22 +70,21 @@ class MyApp extends StatelessWidget {
             primaryColor: Color(0xFF4CAF50),
           ),
         ),
-        home: AuthWrapper(camera: camera),
+        home: AuthWrapper(),
       ),
     );
   }
 }
 
 class AuthWrapper extends StatefulWidget {
-  final CameraDescription? camera;
-  const AuthWrapper({this.camera});
-
   @override
   _AuthWrapperState createState() => _AuthWrapperState();
 }
 
 class _AuthWrapperState extends State<AuthWrapper> {
   bool _isLoading = true;
+  bool _isFirstLaunch = true;
+  bool _hasLaunchedBefore = false;
 
   @override
   void initState() {
@@ -84,12 +93,30 @@ class _AuthWrapperState extends State<AuthWrapper> {
   }
 
   Future<void> _initializeApp() async {
-    // Simulate an initialization delay
-    await Future.delayed(Duration(seconds: 2));
+    // Check if this is the first launch
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
 
-    setState(() {
-      _isLoading = false;
-    });
+    if (_isFirstLaunch) {
+      // Set isFirstLaunch to false after the first launch
+      await prefs.setBool('isFirstLaunch', false);
+    }
+
+    _hasLaunchedBefore = prefs.getBool('hasLaunchedBefore') ?? false;
+
+    if (_hasLaunchedBefore) {
+      setState(() {
+        _isLoading = false;
+      });
+    } else {
+      // Simulate an initialization delay
+      await Future.delayed(Duration(seconds: 2));
+      await prefs.setBool('hasLaunchedBefore', true);
+
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -97,15 +124,19 @@ class _AuthWrapperState extends State<AuthWrapper> {
     if (_isLoading) {
       return LoadingScreen();
     } else {
-      return Consumer<MyAppState>(
-        builder: (context, appState, _) {
-          if (appState.isSignedIn) {
-            return MainBar(camera: widget.camera);
-          } else {
-            return SignInScreen();
-          }
-        },
-      );
+      if (_isFirstLaunch) {
+        return OnboardingScreen();
+      } else {
+        return Consumer<MyAppState>(
+          builder: (context, appState, _) {
+            if (appState.isSignedIn) {
+              return MainBar();
+            } else {
+              return SignInScreen();
+            }
+          },
+        );
+      }
     }
   }
 }
