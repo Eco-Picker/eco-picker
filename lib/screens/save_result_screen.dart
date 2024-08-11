@@ -57,11 +57,6 @@ class _SaveResultScreenState extends State<SaveResultScreen> {
                       color: Color(0xFF27542A),
                     )),
                 Text('Points earned', style: newsTitleTextStyle()),
-                // ElevatedButton(
-                //   onPressed: () => _goto(2),
-                //   style: smallButtonStyle(),
-                //   child: Text('Take another picture'),
-                // ),
                 ElevatedButton(
                   onPressed: () => {
                     Navigator.of(context).pushAndRemoveUntil(

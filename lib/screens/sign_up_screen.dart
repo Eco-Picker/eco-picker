@@ -18,6 +18,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
   bool _showErrors = false;
   bool _usernameError = false;
   bool _emailError = false;
@@ -48,7 +49,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
         showToast('All fields are required', 'error');
         return;
       }
-
+      setState(() {
+        _isLoading = true;
+      });
       try {
         final result = await _apiUserService.signUp(username, password, email);
         if (result == 'true') {
@@ -61,6 +64,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         }
       } catch (e) {
         showToast('An error occurred: $e', 'error');
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -72,160 +79,174 @@ class _SignUpScreenState extends State<SignUpScreen> {
         title: Text('Sign Up'),
         titleTextStyle: headingTextStyle(),
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-          ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextFormField(
-                  controller: _usernameController,
-                  decoration: inputStyle(
-                      'Username', _formKey, _showErrors, _usernameError),
-                  cursorColor: Color(0xFF4CAF50),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      setState(() {
-                        _usernameError = true;
-                      });
-                      return 'Please enter your username';
-                    }
-                    setState(() {
-                      _usernameError = false;
-                    });
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: _emailController,
-                  decoration:
-                      inputStyle('Email', _formKey, _showErrors, _emailError),
-                  cursorColor: Color(0xFF4CAF50),
-                  validator: (value) {
-                    String? validMsg = validateEmail(value);
-                    if (validMsg == null) {
-                      setState(() {
-                        _emailError = false;
-                      });
-                      return validMsg;
-                    } else {
-                      setState(() {
-                        _emailError = true;
-                      });
-                      return validMsg;
-                    }
-                  },
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: _passwordController,
-                  decoration: inputStyle(
-                      'Password', _formKey, _showErrors, _passwordError),
-                  cursorColor: Color(0xFF4CAF50),
-                  obscureText: true,
-                  validator: (value) {
-                    String? validMsg = validatePassword(value);
-                    if (validMsg == null) {
-                      setState(() {
-                        _passwordError = false;
-                      });
-                      return validMsg;
-                    } else {
-                      setState(() {
-                        _passwordError = true;
-                      });
-                      return validMsg;
-                    }
-                  },
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: _confirmPasswordController,
-                  decoration: inputStyle('Confirm Password', _formKey,
-                      _showErrors, _confirmPasswordError),
-                  cursorColor: Color(0xFF4CAF50),
-                  obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      setState(() {
-                        _confirmPasswordError = true;
-                      });
-                      return 'Please confirm your password';
-                    }
-                    if (value != _passwordController.text) {
-                      setState(() {
-                        _confirmPasswordError = true;
-                      });
-                      return 'Passwords do not match';
-                    }
-                    setState(() {
-                      _confirmPasswordError = false;
-                    });
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: _signUp,
-                  style: submitButtonStyle(),
-                  child: Text('Sign Up'),
-                ),
-                const SizedBox(height: 10),
-                Row(
+      body: Stack(
+        children: [
+          Center(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text("Already have an account?", style: bodyTextStyle()),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
+                  children: [
+                    TextFormField(
+                      controller: _usernameController,
+                      decoration: inputStyle(
+                          'Username', _formKey, _showErrors, _usernameError),
+                      cursorColor: Color(0xFF4CAF50),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          setState(() {
+                            _usernameError = true;
+                          });
+                          return 'Please enter your username';
+                        }
+                        setState(() {
+                          _usernameError = false;
+                        });
+                        return null;
                       },
-                      style: TextButton.styleFrom(
-                        minimumSize: Size.zero,
-                        padding: EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 3.0),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      child: Text(
-                        'Sign in',
-                        style: selectTextStyle(),
-                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: inputStyle(
+                          'Email', _formKey, _showErrors, _emailError),
+                      cursorColor: Color(0xFF4CAF50),
+                      validator: (value) {
+                        String? validMsg = validateEmail(value);
+                        if (validMsg == null) {
+                          setState(() {
+                            _emailError = false;
+                          });
+                          return validMsg;
+                        } else {
+                          setState(() {
+                            _emailError = true;
+                          });
+                          return validMsg;
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      controller: _passwordController,
+                      decoration: inputStyle(
+                          'Password', _formKey, _showErrors, _passwordError),
+                      cursorColor: Color(0xFF4CAF50),
+                      obscureText: true,
+                      validator: (value) {
+                        String? validMsg = validatePassword(value);
+                        if (validMsg == null) {
+                          setState(() {
+                            _passwordError = false;
+                          });
+                          return validMsg;
+                        } else {
+                          setState(() {
+                            _passwordError = true;
+                          });
+                          return validMsg;
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      controller: _confirmPasswordController,
+                      decoration: inputStyle('Confirm Password', _formKey,
+                          _showErrors, _confirmPasswordError),
+                      cursorColor: Color(0xFF4CAF50),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          setState(() {
+                            _confirmPasswordError = true;
+                          });
+                          return 'Please confirm your password';
+                        }
+                        if (value != _passwordController.text) {
+                          setState(() {
+                            _confirmPasswordError = true;
+                          });
+                          return 'Passwords do not match';
+                        }
+                        setState(() {
+                          _confirmPasswordError = false;
+                        });
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: _signUp,
+                      style: submitButtonStyle(),
+                      child: Text('Sign Up'),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text("Already have an account?",
+                            style: bodyTextStyle()),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          style: TextButton.styleFrom(
+                            minimumSize: Size.zero,
+                            padding: EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 3.0),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: Text(
+                            'Sign in',
+                            style: selectTextStyle(),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text("Forgot password?", style: bodyTextStyle()),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ForgotPasswordScreen()),
+                            );
+                          },
+                          style: TextButton.styleFrom(
+                            minimumSize: Size.zero,
+                            padding: EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 3.0),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: Text(
+                            'Forgot Password',
+                            style: selectTextStyle(),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text("Forgot password?", style: bodyTextStyle()),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ForgotPasswordScreen()),
-                        );
-                      },
-                      style: TextButton.styleFrom(
-                        minimumSize: Size.zero,
-                        padding: EdgeInsets.fromLTRB(10.0, 3.0, 10.0, 3.0),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      child: Text(
-                        'Forgot Password',
-                        style: selectTextStyle(),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
           ),
-        ),
+          if (_isLoading)
+            Container(
+              color: Colors.black54,
+              child: Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

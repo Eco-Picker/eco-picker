@@ -19,6 +19,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  bool _isLoading = false;
   bool _showErrors = false;
   bool _currentPasswordError = false;
   bool _newPasswordError = false;
@@ -49,6 +50,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         showToast('All fields are required', 'error');
         return;
       }
+      setState(() {
+        _isLoading = true;
+      });
 
       try {
         final result = await _apiUserService.changePassword(
@@ -67,6 +71,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         } else {
           showToast('Error changing password: $e', 'error');
         }
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -78,94 +86,107 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         title: Text('Change Password'),
         titleTextStyle: headingTextStyle(),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextFormField(
-                  controller: _currentPasswordController,
-                  decoration: inputStyle('Current Password', _formKey,
-                      _showErrors, _currentPasswordError),
-                  cursorColor: Color(0xFF4CAF50),
-                  obscureText: true,
-                  validator: (value) {
-                    String? validMsg = validatePassword(value);
-                    if (validMsg == null) {
-                      setState(() {
-                        _currentPasswordError = false;
-                      });
-                      return validMsg;
-                    } else {
-                      setState(() {
-                        _currentPasswordError = true;
-                      });
-                      return validMsg;
-                    }
-                  },
+      body: Stack(
+        children: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextFormField(
+                      controller: _currentPasswordController,
+                      decoration: inputStyle('Current Password', _formKey,
+                          _showErrors, _currentPasswordError),
+                      cursorColor: Color(0xFF4CAF50),
+                      obscureText: true,
+                      validator: (value) {
+                        String? validMsg = validatePassword(value);
+                        if (validMsg == null) {
+                          setState(() {
+                            _currentPasswordError = false;
+                          });
+                          return validMsg;
+                        } else {
+                          setState(() {
+                            _currentPasswordError = true;
+                          });
+                          return validMsg;
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      controller: _newPasswordController,
+                      decoration: inputStyle('New Password', _formKey,
+                          _showErrors, _newPasswordError),
+                      cursorColor: Color(0xFF4CAF50),
+                      obscureText: true,
+                      validator: (value) {
+                        String? validMsg = validatePassword(value);
+                        if (validMsg == null) {
+                          setState(() {
+                            _newPasswordError = false;
+                          });
+                          return validMsg;
+                        } else {
+                          setState(() {
+                            _newPasswordError = true;
+                          });
+                          return validMsg;
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      controller: _confirmPasswordController,
+                      decoration: inputStyle('Confirm Password', _formKey,
+                          _showErrors, _confirmPasswordError),
+                      cursorColor: Color(0xFF4CAF50),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          setState(() {
+                            _confirmPasswordError = true;
+                          });
+                          return 'Please confirm your password';
+                        }
+                        if (value != _newPasswordController.text) {
+                          setState(() {
+                            _confirmPasswordError = true;
+                          });
+                          return 'Passwords do not match';
+                        }
+                        setState(() {
+                          _confirmPasswordError = false;
+                        });
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: _changePassword,
+                      style: submitButtonStyle(),
+                      child: Text('Change Password'),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: _newPasswordController,
-                  decoration: inputStyle(
-                      'New Password', _formKey, _showErrors, _newPasswordError),
-                  cursorColor: Color(0xFF4CAF50),
-                  obscureText: true,
-                  validator: (value) {
-                    String? validMsg = validatePassword(value);
-                    if (validMsg == null) {
-                      setState(() {
-                        _newPasswordError = false;
-                      });
-                      return validMsg;
-                    } else {
-                      setState(() {
-                        _newPasswordError = true;
-                      });
-                      return validMsg;
-                    }
-                  },
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: _confirmPasswordController,
-                  decoration: inputStyle('Confirm Password', _formKey,
-                      _showErrors, _confirmPasswordError),
-                  cursorColor: Color(0xFF4CAF50),
-                  obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      setState(() {
-                        _confirmPasswordError = true;
-                      });
-                      return 'Please confirm your password';
-                    }
-                    if (value != _newPasswordController.text) {
-                      setState(() {
-                        _confirmPasswordError = true;
-                      });
-                      return 'Passwords do not match';
-                    }
-                    setState(() {
-                      _confirmPasswordError = false;
-                    });
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: _changePassword,
-                  style: submitButtonStyle(),
-                  child: Text('Change Password'),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
+          if (_isLoading)
+            Container(
+              color: Colors.black54,
+              child: Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

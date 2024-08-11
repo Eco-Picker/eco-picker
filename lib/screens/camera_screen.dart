@@ -20,6 +20,7 @@ class _CameraScreenState extends State<CameraScreen> {
   Future<void>? _initializeControllerFuture;
   final GeolocatorUtil _geolocatorUtil = GeolocatorUtil();
   LatLng? _currentPosition;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -128,67 +129,90 @@ class _CameraScreenState extends State<CameraScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text('Camera', style: headingTextStyle())),
-      body: _initializeControllerFuture != null
-          ? FutureBuilder<void>(
-              future: _initializeControllerFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Container(
-                    width: size.width,
-                    height: size.height,
-                    child: CameraPreview(_controller!),
-                  );
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
-                    ),
-                  );
-                }
-              },
-            )
-          : Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+      body: Stack(
+        children: [
+          _initializeControllerFuture != null
+              ? FutureBuilder<void>(
+                  future: _initializeControllerFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return Container(
+                        width: size.width,
+                        height: size.height,
+                        child: CameraPreview(_controller!),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+                        ),
+                      );
+                    }
+                  },
+                )
+              : Center(
+                  child: CircularProgressIndicator(
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+                  ),
+                ),
+          if (_isLoading)
+            Container(
+              color: Colors.black54,
+              child: Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+                ),
               ),
             ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: FloatingActionButton(
-          onPressed: () async {
-            try {
-              final image = await _controller!.takePicture();
-              await getLocation();
-              if (!context.mounted) return;
-              if (_currentPosition != null) {
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => PostPictureScreen(
-                      imagePath: image.path,
-                      location: _currentPosition!,
-                    ),
-                  ),
-                );
-              }
-            } catch (e) {
-              print(e);
-            }
-          },
-          backgroundColor: Color(0xFFC8E6C9),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100),
-          ),
-          child: Icon(
-            Icons.radio_button_unchecked,
-            size: 55,
-            color: Color(0xFF4CAF50),
-          ),
-        ),
+        ],
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: _isLoading
+          ? null
+          : Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: FloatingActionButton(
+                onPressed: () async {
+                  try {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    final image = await _controller!.takePicture();
+                    await getLocation();
+                    if (!context.mounted) return;
+                    if (_currentPosition != null) {
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => PostPictureScreen(
+                            imagePath: image.path,
+                            location: _currentPosition!,
+                          ),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    print(e);
+                  } finally {
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  }
+                },
+                backgroundColor: Color(0xFFC8E6C9),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Icon(
+                  Icons.radio_button_unchecked,
+                  size: 55,
+                  color: Color(0xFF4CAF50),
+                ),
+              ),
+            ),
     );
   }
 }

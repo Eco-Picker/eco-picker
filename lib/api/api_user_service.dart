@@ -15,7 +15,6 @@ class ApiUserService {
     final response = await ApiService().get(url, headers);
     if (response.statusCode == 200) {
       final data = json.decode(response.body) as Map<String, dynamic>;
-      print(data['userInfo']);
       return User.fromJson(data['userInfo']);
     } else if (response.statusCode == 403) {
       throw Exception('LOG_OUT');
@@ -28,7 +27,6 @@ class ApiUserService {
     const url = '$baseUrl/user/statistics';
     final headers = {'Content-Type': 'application/json'};
     final response = await ApiService().get(url, headers);
-    print(response);
     if (response.statusCode == 200) {
       final data = json.decode(response.body) as Map<String, dynamic>;
 
@@ -49,7 +47,6 @@ class ApiUserService {
       "newPassword": newPassword,
       "confirmNewPassword": confirmPassword
     };
-    print(body);
     final response = await ApiService().post(url, headers, body);
     final data = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -119,7 +116,6 @@ class ApiUserService {
         if (data['result'] == true) {
           await _tokenManager.saveTokens(
               data['accessToken'], data['refreshToken']);
-          print('Login successful: $data');
           return "success";
         } else {
           return "Login failed.\nPlease check your username or password.";
@@ -139,7 +135,6 @@ class ApiUserService {
     final response = await ApiService().post(url, headers);
     if (response.statusCode == 200) {
       await _tokenManager.clearTokens();
-      print('Logged out');
       return json.decode(response.body);
     } else {
       throw Exception('Failed to logout');

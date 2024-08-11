@@ -47,6 +47,6 @@ const Map<String, String> categoryIcons = {
 };
 
 // const String baseUrl = 'http://localhost:15000/api';
-const String baseUrl = 'http://10.0.0.66:15000/api';
+// const String baseUrl = 'http://10.0.0.66:15000/api';
 // const String baseUrl = 'http://127.0.0.1:15000/api';
-// const String baseUrl = 'http://eco-picker.com:15000/api';
+const String baseUrl = 'http://eco-picker.com:15000/api';

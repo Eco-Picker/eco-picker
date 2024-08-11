@@ -32,7 +32,6 @@ class ApiRankingService {
     if (response.statusCode == 200) {
       // Parse the JSON response into a Ranking object
       final data = json.decode(response.body) as Map<String, dynamic>;
-      print('ranker data: $data');
       return UserStatistics.fromJson(data['rankerDetail']);
     } else if (response.statusCode == 403) {
       throw Exception('LOG_OUT');

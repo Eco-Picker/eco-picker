@@ -17,7 +17,6 @@ class ApiNewsletterService {
       body = {"offset": offset, "limit": limit, "category": category};
     }
     final response = await ApiService().post(url, headers, body);
-    print(response.statusCode);
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
       return NewsList.fromJson(jsonResponse);

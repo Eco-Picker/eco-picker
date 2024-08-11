@@ -27,7 +27,6 @@ Future<void> main() async {
   } catch (e) {
     print('Error: $e');
   }
-  print('firstCamera: $firstCamera');
 
   runApp(MyApp(camera: firstCamera));
 }

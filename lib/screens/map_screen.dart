@@ -157,10 +157,8 @@ class _MapScreenState extends State<MapScreen> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    print('MapController initialized');
 
     if (_garbageLocation != null) {
-      print('controller generated');
       generateMarkers();
     }
 

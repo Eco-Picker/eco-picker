@@ -116,7 +116,7 @@ class _PostPictureScreenState extends State<PostPictureScreen> {
           ),
           if (_isLoading)
             Container(
-              color: Colors.black.withOpacity(0.5),
+              color: Colors.black54,
               child: Center(
                 child: CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),

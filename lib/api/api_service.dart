@@ -57,14 +57,12 @@ class ApiService {
     final refreshToken = await _tokenManager.getRefreshToken();
 
     if (refreshToken == null) {
-      print('No refresh token available');
       return false;
     }
 
     final body = json.encode({
       'refreshToken': refreshToken,
     });
-    print(body);
 
     try {
       final response =
@@ -78,7 +76,6 @@ class ApiService {
             data['accessToken'],
             refreshToken, // Retaining the old refresh token
           );
-          print('Token refreshed: ${data['accessToken']}');
           return true;
         } else {
           print('No access token returned from server');
