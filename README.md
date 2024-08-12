@@ -4,9 +4,12 @@
 
 - IDE
 - Flutter SDK
-  If you are a mac user, you need to download:
+andriod
+- Android Studio
+ios
 - Xcode
 - CocoaPods
+- ios 14
 
 ## Getting Started
 
@@ -16,11 +19,29 @@
 git clone https://github.com/Eco-Picker/eco-picker.git
 cd eco-picker
 ```
+### set env files
+
+```shell
+cp .env.example .env
+```
+android
+```shell
+cd android
+cp local.properties.example local.properties
+```
+ios
+```shell
+cd ios
+cp .env.example .env
+```
+
 ### download packages
 
 ```shell
 flutter pub get
 ```
+### change ip address for base url
+In your .env file, change YOURIP to your actual IP address where your server is running.
 
 ### launch flutter
 * Run <a href="https://github.com/Eco-Picker/eco-picker-api" title="Eco Picker Api">Backend Code</a> before run Frontend code
