@@ -12,6 +12,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool _isLoadingNews = true;
+  bool _isLoadingRanking = true;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void _handleNewsLoadingComplete() {
+    setState(() {
+      _isLoadingNews = false;
+    });
+  }
+
+  void _handleRankingLoadingComplete() {
+    setState(() {
+      _isLoadingRanking = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     String? userName = Provider.of<UserProvider>(context).userName;
@@ -33,29 +53,46 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         titleTextStyle: headingTextStyle(),
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (userName == null)
-                  Text(
-                    'Hello,\nThanks for saving Earth!',
-                    style: midTextStyle(),
-                  )
-                else
-                  Text(
-                    'Hello, $userName!\nThanks for saving Earth!',
-                    style: midTextStyle(),
-                  ),
-                SizedBox(height: 10.0),
-                RandomNewsbox(),
-              ],
-            ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (userName == null)
+                      Text(
+                        'Hello,\nThanks for saving Earth!',
+                        style: midTextStyle(),
+                      )
+                    else
+                      Text(
+                        'Hello, $userName!\nThanks for saving Earth!',
+                        style: midTextStyle(),
+                      ),
+                    SizedBox(height: 10.0),
+                    RandomNewsbox(
+                      onLoadingComplete: _handleNewsLoadingComplete,
+                    ),
+                  ],
+                ),
+              ),
+              Rankingboard(
+                onLoadingComplete: _handleRankingLoadingComplete,
+              ),
+            ],
           ),
-          Rankingboard(),
+          if (_isLoadingNews || _isLoadingRanking)
+            Container(
+              color: Colors.black54,
+              child: Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+                ),
+              ),
+            ),
         ],
       ),
     );

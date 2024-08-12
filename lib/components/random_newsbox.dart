@@ -8,6 +8,10 @@ import '../utils/styles.dart';
 import '../utils/toastbox.dart';
 
 class RandomNewsbox extends StatefulWidget {
+  final Function onLoadingComplete;
+
+  RandomNewsbox({required this.onLoadingComplete});
+
   @override
   _RandomNewsboxState createState() => _RandomNewsboxState();
 }
@@ -29,6 +33,10 @@ class _RandomNewsboxState extends State<RandomNewsbox> {
       } else {
         showToast('Error analyzing garbage: $e', 'error');
       }
+    } finally {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.onLoadingComplete();
+      });
     }
   }
 
@@ -44,6 +52,9 @@ class _RandomNewsboxState extends State<RandomNewsbox> {
             ),
           );
         } else if (snapshot.hasError) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            widget.onLoadingComplete();
+          });
           return Container(
             padding: EdgeInsets.all(8.0),
             decoration: BoxDecoration(
@@ -55,6 +66,9 @@ class _RandomNewsboxState extends State<RandomNewsbox> {
             ),
           );
         } else if (!snapshot.hasData || snapshot.data!.category.isEmpty) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            widget.onLoadingComplete();
+          });
           return Container(
             padding: EdgeInsets.all(8.0),
             decoration: BoxDecoration(
@@ -66,6 +80,10 @@ class _RandomNewsboxState extends State<RandomNewsbox> {
             ),
           );
         } else {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            widget.onLoadingComplete();
+          });
+
           final newsSummary = snapshot.data;
           return GestureDetector(
             child: Container(

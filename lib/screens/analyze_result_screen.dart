@@ -38,7 +38,6 @@ class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
       bool didSave =
           await _apiGarbageService.saveGarbage(widget.garbageResult!);
       if (didSave) {
-        showToast('Saved your garbage data.', 'success');
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
               builder: (context) =>

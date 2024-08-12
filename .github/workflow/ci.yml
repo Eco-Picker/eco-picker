@@ -1,0 +1,35 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "stable"
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Create .env file
+        run: |
+          echo "MAP_API_KEY=${{ secrets.MAP_API_KEY }}" > .env
+          echo "MAP_API_KEY=${{ secrets.MAP_API_KEY }}" > /ios/.env
+
+      - name: Build APK
+        run: flutter build apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk

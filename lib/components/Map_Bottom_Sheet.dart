@@ -56,7 +56,7 @@ class _MapBottomSheetState extends State<MapBottomSheet> {
     return DraggableScrollableSheet(
       initialChildSize: _garbageDetail != null ? 0.5 : 0.1,
       minChildSize: 0.1,
-      maxChildSize: 0.7,
+      maxChildSize: 0.56,
       controller: widget.controller,
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(
@@ -102,26 +102,59 @@ class _MapBottomSheetState extends State<MapBottomSheet> {
                     child:
                         Text('Choose Category', style: titleWhiteTextStyle())),
               ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                    String category = categories[index];
-                    return Container(
-                      color: Color(0xFFFAFAFA),
-                      child: Column(
-                        children: [
-                          ListTile(
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Color(0xFFFAFAFA),
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Display All',
+                              style: titleTextStyle(),
+                            ),
+                          ],
+                        ),
+                        onTap: () {
+                          _handleCategorySelected('Display All');
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 0),
+                sliver: SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 2.6,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      String category = categories[index + 1];
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFFFAFAFA),
+                          border: Border.all(
+                            color: Colors.grey,
+                            width: 0.1,
+                          ),
+                        ),
+                        child: Center(
+                          child: ListTile(
                             title: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                if (category != 'Display All')
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: Image.asset(
-                                      categoryIcons[category]!,
-                                      height: 30,
-                                    ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Image.asset(
+                                    categoryIcons[category]!,
+                                    height: 30,
                                   ),
+                                ),
                                 Text(
                                   category,
                                   style: titleTextStyle(),
@@ -129,17 +162,14 @@ class _MapBottomSheetState extends State<MapBottomSheet> {
                               ],
                             ),
                             onTap: () {
-                              _handleCategorySelected(category == 'Display All'
-                                  ? 'Display All'
-                                  : categoryENUM[category]!);
+                              _handleCategorySelected(categoryENUM[category]!);
                             },
                           ),
-                          Divider(),
-                        ],
-                      ),
-                    );
-                  },
-                  childCount: categories.length,
+                        ),
+                      );
+                    },
+                    childCount: categories.length - 1, // "Display All" 제외
+                  ),
                 ),
               ),
             ],
