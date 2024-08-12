@@ -16,9 +16,14 @@
 git clone https://github.com/Eco-Picker/eco-picker.git
 cd eco-picker
 ```
+### download packages
+
+```shell
+flutter pub get
+```
 
 ### launch flutter
-
+* Run <a href="https://github.com/Eco-Picker/eco-picker-api" title="Eco Picker Api">Backend Code</a> before run Frontend code
 ```shell
 flutter run
 ```
