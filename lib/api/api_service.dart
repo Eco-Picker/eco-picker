@@ -49,7 +49,7 @@ class ApiService {
   }
 
   Future<bool> refreshToken() async {
-    const url = '$baseUrl/auth/renew_access_token';
+    final url = '$baseUrl/auth/renew_access_token';
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${await _tokenManager.getAccessToken()}',

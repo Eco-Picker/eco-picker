@@ -9,7 +9,7 @@ class ApiUserService {
   final TokenManager _tokenManager = TokenManager();
 
   Future<User> fetchUserInfo() async {
-    const url = '$baseUrl/user/info';
+    final url = '$baseUrl/user/info';
     final headers = {'Content-Type': 'application/json'};
 
     final response = await ApiService().get(url, headers);
@@ -24,7 +24,7 @@ class ApiUserService {
   }
 
   Future<UserStatistics> fetchUserStatistics() async {
-    const url = '$baseUrl/user/statistics';
+    final url = '$baseUrl/user/statistics';
     final headers = {'Content-Type': 'application/json'};
     final response = await ApiService().get(url, headers);
     if (response.statusCode == 200) {
@@ -40,7 +40,7 @@ class ApiUserService {
 
   Future<String> changePassword(
       String password, String newPassword, String confirmPassword) async {
-    const url = '$baseUrl/user/update_password';
+    final url = '$baseUrl/user/update_password';
     final headers = {'Content-Type': 'application/json'};
     final body = {
       "password": password,
@@ -98,7 +98,7 @@ class ApiUserService {
   }
 
   Future<String> login(String username, String password) async {
-    const url = '$baseUrl/p/auth/login';
+    final url = '$baseUrl/p/auth/login';
     final headers = {'Content-Type': 'application/json'};
     final body = {
       'username': username,
@@ -130,7 +130,7 @@ class ApiUserService {
   }
 
   Future<void> logout() async {
-    const url = '$baseUrl/auth/logout';
+    final url = '$baseUrl/auth/logout';
     final headers = {'Content-Type': 'application/json'};
     final response = await ApiService().post(url, headers);
     if (response.statusCode == 200) {
@@ -142,7 +142,7 @@ class ApiUserService {
   }
 
   Future<bool> sendTemporaryPassword(String email) async {
-    const url = '$baseUrl/p/auth/send_temp_password';
+    final url = '$baseUrl/p/auth/send_temp_password';
     final headers = {'Content-Type': 'application/json'};
     final body = {
       'email': email,

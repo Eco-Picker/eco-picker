@@ -8,7 +8,7 @@ import 'api_service.dart';
 
 class ApiGarbageService {
   Future<Map<String, dynamic>> analyzeGarbage(File image) async {
-    const url = '$baseUrl/garbage/analyze';
+    final url = '$baseUrl/garbage/analyze';
 
     final headers = {
       'Content-Type': 'multipart/form-data',
@@ -32,7 +32,7 @@ class ApiGarbageService {
   }
 
   Future<bool> saveGarbage(Garbage garbage) async {
-    const url = '$baseUrl/garbage/save';
+    final url = '$baseUrl/garbage/save';
     final headers = {
       'Content-Type': 'application/json',
     };
@@ -48,7 +48,7 @@ class ApiGarbageService {
   }
 
   Future<GarbageLocation> getGarbageList() async {
-    const url = '$baseUrl/maps';
+    final url = '$baseUrl/maps';
     final headers = {
       'Content-Type': 'application/json',
     };

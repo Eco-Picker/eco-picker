@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 final categories = [
   'Display All',
@@ -46,7 +47,8 @@ const Map<String, String> categoryIcons = {
   'Other': 'assets/images/OTHER.png',
 };
 
+final ip = dotenv.env['IP_ADDRESS'];
 // const String baseUrl = 'http://localhost:15000/api';
-const String baseUrl = 'http://10.0.0.66:15000/api';
-// const String baseUrl = 'http://127.0.0.1:15000/api';
+// const String baseUrl = 'http://10.0.0.66:15000/api';
+String baseUrl = 'http://$ip:15000/api';
 // const String baseUrl = 'https://eco-picker.com:15000/api';

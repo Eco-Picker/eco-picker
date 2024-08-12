@@ -6,7 +6,7 @@ import '../utils/constants.dart';
 class ApiNewsletterService {
   Future<NewsList> fetchNewsList(
       {required int offset, required int limit, String? category}) async {
-    const url = '$baseUrl/newsletter_summaries';
+    final url = '$baseUrl/newsletter_summaries';
     final headers = {
       'Content-Type': 'application/json',
     };
@@ -28,7 +28,7 @@ class ApiNewsletterService {
   }
 
   Future<Newsletter> fetchNewsletter(int id) async {
-    String url = '$baseUrl/newsletter/$id';
+    final url = '$baseUrl/newsletter/$id';
     final headers = {
       'Content-Type': 'application/json',
     };
@@ -44,7 +44,7 @@ class ApiNewsletterService {
   }
 
   Future<NewsSummary> fetchRandomNews() async {
-    const url = '$baseUrl/random_newsletter_summary';
+    final url = '$baseUrl/random_newsletter_summary';
     final headers = {
       'Content-Type': 'application/json',
     };

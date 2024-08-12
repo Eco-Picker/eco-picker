@@ -6,7 +6,7 @@ import 'api_service.dart';
 
 class ApiRankingService {
   Future<Ranking> fetchRanking() async {
-    const url = '$baseUrl/ranking';
+    final url = '$baseUrl/ranking';
     final headers = {
       'Content-Type': 'application/json',
     };
@@ -24,7 +24,7 @@ class ApiRankingService {
   }
 
   Future<UserStatistics> fetchRanker(int id) async {
-    String url = '$baseUrl/ranker/$id';
+    final url = '$baseUrl/ranker/$id';
     final headers = {
       'Content-Type': 'application/json',
     };
