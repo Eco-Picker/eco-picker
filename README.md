@@ -4,10 +4,10 @@
 
 - IDE
 - Flutter SDK
-- 
+  
 andriod
 - Android Studio
-- 
+ 
 ios
 - Xcode
 - CocoaPods
@@ -36,6 +36,17 @@ ios
 cd ios
 cp .env.example .env
 ```
+After copying, you need to update the .env file with your specific credentials. Particularly, ensure that the following section is properly configured:
+
+```shell
+MAP_API_KEY={MAP_API_KEY}
+IP_ADDRESS={YOURIP}
+```
+For the MAP_API_KEY, please contact us at minjikm19@gmail.com to request the appropriate key. Alternatively, if you already possess a Goole Map API key, you can input it directly in the .env file.
+
+For IP_ADDRESS, please replace IP_ADDRESS with the IP address of the machine where your server is running.
+
+Make sure that your .env file is correctly updated before proceeding with the setup.
 
 ### download packages
 
