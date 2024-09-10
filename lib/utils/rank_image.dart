@@ -6,19 +6,14 @@ Widget buildRankImage(String rank, int page) {
   switch (rank) {
     case 'Bronze':
       imagePath = 'assets/images/Bronze.png';
-      break;
     case 'Silver':
       imagePath = 'assets/images/Silver.png';
-      break;
     case 'Gold':
       imagePath = 'assets/images/Gold.png';
-      break;
     case 'Diamond':
       imagePath = 'assets/images/Diamond.png';
-      break;
     case 'Master':
       imagePath = 'assets/images/Master.png';
-      break;
     default:
       imagePath = 'assets/images/Icon.png';
   }

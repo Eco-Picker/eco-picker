@@ -14,7 +14,7 @@ import '../utils/toastbox.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
-  _SignInScreenState createState() => _SignInScreenState();
+  State<SignInScreen> createState() => _SignInScreenState();
 }
 
 class _SignInScreenState extends State<SignInScreen> {
@@ -31,8 +31,10 @@ class _SignInScreenState extends State<SignInScreen> {
   Future<void> saveUserId() async {
     Map<String, dynamic> decodedToken =
         JwtDecoder.decode(await _tokenManager.getAccessToken() ?? '');
-    Provider.of<UserProvider>(context, listen: false)
-        .setUserName(decodedToken['sub']);
+    if (mounted) {
+      Provider.of<UserProvider>(context, listen: false)
+          .setUserName(decodedToken['sub']);
+    }
   }
 
   Future<void> _signIn() async {
@@ -71,13 +73,15 @@ class _SignInScreenState extends State<SignInScreen> {
                   'You haven\'t verified your email.\nPlease check your inbox and click the verification URL to start.',
                   'error');
             } else {
-              saveUserId();
-              Provider.of<MyAppState>(context, listen: false).signIn(
-                emailVerified: emailVerified,
-              );
+              if (mounted) {
+                saveUserId();
+                Provider.of<MyAppState>(context, listen: false).signIn(
+                  emailVerified: emailVerified,
+                );
+              }
             }
           } catch (e) {
-            if (e == 'LOG_OUT') {
+            if (e == 'LOG_OUT' && mounted) {
               showToast('User token expired. Logging out.', 'error');
               final appState = Provider.of<MyAppState>(context, listen: false);
               appState.signOut(context);

@@ -11,14 +11,14 @@ class MapBottomSheet extends StatefulWidget {
   final void Function({String? categoryFilter}) onCategorySelected;
 
   MapBottomSheet({
-    Key? key,
+    super.key,
     this.controller,
     required this.onCategorySelected,
     this.garbageDetail,
-  }) : super(key: key);
+  });
 
   @override
-  _MapBottomSheetState createState() => _MapBottomSheetState();
+  State<MapBottomSheet> createState() => _MapBottomSheetState();
 }
 
 class _MapBottomSheetState extends State<MapBottomSheet> {

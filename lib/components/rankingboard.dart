@@ -13,7 +13,7 @@ class Rankingboard extends StatefulWidget {
   Rankingboard({required this.onLoadingComplete});
 
   @override
-  _RankingboardState createState() => _RankingboardState();
+  State<Rankingboard> createState() => _RankingboardState();
 }
 
 class _RankingboardState extends State<Rankingboard> {

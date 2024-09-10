@@ -12,7 +12,7 @@ class SaveResultScreen extends StatefulWidget {
   SaveResultScreen({required this.garbageResult});
 
   @override
-  _SaveResultScreenState createState() => _SaveResultScreenState();
+  State<SaveResultScreen> createState() => _SaveResultScreenState();
 }
 
 class _SaveResultScreenState extends State<SaveResultScreen> {
@@ -23,12 +23,6 @@ class _SaveResultScreenState extends State<SaveResultScreen> {
   void initState() {
     super.initState();
     controller.play();
-  }
-
-  void _goto(int index) {
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => MainBar(index: index)),
-        (Route<dynamic> route) => false);
   }
 
   @override

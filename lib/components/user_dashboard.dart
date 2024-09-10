@@ -16,7 +16,7 @@ class UserDashboard extends StatefulWidget {
 
   const UserDashboard({this.rankerID});
   @override
-  _UserDashboard createState() => _UserDashboard();
+  State<UserDashboard> createState() => _UserDashboard();
 }
 
 class _UserDashboard extends State<UserDashboard>
@@ -182,7 +182,7 @@ class _UserDashboard extends State<UserDashboard>
                             return Container(
                               width: 100.0,
                               height: 100.0,
-                              decoration: new BoxDecoration(
+                              decoration: BoxDecoration(
                                 border: Border.all(color: Color(0xFF388E3C)),
                                 shape: BoxShape.circle,
                               ),

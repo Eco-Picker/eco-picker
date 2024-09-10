@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<String> getAddressFromLatLng(double lat, double lng) async {
+  // Get the address using lat & lng value
   final mapApi = dotenv.env['MAP_API_KEY'];
   final url =
       'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=$mapApi';
@@ -31,12 +32,12 @@ extension LatLngBoundsExtension on LatLngBounds {
   LatLngBounds extend(LatLng point) {
     return LatLngBounds(
       southwest: LatLng(
-        math.min(this.southwest.latitude, point.latitude),
-        math.min(this.southwest.longitude, point.longitude),
+        math.min(southwest.latitude, point.latitude),
+        math.min(southwest.longitude, point.longitude),
       ),
       northeast: LatLng(
-        math.max(this.northeast.latitude, point.latitude),
-        math.max(this.northeast.longitude, point.longitude),
+        math.max(northeast.latitude, point.latitude),
+        math.max(northeast.longitude, point.longitude),
       ),
     );
   }

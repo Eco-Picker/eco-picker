@@ -13,7 +13,7 @@ class RandomNewsbox extends StatefulWidget {
   RandomNewsbox({required this.onLoadingComplete});
 
   @override
-  _RandomNewsboxState createState() => _RandomNewsboxState();
+  State<RandomNewsbox> createState() => _RandomNewsboxState();
 }
 
 class _RandomNewsboxState extends State<RandomNewsbox> {

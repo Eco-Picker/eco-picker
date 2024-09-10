@@ -3,32 +3,32 @@ import 'package:permission_handler/permission_handler.dart';
 
 class GeolocatorUtil {
   Future<Position?> getCurrentLocation() async {
-    // 위치 서비스가 활성화되어 있는지 확인
+    // Check if location service is enabled
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // 위치 서비스가 활성화되어 있지 않음, 위치 서비스 설정 열기
+      // Not enabled, open location service setting
       await Geolocator.openLocationSettings();
       return null;
     }
 
-    // 위치 권한 확인 및 요청
+    // Check location permition
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
-      // 권한 요청
+      // Request permition
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // 권한 거부됨
+        // Permition denied
         return null;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // 권한이 영구적으로 거부됨, 설정에서 수동으로 권한 허용 필요
+      // Permition denied forever, need to open app settings
       openAppSettings();
       return null;
     }
 
-    // 위치 권한이 허용된 경우 현재 위치 가져오기
+    // Permition accepted, get current position
     return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
   }

@@ -10,7 +10,7 @@ import '../utils/toastbox.dart';
 
 class Scoreboard extends StatefulWidget {
   @override
-  _ScoreboardState createState() => _ScoreboardState();
+  State<Scoreboard> createState() => _ScoreboardState();
 }
 
 class _ScoreboardState extends State<Scoreboard>

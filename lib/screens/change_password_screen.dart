@@ -8,7 +8,7 @@ import '../utils/validator.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   @override
-  _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
+  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
@@ -57,14 +57,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       try {
         final result = await _apiUserService.changePassword(
             currentPassword, newPassword, confirmPassword);
-        if (result == 'pass') {
+        if (result == 'pass' && mounted) {
           showToast('Successfully changed your password!', 'pass');
           Navigator.pop(context);
         } else {
           showToast(result, 'error');
         }
       } catch (e) {
-        if (e == 'LOG_OUT') {
+        if (e == 'LOG_OUT' && mounted) {
           showToast('User token expired. Logging out.', 'error');
           final appState = Provider.of<MyAppState>(context, listen: false);
           appState.signOut(context);

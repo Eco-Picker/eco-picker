@@ -6,13 +6,13 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../data/provider.dart';
-import '../utils/geolocator_utils.dart';
+import '../utils/geolocator_util.dart';
 import '../utils/toastbox.dart';
 import 'post_picture_screen.dart';
 
 class CameraScreen extends StatefulWidget {
   @override
-  _CameraScreenState createState() => _CameraScreenState();
+  State<CameraScreen> createState() => _CameraScreenState();
 }
 
 class _CameraScreenState extends State<CameraScreen> {
@@ -32,7 +32,7 @@ class _CameraScreenState extends State<CameraScreen> {
     final status = await Permission.camera.status;
     if (!status.isGranted) {
       final result = await Permission.camera.request();
-      if (result.isDenied) {
+      if (result.isDenied && mounted) {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -59,9 +59,11 @@ class _CameraScreenState extends State<CameraScreen> {
     } catch (e) {
       print('Error: $e');
     } finally {
-      final cameraProvider =
-          Provider.of<CameraProvider>(context, listen: false);
-      cameraProvider.setCamera(newCamera);
+      if (mounted) {
+        final cameraProvider =
+            Provider.of<CameraProvider>(context, listen: false);
+        cameraProvider.setCamera(newCamera);
+      }
     }
   }
 
@@ -86,33 +88,35 @@ class _CameraScreenState extends State<CameraScreen> {
       await getCamera();
     }
 
-    final camera = Provider.of<CameraProvider>(context, listen: false).camera;
-    if (camera == null) {
-      print('No camera available');
-      return;
-    }
+    if (mounted) {
+      final camera = Provider.of<CameraProvider>(context, listen: false).camera;
+      if (camera == null) {
+        print('No camera available');
+        return;
+      }
 
-    _controller = CameraController(
-      camera,
-      ResolutionPreset.high,
-    );
-
-    _initializeControllerFuture = _controller!.initialize().catchError((e) {
-      print('Error initializing camera: $e');
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Text('Failed to initialize camera: $e'),
-          actions: [
-            TextButton(
-              child: Text('OK'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
+      _controller = CameraController(
+        camera,
+        ResolutionPreset.high,
       );
-    });
+
+      _initializeControllerFuture = _controller!.initialize().catchError((e) {
+        print('Error initializing camera: $e');
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Error'),
+            content: Text('Failed to initialize camera: $e'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+        );
+      });
+    }
 
     setState(() {});
   }
@@ -136,7 +140,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   future: _initializeControllerFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
-                      return Container(
+                      return SizedBox(
                         width: size.width,
                         height: size.height,
                         child: CameraPreview(_controller!),

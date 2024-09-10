@@ -7,7 +7,7 @@ import 'sign_up_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   @override
-  _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
@@ -30,7 +30,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         _isLoading = true;
       });
       final result = await _apiUserService.sendTemporaryPassword(email);
-      if (result == true) {
+      if (result == true && mounted) {
         showToast('Temporary password sent to your email.', 'pass');
         setState(() {
           _isLoading = false;

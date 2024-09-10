@@ -31,19 +31,14 @@ class _MainBarState extends State<MainBar> {
     switch (selectedIndex) {
       case 0:
         page = HomeScreen();
-        break;
       case 1:
         page = NewsListScreen();
-        break;
       case 2:
         page = CameraScreen();
-        break;
       case 3:
         page = MapScreen();
-        break;
       case 4:
         page = UserDashboardScreen();
-        break;
       default:
         throw UnimplementedError('No widget for $selectedIndex');
     }

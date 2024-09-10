@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:eco_picker/api/api_garbage_service.dart';
 import 'package:eco_picker/data/garbage.dart';
-import 'package:eco_picker/utils/geolocator_utils.dart';
+import 'package:eco_picker/utils/geolocator_util.dart';
 import 'package:eco_picker/utils/get_json_file.dart';
 import 'package:eco_picker/utils/resize_image.dart';
 import 'package:eco_picker/utils/styles.dart';
@@ -14,7 +14,7 @@ import '../main.dart';
 
 class MapScreen extends StatefulWidget {
   @override
-  _MapScreenState createState() => _MapScreenState();
+  State<MapScreen> createState() => _MapScreenState();
 }
 
 class _MapScreenState extends State<MapScreen> {
@@ -26,12 +26,14 @@ class _MapScreenState extends State<MapScreen> {
   Set<Marker>? _markers = <Marker>{};
   GarbageLocation? _garbageLocation;
   final _sheetController = DraggableScrollableController();
+  String _mapStyle = '';
 
   @override
   void initState() {
     super.initState();
     getLocation();
     fetchGarbageLocations();
+    getJsonFile('assets/map_style.json').then((value) => _mapStyle = value);
   }
 
   Future<void> getLocation() async {
@@ -63,7 +65,7 @@ class _MapScreenState extends State<MapScreen> {
       if (categoryFilter == null ||
           categoryFilter == 'Display All' ||
           garbage.garbageCategory == categoryFilter) {
-        final markerIcon = BitmapDescriptor.fromBytes(await getBytesFromAsset(
+        final markerIcon = BitmapDescriptor.bytes(await getBytesFromAsset(
             'assets/images/${garbage.garbageCategory}.png', 100));
 
         final marker = Marker(
@@ -87,7 +89,7 @@ class _MapScreenState extends State<MapScreen> {
                 );
               }
             } catch (e) {
-              if (e == 'LOG_OUT') {
+              if (e == 'LOG_OUT' && mounted) {
                 showToast('User token expired. Logging out.', 'error');
                 final appState =
                     Provider.of<MyAppState>(context, listen: false);
@@ -145,7 +147,7 @@ class _MapScreenState extends State<MapScreen> {
         generateMarkers();
       }
     } catch (e) {
-      if (e == 'LOG_OUT') {
+      if (e == 'LOG_OUT' && mounted) {
         showToast('User token expired. Logging out.', 'error');
         final appState = Provider.of<MyAppState>(context, listen: false);
         appState.signOut(context);
@@ -161,9 +163,6 @@ class _MapScreenState extends State<MapScreen> {
     if (_garbageLocation != null) {
       generateMarkers();
     }
-
-    getJsonFile('assets/map_style.json')
-        .then((value) => mapController.setMapStyle(value));
   }
 
   @override
@@ -185,6 +184,7 @@ class _MapScreenState extends State<MapScreen> {
             GoogleMap(
               onMapCreated: _onMapCreated,
               onCameraMove: _onCameraMove,
+              style: _mapStyle,
               initialCameraPosition: _currentPosition != null
                   ? CameraPosition(
                       target: _currentPosition!,

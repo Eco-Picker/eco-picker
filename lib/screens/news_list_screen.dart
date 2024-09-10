@@ -9,7 +9,7 @@ import '../utils/toastbox.dart';
 
 class NewsListScreen extends StatefulWidget {
   @override
-  _NewsListScreenState createState() => _NewsListScreenState();
+  State<NewsListScreen> createState() => _NewsListScreenState();
 }
 
 class _NewsListScreenState extends State<NewsListScreen>
@@ -79,7 +79,7 @@ class _NewsListScreenState extends State<NewsListScreen>
         _hasMore = _currentPage < newsList.totalPages;
       });
     } catch (e) {
-      if (e == 'LOG_OUT') {
+      if (e == 'LOG_OUT' && mounted) {
         showToast('User token expired. Logging out.', 'error');
         final appState = Provider.of<MyAppState>(context, listen: false);
         appState.signOut(context);

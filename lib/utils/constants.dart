@@ -51,4 +51,4 @@ final ip = dotenv.env['IP_ADDRESS'];
 // const String baseUrl = 'http://localhost:15000/api';
 // const String baseUrl = 'http://10.0.0.66:15000/api';
 String baseUrl = 'http://$ip:15000/api';
-// const String baseUrl = 'https://eco-picker.com:15000/api';
+// const String baseUrl = 'https://eco-picker.com/api';

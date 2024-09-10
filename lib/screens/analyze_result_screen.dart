@@ -20,7 +20,7 @@ class AnalyzeResultScreen extends StatefulWidget {
       {required this.imagePath, this.garbageResult, required this.location});
 
   @override
-  _AnalyzeResultScreenState createState() => _AnalyzeResultScreenState();
+  State<AnalyzeResultScreen> createState() => _AnalyzeResultScreenState();
 }
 
 class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
@@ -38,17 +38,21 @@ class _AnalyzeResultScreenState extends State<AnalyzeResultScreen> {
       bool didSave =
           await _apiGarbageService.saveGarbage(widget.garbageResult!);
       if (didSave) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-              builder: (context) =>
-                  SaveResultScreen(garbageResult: widget.garbageResult!)),
-        );
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+                builder: (context) =>
+                    SaveResultScreen(garbageResult: widget.garbageResult!)),
+          );
+        }
       }
     } catch (e) {
       if (e == 'LOG_OUT') {
         showToast('User token expired. Logging out.', 'error');
-        final appState = Provider.of<MyAppState>(context, listen: false);
-        appState.signOut(context);
+        if (mounted) {
+          final appState = Provider.of<MyAppState>(context, listen: false);
+          appState.signOut(context);
+        }
       } else {
         showToast(
             'Failed to save your garbage data. Please try again.', 'error');

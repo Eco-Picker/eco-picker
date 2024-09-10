@@ -7,7 +7,7 @@ import '../utils/validator.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
@@ -54,7 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       });
       try {
         final result = await _apiUserService.signUp(username, password, email);
-        if (result == 'true') {
+        if (result == 'true' && mounted) {
           showToast(
               'A verification link has been sent to your email account. Please click on the link that has just been sent to your email account to verify your email to finish sign up process.',
               'pass');
@@ -154,7 +154,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         }
                       },
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 5),
+                    Text(
+                        'Password must be: \n - at least 8 characters long,\n - contain at least 3 of the following: uppercase letter, lowercase letter, number, special character'),
+                    const SizedBox(height: 5),
                     TextFormField(
                       controller: _confirmPasswordController,
                       decoration: inputStyle('Confirm Password', _formKey,

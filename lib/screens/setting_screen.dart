@@ -8,11 +8,11 @@ import '../utils/styles.dart';
 import 'change_password_screen.dart';
 
 class SettingScreen extends StatelessWidget {
-  final ApiUserService _ApiUserService = ApiUserService();
+  final ApiUserService _apiUserService = ApiUserService();
 
   void _logout(BuildContext context) {
     try {
-      _ApiUserService.logout();
+      _apiUserService.logout();
     } catch (e) {
       showToast('Failed to logout: ${e.toString()}', 'status');
     } finally {

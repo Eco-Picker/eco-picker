@@ -17,7 +17,7 @@ class PostPictureScreen extends StatefulWidget {
       {super.key, required this.imagePath, required this.location});
 
   @override
-  _PostPictureScreenState createState() => _PostPictureScreenState();
+  State<PostPictureScreen> createState() => _PostPictureScreenState();
 }
 
 class _PostPictureScreenState extends State<PostPictureScreen> {
@@ -37,23 +37,25 @@ class _PostPictureScreenState extends State<PostPictureScreen> {
       setState(() {
         _analyzeGarbageFuture = analyzeResult;
       });
-      if (_analyzeGarbageFuture!['result'] == false) {
+      if (_analyzeGarbageFuture!['result'] == false && mounted) {
         showToast('Please try again with the valid garbage picture.', 'error');
         Navigator.pop(context);
       } else {
-        _garbageResult = Garbage.fromJson(_analyzeGarbageFuture!['garbage']);
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => AnalyzeResultScreen(
-              imagePath: widget.imagePath,
-              garbageResult: _garbageResult,
-              location: widget.location,
+        if (mounted) {
+          _garbageResult = Garbage.fromJson(_analyzeGarbageFuture!['garbage']);
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => AnalyzeResultScreen(
+                imagePath: widget.imagePath,
+                garbageResult: _garbageResult,
+                location: widget.location,
+              ),
             ),
-          ),
-        );
+          );
+        }
       }
     } catch (e) {
-      if (e == 'LOG_OUT') {
+      if (e == 'LOG_OUT' && mounted) {
         showToast('User token expired. Logging out.', 'error');
         final appState = Provider.of<MyAppState>(context, listen: false);
         appState.signOut(context);
