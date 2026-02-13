@@ -1,17 +1,71 @@
-# Eco Picker
+# Eco Picker🌱
+
+Eco Picker is a mobile app that encourages users to participate in trash-picking challenges by tracking collected waste and visualizing environmental impact.
+
+🎥 Demo Video: https://www.youtube.com/watch?v=8reS2H0D3zo
+## Why This Project?
+
+Eco Picker was created to encourage small environmental actions through gamification. 
+The goal was to combine mobile technology and behavioral motivation to promote sustainable habits.
+
+## Features
+
+- Track trash collection activities
+- Location-based map visualization
+- User challenge and ranking system
+- Real-time waste category logging
+- Environmental impact statistics
+ 
+## Tech Stack
+
+### Frontend
+- Flutter (Mobile UI Development)
+- Dart
+
+### APIs & Integrations
+- Google Maps API (Location & Marker Visualization)
+- REST API Integration (Backend Communication)
+
+## App Preview
+
+### Capture & Analyze Waste
+<img src="assets/images/Onboarding1.png" width="400"/>
+
+Users can take photos of waste and analyze categories using image recognition.
+
+---
+
+### Map Tracking
+<img src="assets/images/Onboarding2.png" width="400"/>
+
+Collected garbage is visualized on a live map using Google Maps API.
+
+---
+
+### Dashboard & Ranking
+<img src="assets/images/Onboarding3.png" width="400"/>
+
+Users earn points and view environmental impact statistics.
+
+---
+
+### Events & Community
+<img src="assets/images/Onboarding4.png" width="400"/>
+
+Gamified challenges and events encourage continuous participation.
 
 ## Prerequisites
 
 - IDE
 - Flutter SDK
   
-andriod
+Andriod
 - Android Studio
  
-ios
+iOS
 - Xcode
 - CocoaPods
-- ios 14
+- iOS 14
 
 ## Getting Started
 
@@ -26,12 +80,12 @@ cd eco-picker
 ```shell
 cp .env.example .env
 ```
-android
+Android
 ```shell
 cd android
 cp local.properties.example local.properties
 ```
-ios
+iOS
 ```shell
 cd ios
 cp .env.example .env
@@ -42,7 +96,7 @@ After copying, you need to update the .env file with your specific credentials. 
 MAP_API_KEY={MAP_API_KEY}
 IP_ADDRESS={YOURIP}
 ```
-For the MAP_API_KEY, please contact us at minjikm19@gmail.com to request the appropriate key. Alternatively, if you already possess a Goole Map API key, you can input it directly in the .env file.
+For the MAP_API_KEY, please contact us at minjikm19@gmail.com to request the appropriate key. Alternatively, if you already possess a Google Map API key, you can input it directly in the .env file.
 
 For IP_ADDRESS, please replace IP_ADDRESS with the IP address of the machine where your server is running.
 
